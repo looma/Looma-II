@@ -33,7 +33,11 @@ services:
   # OpenSearch — base storage/engine for traces and logs
   # -------------------------
   opensearch:
-    image: opensearchproject/opensearch:3.6.0
+    build:
+      context: ./opensearch
+      dockerfile: Dockerfile
+    image: looma-opensearch:3.6.0
+    pull_policy: never
     container_name: looma-opensearch-node
     environment:
       discovery.type: single-node
@@ -98,10 +102,16 @@ services:
     volumes:
       - looma_opensearch_data:/usr/share/opensearch/data
     ports:
-      # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
-      # the OpenSearch HTTP API at http://<host-LAN-ip>:49200
-      - "0.0.0.0:49200:9200"
-      - "0.0.0.0:49600:9600"
+      # 127.0.0.1 only — nothing on the LAN (an odroid included) needs to
+      # reach OpenSearch's REST API directly any more: Vector-to-Vector
+      # (vector/vector-agent.toml) replaced that. UFW alone can't enforce
+      # this for a Docker-published port — Docker writes its own iptables
+      # rules in the FORWARD chain, which bypasses UFW's INPUT-chain rules
+      # entirely, so a UFW "deny"/missing-allow rule for 49200 does nothing
+      # as long as the port is bound to 0.0.0.0. Binding to loopback is what
+      # actually keeps this off the LAN.
+      - "127.0.0.1:49200:9200"
+      - "127.0.0.1:49600:9600"
     networks:
       loomanet:
         aliases:
@@ -172,7 +182,7 @@ services:
         # This is safe: it only affects indices matching `metricbeat-*`.
         curl -fsS -XPUT "$${base}/_index_template/metricbeat" \
           -H 'Content-Type: application/json' \
-          -d '{"index_patterns":["metricbeat-*"],"template":{"settings":{"index.mapping.total_fields.limit":5000}},"priority":50}' >/dev/null
+          -d '{"index_patterns":["metricbeat-*"],"template":{"settings":{"index.mapping.total_fields.limit":5000,"index.default_pipeline":"looma-geoip"}},"priority":50}' >/dev/null
 
         # Also update any already-created Metricbeat indices (if any).
         curl -fsS -XPUT "$${base}/metricbeat-*/_settings" \
@@ -193,7 +203,52 @@ services:
         # pre-existing otel-v1-apm-span-* indices must be recreated once.
         curl -fsS -XPUT "$${base}/_index_template/otel-v1-apm-span" \
           -H 'Content-Type: application/json' \
-          -d '{"index_patterns":["otel-v1-apm-span-*"],"priority":50,"template":{"mappings":{"dynamic_templates":[{"strings_as_keyword":{"match_mapping_type":"string","mapping":{"type":"keyword","ignore_above":8191}}}],"properties":{"traceId":{"type":"keyword"},"spanId":{"type":"keyword"},"parentSpanId":{"type":"keyword"},"serviceName":{"type":"keyword"},"traceGroup":{"type":"keyword"},"name":{"type":"keyword"},"kind":{"type":"keyword"},"startTime":{"type":"date"},"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"status":{"properties":{"code":{"type":"integer"}}},"traceGroupFields":{"properties":{"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"statusCode":{"type":"integer"}}}}}}}' >/dev/null
+          -d '{"index_patterns":["otel-v1-apm-span-*"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"},"mappings":{"dynamic_templates":[{"strings_as_keyword":{"match_mapping_type":"string","mapping":{"type":"keyword","ignore_above":8191}}}],"properties":{"traceId":{"type":"keyword"},"spanId":{"type":"keyword"},"parentSpanId":{"type":"keyword"},"serviceName":{"type":"keyword"},"traceGroup":{"type":"keyword"},"name":{"type":"keyword"},"kind":{"type":"keyword"},"startTime":{"type":"date"},"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"status":{"properties":{"code":{"type":"integer"}}},"traceGroupFields":{"properties":{"endTime":{"type":"date"},"durationInNanos":{"type":"long"},"statusCode":{"type":"integer"}}}}}}}' >/dev/null
+
+        echo "Ensuring the geoip ingest pipeline (device public IP -> approximate location)..."
+        # Each odroid box captures its own public IP once at install time
+        # (looma-installer.sh -> LOOMA_BOX_PUBLIC_IP) since box_ip/box_name are
+        # LAN-private and geoip cannot resolve those to a real location. The
+        # attribute then reaches OpenSearch under one of three different SHAPES
+        # depending on which pipeline wrote the document — none of them is a
+        # plain dotted ingest field path, so a script processor does the
+        # lookup rather than three geoip processors with ignore_missing:
+        #   - box_public_ip                          flat field. Vector-shipped indices (metricbeat-*, vector-logs-*, looma-logs-*).
+        #   - resource."looma.public_ip"              ONE nested object (resource), whose key itself contains a literal dot.
+        #                                              OTel Collector -> OpenSearch logs directly (looma-app-logs).
+        #   - "resource.attributes.looma@public_ip"   ONE flat key whose name itself contains literal dots and an "@" (Data
+        #                                              Prepper flattens attribute keys, replacing "." with "@", but does not
+        #                                              nest "resource"/"attributes"). otel-v1-apm-span-*.
+        # Verified against real documents from an installed odroid, not just synthetic ones -
+        # the naive "three dotted ingest paths" version silently matched none of them.
+        curl -fsS -XPUT "$${base}/_ingest/pipeline/looma-geoip" \
+          -H 'Content-Type: application/json' \
+          -d '{"description":"Looma: resolve a device public IP to an approximate geographic location.","processors":[{"script":{"lang":"painless","params":{"f1":"box_public_ip","f2":"looma.public_ip","f3":"resource.attributes.looma@public_ip","rk":"resource"},"source":"def ip = null; if (ctx.containsKey(params.f1)) { ip = ctx.get(params.f1); } if (ip == null && ctx.containsKey(params.f3)) { ip = ctx.get(params.f3); } if (ip == null && ctx.containsKey(params.rk)) { def res = ctx.get(params.rk); if (res instanceof Map && res.containsKey(params.f2)) { ip = res.get(params.f2); } } if (ip != null) { ctx.__geoip_ip = ip; }"}},{"geoip":{"field":"__geoip_ip","target_field":"geo","ignore_missing":true}},{"remove":{"field":"__geoip_ip","ignore_missing":true}}]}' >/dev/null
+
+        echo "Ensuring looma-app-logs / looma-logs-* / vector-logs-* templates use the geoip pipeline..."
+        curl -fsS -XPUT "$${base}/_index_template/looma-app-logs" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["looma-app-logs"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"}}}' >/dev/null
+        curl -fsS -XPUT "$${base}/_index_template/looma-vector-logs" \
+          -H 'Content-Type: application/json' \
+          -d '{"index_patterns":["looma-logs-*","vector-logs-*"],"priority":50,"template":{"settings":{"index.default_pipeline":"looma-geoip"}}}' >/dev/null
+
+        # default_pipeline only applies to indices created AFTER the template/setting
+        # exists, so also set it directly on whatever already exists (matches the
+        # Metricbeat field-limit fixup above). A day's index that already has
+        # documents keeps those un-enriched; only new writes to it pick up geo.
+        curl -fsS -XPUT "$${base}/metricbeat-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/otel-v1-apm-span-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/looma-app-logs/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
+        curl -fsS -XPUT "$${base}/looma-logs-*,vector-logs-*/_settings" \
+          -H 'Content-Type: application/json' \
+          -d '{"index.default_pipeline":"looma-geoip"}' >/dev/null || true
 
         echo "Done."
 
@@ -216,7 +271,8 @@ services:
       DISABLE_SECURITY_DASHBOARDS_PLUGIN: "true"
       VIS_TYPE_VEGA_ENABLEEXTERNALURLS: "true"
     ports:
-      - "45601:5601"
+      - "127.0.0.1:45601:5601"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:45601:5601"
     networks:
       - loomanet
 
@@ -241,10 +297,13 @@ services:
       # three otel pipelines (traces / metrics / logs) come up cleanly and stay up.
       JAVA_OPTS: "-Xms512m -Xmx1g"
     ports:
-      - "21890:21890" # OTLP traces
-      - "21891:21891" # OTLP metrics
-      - "21892:21892" # OTLP logs
-      - "44900:4900"  # health
+      - "127.0.0.1:21890:21890" # OTLP traces
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21890:21890" # OTLP traces
+      - "127.0.0.1:21891:21891" # OTLP metrics
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21891:21891" # OTLP metrics
+      - "127.0.0.1:21892:21892" # OTLP logs
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:21892:21892" # OTLP logs
+      - "127.0.0.1:44900:4900"  # health
     networks:
       - loomanet
     # Make `condition: service_healthy` viable for the otel-collector — without
@@ -296,14 +355,16 @@ services:
       HOST_RUN: /hostfs/run
       HOST_DEV: /hostfs/dev
     ports:
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
-      - "48888:8888"  # OTel Collector internal metrics
-      - "48889:8889"  # Prometheus scrape endpoint — apps + host + docker + mongo
-      - "48890:8890"  # Prometheus scrape endpoint — span-derived metrics
-      - "41888:1888"  # zpages (debug)
-      - "43133:13133" # health_check
-      - "41777:1777"  # pprof
+      - "127.0.0.1:4317:4317"   # OTLP gRPC
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:4317:4317"   # OTLP gRPC
+      - "127.0.0.1:4318:4318"   # OTLP HTTP
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:4318:4318"   # OTLP HTTP
+      - "127.0.0.1:48888:8888"  # OTel Collector internal metrics
+      - "127.0.0.1:48889:8889"  # Prometheus scrape endpoint — apps + host + docker + mongo
+      - "127.0.0.1:48890:8890"  # Prometheus scrape endpoint — span-derived metrics
+      - "127.0.0.1:41888:1888"  # zpages (debug)
+      - "127.0.0.1:43133:13133" # health_check
+      - "127.0.0.1:41777:1777"  # pprof
     networks:
       - loomanet
     healthcheck:
@@ -340,11 +401,19 @@ services:
     environment:
       VECTOR_LOG: "info"
       LOOMA_VECTOR_CONFIG: "${LOOMA_VECTOR_CONFIG:-/etc/vector/vector.toml}"
+      # Without this, vector.toml's own box_name/box_ip enrichment (same VRL
+      # as every agent) falls back to get_hostname() — this container's own
+      # random Docker hostname (e.g. "45a67c0392bd"), which then shows up as
+      # a meaningless "device" in any dashboard filter built from box_name.
+      # Named explicitly so it reads as "the data server itself", not a
+      # school box, wherever Vector's own self-monitoring logs land.
+      LOOMA_BOX_NAME: "looma-data-server"
     ports:
       # Vector's own wire protocol (sources.agents in vector.toml) — the ONLY
       # port a remote agent box needs reachable here for its logs+metrics.
       # No OpenSearch port is ever exposed to the field.
-      - "0.0.0.0:6000:6000"
+      - "127.0.0.1:6000:6000"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:6000:6000"
     user: "0:0"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
@@ -371,7 +440,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     ports:
-      - "48081:9417"
+      - "127.0.0.1:48081:9417"
     networks:
       - loomanet
     restart: unless-stopped
@@ -388,6 +457,14 @@ services:
     container_name: looma-metricbeat
     user: root
     command: ["--strict.perms=false"]
+    environment:
+      # This central instance self-monitors the observability stack's own
+      # containers — there is no app MongoDB here to point the mongodb module
+      # at (that only exists on an odroid box, native-installed or as the
+      # looma-db container on a Docker-mode app deployment). Left enabled, it
+      # was silently failing every cycle trying to resolve "looma-db" on a
+      # network that never has that hostname.
+      LOOMA_METRICBEAT_MONGO_ENABLED: "false"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
     depends_on:
@@ -467,8 +544,16 @@ services:
       GF_SECURITY_ADMIN_USER: admin
       GF_SECURITY_ADMIN_PASSWORD: admin
       GF_USERS_ALLOW_SIGN_UP: "false"
-      # Bundled OpenSearch datasource plugin (logs + traces from OS).
-      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource"
+      # Bundled OpenSearch datasource plugin (logs + traces from OS), plus
+      # Infinity (static/inline JSON as a datasource) for panels that aren't
+      # operational telemetry — e.g. the content semantic-graph Node Graph
+      # panel, which doesn't warrant its own OpenSearch index/shards.
+      # Infinity pinned to 3.7.1, not latest: 4.0.0 requires Grafana >=11.6.11
+      # (this image is 11.3.0) and fails in the browser with a SystemJS error
+      # loading react/jsx-runtime — 3.7.1 only needs >=10.4.8 and doesn't
+      # depend on that shared import. Bump this only alongside the Grafana
+      # base image version in ./grafana/Dockerfile.
+      GF_INSTALL_PLUGINS: "grafana-opensearch-datasource,yesoreyeram-infinity-datasource 3.7.1"
       # Listen on all interfaces (default already, but explicit for clarity).
       GF_SERVER_HTTP_ADDR: "0.0.0.0"
       GF_SERVER_HTTP_PORT: "3000"
@@ -485,7 +570,8 @@ services:
     ports:
       # 0.0.0.0 binding so other devices on the LAN (e.g. smart TV) can reach
       # the Grafana UI at http://<host-LAN-ip>:43000
-      - "0.0.0.0:43000:3000"
+      - "127.0.0.1:43000:3000"
+      - "${LOOMA_LAN_BIND_ADDR:-127.0.0.1}:43000:3000"
     networks:
       - loomanet
     depends_on:
@@ -552,7 +638,7 @@ services:
     working_dir: /app/scripts
     command: ["python3", "feedback_labeling.py", "--port", "8888", "--host", "0.0.0.0"]
     ports:
-      - "48888:8888"
+      - "127.0.0.1:48888:8888"
     restart: unless-stopped
     networks:
       - loomanet

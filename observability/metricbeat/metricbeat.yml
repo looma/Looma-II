@@ -18,26 +18,54 @@ metricbeat.modules:
     # every metricset fail with "context deadline exceeded". Polling at 30s
     # both cuts the socket/OpenSearch write load 3x and raises the effective
     # fetch deadline well clear of a slow daemon response.
-    period: 30s
-    # Be explicit instead of inheriting the period: give a single slow daemon
-    # response room to complete rather than being cancelled mid-flight.
+    #
+    # LOOMA_METRICBEAT_PERIOD overrides this — the odroid overlay
+    # (docker-compose.odroid.yml) sets it to 1h: container/Mongo stats are
+    # infrastructure health, not urgent, unlike the app's own page/chapter/
+    # exercise/exam/score telemetry (looma-telemetry.php), which ships
+    # in real time over a completely separate OTLP path regardless of this
+    # setting. The server's own self-monitoring metricbeat is unaffected
+    # (env unset there, so it keeps the 30s default below).
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
+    # Timeout stays independent of period — always give a single slow daemon
+    # response room to complete rather than being cancelled mid-flight, even
+    # when period itself is stretched out to 1h.
     timeout: 30s
     enabled: true
 
-  # MongoDB — the Looma application database (looma-db). Standalone instance,
-  # no auth in this compose, so no credentials are needed.
+  # MongoDB — the Looma application database. Standalone instance, no auth in
+  # this compose, so no credentials are needed.
   #  - status  : serverStatus (connections, opcounters, network, memory, asserts)
   #  - dbstats : per-database size/object/index counts
   #  - metrics : serverStatus.metrics (document ops, query executor, ttl, ...)
   # replstatus/collstats are intentionally omitted: looma-db is not a replica
   # set, and collstats would fan out one document per collection.
+  #
+  # LOOMA_METRICBEAT_MONGO_HOST default ("looma-db") only resolves on a
+  # DOCKER-mode app deployment, where a container of that name shares this
+  # bridge network (loomanet). It NEVER resolved on a native odroid install
+  # (MongoDB there is host-installed, reachable only via
+  # host.docker.internal — see docker-compose.odroid.yml's extra_hosts) or on
+  # this central self-monitoring instance (no app MongoDB here at all,
+  # LOOMA_METRICBEAT_MONGO_ENABLED=false in docker-compose.yml) — every
+  # metricset silently failed with a DNS lookup error instead, which is why
+  # the Grafana MongoDB dashboard was permanently empty on a native box.
   - module: mongodb
     metricsets:
       - status
       - dbstats
       - metrics
-    hosts: ["looma-db:27017"]
-    period: 30s
+    hosts: ["${LOOMA_METRICBEAT_MONGO_HOST:looma-db}:27017"]
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
+    enabled: ${LOOMA_METRICBEAT_MONGO_ENABLED:true}
+
+  # The whole machine's RAM, which the docker module can't see: on a native box
+  # Apache, MongoDB and the desktop run outside Docker. /proc/meminfo isn't
+  # namespaced, so this reads the host's real figures even from a container.
+  - module: system
+    metricsets:
+      - memory
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
     enabled: true
 
 processors:

@@ -49,6 +49,16 @@ scrape_configs:
     static_configs:
       - targets: ["looma-data-prepper:4900"]
 
+  # OpenSearch itself (cluster health, JVM heap, indexing/search/merge rates,
+  # thread pools, …) via the prometheus-exporter plugin — see
+  # observability/opensearch/Dockerfile. Internal Docker DNS, not the
+  # host-published :49200 (localhost-only since it's never meant to be
+  # reachable from outside this box).
+  - job_name: opensearch
+    metrics_path: /_prometheus/metrics
+    static_configs:
+      - targets: ["looma-opensearch-node:9200"]
+
   # NOTE: previously we tried to scrape /metrics from looma-coroot,
   # looma-coroot-node-agent and looma-clickhouse, but in the deployed mode:
   #   - coroot's :8080 serves the SPA HTML (no Prom exposition)

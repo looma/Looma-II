@@ -11,10 +11,43 @@
     "templating":  {
                        "list":  [
                                     {
+                                        "name": "device",
+                                        "type": "query",
+                                        "datasource": { "type": "prometheus", "uid": "prometheus" },
+                                        "query": "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\"}, box)",
+                                        "includeAll": true,
+                                        "multi": true,
+                                        "refresh": 2,
+                                        "allValue": ".*",
+                                        "current": { "text": "All", "value": ".*" }
+                                    },
+                                    {
+                                        "name": "city",
+                                        "type": "query",
+                                        "datasource": { "type": "prometheus", "uid": "prometheus" },
+                                        "query": "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\"}, box_geo_city)",
+                                        "includeAll": true,
+                                        "multi": true,
+                                        "refresh": 2,
+                                        "allValue": ".*",
+                                        "current": { "text": "All", "value": ".*" }
+                                    },
+                                    {
+                                        "name": "country",
+                                        "type": "query",
+                                        "datasource": { "type": "prometheus", "uid": "prometheus" },
+                                        "query": "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\"}, box_geo_country)",
+                                        "includeAll": true,
+                                        "multi": true,
+                                        "refresh": 2,
+                                        "allValue": ".*",
+                                        "current": { "text": "All", "value": ".*" }
+                                    },
+                                    {
                                         "allValue":  ".*",
                                         "type":  "query",
                                         "includeAll":  true,
-                                        "query":  "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\"}, host)",
+                                        "query":  "label_values(docker_info_containers_total{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"}, host)",
                                         "datasource":  {
                                                            "type":  "prometheus",
                                                            "uid":  "prometheus"
@@ -32,7 +65,7 @@
                                         "allValue":  ".*",
                                         "type":  "query",
                                         "includeAll":  true,
-                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\"}, container)",
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\"}, container)",
                                         "datasource":  {
                                                            "type":  "prometheus",
                                                            "uid":  "prometheus"
@@ -50,7 +83,7 @@
                                         "allValue":  ".*",
                                         "type":  "query",
                                         "includeAll":  true,
-                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\"}, image)",
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\"}, image)",
                                         "datasource":  {
                                                            "type":  "prometheus",
                                                            "uid":  "prometheus"
@@ -68,7 +101,7 @@
                                         "allValue":  ".*",
                                         "type":  "query",
                                         "includeAll":  true,
-                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\"}, docker_status)",
+                                        "query":  "label_values(docker_container_size_rw{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\"}, docker_status)",
                                         "datasource":  {
                                                            "type":  "prometheus",
                                                            "uid":  "prometheus"
@@ -136,7 +169,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_cpu_user_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_cpu_user_ticks{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -146,7 +179,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_cpu_kernel_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_cpu_kernel_ticks{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -156,7 +189,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_cpu_system_ticks{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_cpu_system_ticks{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        }
@@ -204,7 +237,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_cpu_total_pct{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_cpu_total_pct{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -214,7 +247,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_cpu_total_norm_pct{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_cpu_total_norm_pct{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        }
@@ -277,7 +310,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_anon{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -287,7 +320,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_anon{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -297,7 +330,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_active_file{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -307,7 +340,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_inactive_file{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        }
@@ -355,7 +388,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -365,7 +398,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_file{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -375,7 +408,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_shmem{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_shmem{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -385,7 +418,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_sock{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_sock{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        }
@@ -433,7 +466,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -443,7 +476,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_reclaimable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_reclaimable{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -453,7 +486,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_unreclaimable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_slab_unreclaimable{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -463,7 +496,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_kernel_stack{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_kernel_stack{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        },
@@ -473,7 +506,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_mapped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_mapped{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "E",
                                            "instant":  false
                                        },
@@ -483,7 +516,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_dirty{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_file_dirty{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "F",
                                            "instant":  false
                                        }
@@ -531,7 +564,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgfault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgfault{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -541,7 +574,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgmajfault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgmajfault{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -551,7 +584,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgactivate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgactivate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -561,7 +594,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgdeactivate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgdeactivate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        },
@@ -571,7 +604,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgrefill{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgrefill{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "E",
                                            "instant":  false
                                        }
@@ -619,7 +652,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgscan{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgscan{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -629,7 +662,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgsteal{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_pgsteal{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -639,7 +672,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_activate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_activate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -649,7 +682,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_refault{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_refault{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        },
@@ -659,7 +692,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_nodereclaim{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_workingset_nodereclaim{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "E",
                                            "instant":  false
                                        }
@@ -707,7 +740,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon_thp{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_anon_thp{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -717,7 +750,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_fault_alloc{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_fault_alloc{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -727,7 +760,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_collapse_alloc{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_thp_collapse_alloc{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        },
@@ -737,7 +770,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_stats_unevictable{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_stats_unevictable{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "D",
                                            "instant":  false
                                        },
@@ -747,7 +780,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_memory_fail_count{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_memory_fail_count{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "E",
                                            "instant":  false
                                        }
@@ -810,7 +843,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_read_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_queued{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -820,7 +853,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_write_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_queued{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -830,7 +863,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_queued{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_queued{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        }
@@ -878,7 +911,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_read_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_service_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -888,7 +921,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_write_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_service_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -898,7 +931,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_service_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_service_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        }
@@ -946,7 +979,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_read_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_wait_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -956,7 +989,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_write_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_wait_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -966,7 +999,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_wait_time{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_wait_time{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        }
@@ -1014,7 +1047,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_read_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_read_rate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -1024,7 +1057,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_write_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_write_rate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        },
@@ -1034,7 +1067,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_rate{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "sum by (container,image,host) (docker_diskio_summary_rate{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "C",
                                            "instant":  false
                                        }
@@ -1097,7 +1130,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_dropped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_dropped{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -1107,7 +1140,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_dropped{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_dropped{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
                                            "refId":  "B",
                                            "instant":  false
                                        }
@@ -1155,7 +1188,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_errors{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_inbound_errors{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -1165,7 +1198,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_errors{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
+                                           "expr":  "sum by (container,image,host) (rate(docker_network_outbound_errors{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"}[2m]))",
                                            "refId":  "B",
                                            "instant":  false
                                        }
@@ -1213,7 +1246,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_healthcheck_event_exit_code{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_healthcheck_event_exit_code{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "A",
                                            "instant":  false
                                        },
@@ -1223,7 +1256,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "max by (container,image,host) (docker_healthcheck_failingstreak{job=\"vector\",module=\"docker\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
+                                           "expr":  "max by (container,image,host) (docker_healthcheck_failingstreak{job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\",host=~\"$host\",container=~\"$container\",image=~\"$image\",docker_status=~\"$status\"})",
                                            "refId":  "B",
                                            "instant":  false
                                        }
@@ -1279,7 +1312,7 @@
                                                               "type":  "prometheus",
                                                               "uid":  "prometheus"
                                                           },
-                                           "expr":  "count by (__name__,dataset) ({__name__=~\"docker_.*\",job=\"vector\",module=\"docker\"})",
+                                           "expr":  "count by (__name__,dataset) ({__name__=~\"docker_.*\",job=\"vector\",module=\"docker\", box=~\"$device\", box_geo_city=~\"$city\", box_geo_country=~\"$country\"})",
                                            "refId":  "A",
                                            "instant":  true
                                        }

@@ -2,11 +2,11 @@
   "annotations": {
     "list": []
   },
-  "description": "RED metrics and logs for the Piper neural TTS engine (span tts.piper) — the default server-side voice, synthesized by piper_http_server.py and proxied through looma-TTS.php.",
+  "description": "Piper neural TTS: synthesis latency from piper_server.py (span piper.synthesize, split by cache hit and voice) and the end-to-end request latency, errors and logs as seen by looma-TTS.php (span tts.piper).",
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 4,
+  "version": 7,
   "refresh": "30s",
   "title": "Looma — TTS · Piper",
   "uid": "looma-tts-piper",
@@ -34,6 +34,57 @@
   ],
   "templating": {
     "list": [
+      {
+        "name": "device",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_device_name)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_city)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "datasource": {
+          "type": "prometheus",
+          "uid": "prometheus"
+        },
+        "query": "label_values(traces_span_metrics_calls_total, looma_geo_country)",
+        "includeAll": true,
+        "multi": true,
+        "refresh": 2,
+        "allValue": ".*",
+        "current": {
+          "text": "All",
+          "value": ".*"
+        }
+      },
       {
         "name": "rate",
         "label": "Rate window",
@@ -76,13 +127,891 @@
   },
   "panels": [
     {
+      "id": 40,
       "type": "row",
-      "id": 1,
-      "title": "Piper · health",
+      "title": "Piper · from pressing Speak to the first sound",
       "collapsed": false,
       "gridPos": {
         "x": 0,
         "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "Presses",
+      "description": "Speak presses that started a new Piper reading and reached the first sound. Pausing and resuming a reading is not a new press.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "Wait p50",
+      "description": "Median time from pressing Speak until sound actually starts, measured in the browser (audio \"playing\" event). This is what the listener experiences, over the selected time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 3,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 43,
+      "type": "stat",
+      "title": "Wait p95",
+      "description": "95% of presses started speaking within this time.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 44,
+      "type": "stat",
+      "title": "Wait max",
+      "description": "The slowest press in the selected time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 9,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 45,
+      "type": "stat",
+      "title": "Not cached p50",
+      "description": "Median wait when Piper had to synthesize the first sentence.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.piper@cache_hit:false",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 46,
+      "type": "stat",
+      "title": "Cached p50",
+      "description": "Median wait when the first sentence was already in the Piper cache.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.piper@cache_hit:true",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 47,
+      "type": "stat",
+      "title": "Failed",
+      "description": "Presses where no sound ever started: the TTS request or playback failed.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 48,
+      "type": "timeseries",
+      "title": "Wait from Speak to first sound",
+      "description": "p50 and p95 of the wait per time bucket. Empty stretches mean nobody pressed Speak, not that the wait was zero.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50",
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p50.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p50"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p95.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p95"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "type": "table",
+      "title": "Latest presses",
+      "description": "Each recent press with its exact wait, voice, cache state and text length.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data",
+              "settings": {
+                "size": "50"
+              }
+            }
+          ],
+          "bucketAggs": [],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Time",
+            "desc": true
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {
+              "startTime": true,
+              "durationInNanos": true,
+              "span.attributes.piper@voice": true,
+              "span.attributes.piper@cache_hit": true,
+              "span.attributes.tts@language": true,
+              "span.attributes.tts@text_chars": true,
+              "span.attributes.tts@source": true,
+              "status.code": true,
+              "resource.attributes.looma@device_name": true
+            },
+            "indexByName": {
+              "startTime": 0,
+              "durationInNanos": 1,
+              "span.attributes.piper@cache_hit": 2,
+              "span.attributes.piper@voice": 3,
+              "span.attributes.tts@language": 4,
+              "span.attributes.tts@text_chars": 5,
+              "span.attributes.tts@source": 6,
+              "resource.attributes.looma@device_name": 7,
+              "status.code": 8
+            },
+            "renameByName": {
+              "startTime": "Time",
+              "durationInNanos": "Wait",
+              "span.attributes.piper@voice": "Voice",
+              "span.attributes.piper@cache_hit": "Cached",
+              "span.attributes.tts@language": "Language",
+              "span.attributes.tts@text_chars": "Characters",
+              "span.attributes.tts@source": "Page",
+              "resource.attributes.looma@device_name": "Device",
+              "status.code": "Status (2 = failed)"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Wait"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ns"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 2000000000.0
+                    },
+                    {
+                      "color": "red",
+                      "value": 5000000000.0
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "type": "row",
+      "id": 1,
+      "title": "Piper · requests & end-to-end latency (looma-TTS.php)",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 13,
         "w": 24,
         "h": 1
       }
@@ -91,21 +1020,21 @@
       "id": 2,
       "type": "stat",
       "title": "Requests ($__range)",
-      "description": "Piper synthesis calls completed in the selected time range.",
+      "description": "Piper requests made by looma-TTS.php (span tts.piper) in the selected time range.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 0,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0)",
           "legendFormat": "requests"
         }
       ],
@@ -140,14 +1069,14 @@
       },
       "gridPos": {
         "x": 4,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)",
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)",
           "legendFormat": "errors"
         }
       ],
@@ -195,14 +1124,14 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "100 * (sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)) / clamp_min(sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\"}[$__range])) or vector(0), 1)",
+          "expr": "100 * (sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\",status_code=\"STATUS_CODE_ERROR\"}[$__range])) or vector(0)) / clamp_min(sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0), 1)",
           "legendFormat": "error %"
         }
       ],
@@ -242,22 +1171,22 @@
     {
       "id": 5,
       "type": "stat",
-      "title": "p50 latency",
-      "description": "Median (50th-percentile) Piper synthesis duration over the $rate window.",
+      "title": "End-to-end p50",
+      "description": "p50 of the full Piper request as seen by looma-TTS.php, over the $rate window. Measured on looma-TTS.php's tts.piper span, so it includes the HTTP hop to piper_server.py and the WAV transfer — compare with the Synthesis section for Piper's own time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 12,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p50"
         }
       ],
@@ -280,22 +1209,22 @@
     {
       "id": 6,
       "type": "stat",
-      "title": "p95 latency",
-      "description": "95th-percentile Piper synthesis duration over the $rate window.",
+      "title": "End-to-end p95",
+      "description": "p95 of the full Piper request as seen by looma-TTS.php, over the $rate window. Measured on looma-TTS.php's tts.piper span, so it includes the HTTP hop to piper_server.py and the WAV transfer — compare with the Synthesis section for Piper's own time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 16,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p95"
         }
       ],
@@ -335,22 +1264,22 @@
     {
       "id": 7,
       "type": "stat",
-      "title": "p99 latency",
-      "description": "99th-percentile Piper synthesis duration over the $rate window.",
+      "title": "End-to-end p99",
+      "description": "p99 of the full Piper request as seen by looma-TTS.php, over the $rate window. Measured on looma-TTS.php's tts.piper span, so it includes the HTTP hop to piper_server.py and the WAV transfer — compare with the Synthesis section for Piper's own time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 20,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p99"
         }
       ],
@@ -372,12 +1301,552 @@
     },
     {
       "type": "row",
-      "id": 8,
-      "title": "Piper · throughput & latency",
+      "id": 20,
+      "title": "Piper · synthesis latency (piper_server.py)",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 18,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "id": 21,
+      "type": "stat",
+      "title": "Synthesis p50",
+      "description": "Median time piper_server.py spends producing the WAV (span piper.synthesize: cache lookup + Piper inference), over the $rate window. Includes cache hits — see the cache split below.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p50"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 800
+              },
+              {
+                "color": "red",
+                "value": 2000
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 22,
+      "type": "stat",
+      "title": "Synthesis p95",
+      "description": "95th-percentile time piper_server.py spends producing the WAV (span piper.synthesize), over the $rate window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 4,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p95"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 800
+              },
+              {
+                "color": "red",
+                "value": 2000
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 23,
+      "type": "stat",
+      "title": "Synthesis p99",
+      "description": "99th-percentile time piper_server.py spends producing the WAV (span piper.synthesize), over the $rate window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p99"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 800
+              },
+              {
+                "color": "red",
+                "value": 2000
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 24,
+      "type": "stat",
+      "title": "Uncached synthesis p95",
+      "description": "95th-percentile synthesis time for cache misses only — the real cost of running the Piper model on new text. Needs the piper.cache_hit span-metrics dimension (otel-collector).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", piper_cache_hit=\"false\"}[$rate])))",
+          "legendFormat": "p95 miss"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 800
+              },
+              {
+                "color": "red",
+                "value": 2000
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 25,
+      "type": "stat",
+      "title": "Cache hit ratio ($__range)",
+      "description": "Share of piper.synthesize calls answered from the WAV cache in the selected range.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "100 * (sum(increase(traces_span_metrics_calls_total{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", piper_cache_hit=\"true\"}[$__range])) or vector(0)) / clamp_min(sum(increase(traces_span_metrics_calls_total{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$__range])) or vector(0), 1)",
+          "legendFormat": "hit %"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      }
+    },
+    {
+      "id": 26,
+      "type": "stat",
+      "title": "Proxy overhead p50",
+      "description": "Median end-to-end latency (tts.piper) minus median synthesis latency (piper.synthesize): time spent outside the Piper model — HTTP hop, Flask, WAV transfer. A rough estimate, since the difference of two percentiles is not the percentile of the difference.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 19,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "clamp_min(histogram_quantile(0.5, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate]))) - histogram_quantile(0.5, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate]))), 0)",
+          "legendFormat": "overhead"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "auto"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 200
+              },
+              {
+                "color": "red",
+                "value": 500
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": 27,
+      "type": "timeseries",
+      "title": "Synthesis latency p50 / p95 / p99",
+      "description": "Percentiles of piper.synthesize (Piper's own time to produce the WAV), over the $rate window.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.5, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p50"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p95"
+        },
+        {
+          "refId": "C",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "p99"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        }
+      }
+    },
+    {
+      "id": 28,
+      "type": "timeseries",
+      "title": "Synthesis p95 — cache hit vs miss",
+      "description": "95th-percentile synthesis time split by whether the WAV came from the cache (piper.cache_hit).",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 23,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, piper_cache_hit) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "cache_hit={{piper_cache_hit}}"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        }
+      }
+    },
+    {
+      "id": 29,
+      "type": "timeseries",
+      "title": "Synthesis p95 by voice",
+      "description": "95th-percentile synthesis time per Piper voice model (piper.voice), cache misses only — shows which voices are slow to run.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le, piper_voice) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\", piper_cache_hit=\"false\"}[$rate])))",
+          "legendFormat": "{{piper_voice}}"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        }
+      }
+    },
+    {
+      "id": 30,
+      "type": "timeseries",
+      "title": "End-to-end vs synthesis (p95)",
+      "description": "looma-TTS.php's view of the request (tts.piper) next to Piper's own synthesis time (piper.synthesize). The gap is proxy/transfer overhead.",
+      "datasource": {
+        "type": "prometheus",
+        "uid": "prometheus"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 31,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "end-to-end p95 (tts.piper)"
+        },
+        {
+          "refId": "B",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{span_name=\"piper.synthesize\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
+          "legendFormat": "synthesis p95 (piper.synthesize)"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms",
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 2,
+            "fillOpacity": 8,
+            "showPoints": "never",
+            "spanNulls": true
+          }
+        }
+      }
+    },
+    {
+      "type": "row",
+      "id": 8,
+      "title": "Piper · throughput & end-to-end latency",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 39,
         "w": 24,
         "h": 1
       }
@@ -393,14 +1862,14 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 6,
+        "y": 40,
         "w": 12,
         "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate]))",
+          "expr": "sum(rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate]))",
           "legendFormat": "requests/s"
         }
       ],
@@ -432,32 +1901,32 @@
     {
       "id": 10,
       "type": "timeseries",
-      "title": "Latency p50 / p95 / p99",
-      "description": "Piper synthesis duration percentiles (p50, p95, p99) over the $rate window.",
+      "title": "End-to-end latency p50 / p95 / p99",
+      "description": "Percentiles of the full Piper request as seen by looma-TTS.php, over the $rate window. Measured on looma-TTS.php's tts.piper span, so it includes the HTTP hop to piper_server.py and the WAV transfer — compare with the Synthesis section for Piper's own time.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"
       },
       "gridPos": {
         "x": 12,
-        "y": 6,
+        "y": 40,
         "w": 12,
         "h": 8
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.50, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p50"
         },
         {
           "refId": "B",
-          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.95, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p95"
         },
         {
           "refId": "C",
-          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate])))",
+          "expr": "histogram_quantile(0.99, sum by (le) (rate(traces_span_metrics_duration_milliseconds_bucket{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate])))",
           "legendFormat": "p99"
         }
       ],
@@ -494,14 +1963,14 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 14,
+        "y": 48,
         "w": 12,
         "h": 7
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\",status_code=\"STATUS_CODE_ERROR\"}[$rate]))",
+          "expr": "sum(increase(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\",status_code=\"STATUS_CODE_ERROR\"}[$rate]))",
           "legendFormat": "errors"
         }
       ],
@@ -541,14 +2010,14 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 14,
+        "y": 48,
         "w": 12,
         "h": 7
       },
       "targets": [
         {
           "refId": "A",
-          "expr": "sum by (status_code) (rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\"}[$rate]))",
+          "expr": "sum by (status_code) (rate(traces_span_metrics_calls_total{service_name=\"looma-web\",span_name=\"tts.piper\", looma_device_name=~\"$device\", looma_geo_city=~\"$city\", looma_geo_country=~\"$country\"}[$rate]))",
           "legendFormat": "{{status_code}}"
         }
       ],
@@ -585,7 +2054,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 21,
+        "y": 55,
         "w": 24,
         "h": 1
       }
@@ -601,7 +2070,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 22,
+        "y": 56,
         "w": 24,
         "h": 10
       },

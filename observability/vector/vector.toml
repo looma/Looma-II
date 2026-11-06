@@ -24,6 +24,13 @@ type = "internal_logs"
 type = "docker_logs"
 docker_host = "unix:///var/run/docker.sock"
 auto_partial_merge = true
+# This host also runs the artrackr-v2 observability stack (its own
+# artrackr-* containers) plus assorted anonymous one-off containers.
+# Without include_containers, docker_logs picks up EVERY container on the
+# docker socket regardless of project, which leaked artrackr-* logs (and
+# noise from anonymous containers) into this OpenSearch's looma-logs-*
+# indices. Scope to looma-prefixed containers only.
+include_containers = ["looma-"]
 exclude_containers = ["looma-vector", "looma-opensearch", "looma-metricbeat"]
 
 [sources.docker_logs_opensearch]
@@ -201,9 +208,14 @@ source = '''
 msg = string(.message) ?? ""
 
 if .service == "looma-web" {
+  # Apache's built-in "combined" LogFormat (what includes/httpd.conf's
+  # CustomLog actually uses) is `%h %l %u %t "%r" %>s %O "%{Referer}i"
+  # "%{User-agent}i"` — three leading fields, no vhost (%v). A leading
+  # vhost capture here used to make this regex never match any real
+  # line at all.
   parsed, err = parse_regex(
     msg,
-    r'^(?P<vhost>\S+) (?P<client_ip>\S+) (?P<ident>\S+) (?P<auth>\S+) \[(?P<apache_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-) "(?P<http_referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
+    r'^(?P<client_ip>\S+) (?P<ident>\S+) (?P<auth>\S+) \[(?P<apache_time>[^\]]+)\] "(?P<http_method>[A-Z]+) (?P<url_original>[^"]+) HTTP/(?P<http_version>[0-9.]+)" (?P<http_status_code>\d+) (?P<http_response_bytes>\d+|-) "(?P<http_referrer>[^"]*)" "(?P<user_agent>[^"]*)"$'
   )
   if err == null {
     . = merge(., parsed)
@@ -318,9 +330,23 @@ condition = '''
 !(exists(.observability_noise) && .observability_noise == true)
 '''
 
+# Metricbeat's docker module polls the shared docker.sock for every
+# container on the host, not just Looma's — same leak as docker_logs above,
+# but landing in the single metricbeat-<version>-YYYY-MM-DD index instead of
+# a per-container index (so it can't be cleaned up by deleting an index).
+# Drop any docker-module event whose container isn't looma-prefixed;
+# non-docker events (e.g. the mongodb module) have no container.name field
+# and pass through untouched.
+[transforms.metricbeat_looma_only]
+type = "filter"
+inputs = ["metricbeat"]
+condition = '''
+!exists(.container.name) || starts_with(string!(.container.name), "looma-")
+'''
+
 [transforms.metricbeat_to_metric_batch]
 type = "remap"
-inputs = ["metricbeat"]
+inputs = ["metricbeat_looma_only"]
 source = '''
 new_data = []
 
@@ -434,7 +460,7 @@ end
 # — so every document landing in the shared OpenSearch carries box_name / box_ip.
 [transforms.metricbeat_enriched]
 type = "remap"
-inputs = ["metricbeat"]
+inputs = ["metricbeat_looma_only"]
 source = '''
 box_name = get_env_var("LOOMA_BOX_NAME") ?? ""
 if box_name == "" { box_name = get_hostname() ?? "unknown" }
@@ -454,6 +480,16 @@ if box_name == "" { box_name = get_hostname() ?? "unknown" }
 box_ip = get_env_var("LOOMA_BOX_IP") ?? ""
 if box_ip == "" { box_ip = "unknown" }
 .box_ip = box_ip
+# Same install-time lookup includes/otel.php reads as LOOMA_BOX_GEO_CITY/
+# LOOMA_BOX_GEO_COUNTRY for trace resource attributes. The "Vector internal
+# logs" dashboard's device/city/country template variables AND every panel
+# query together, so a document missing box_geo_city/box_geo_country dropped
+# out of every panel no matter what box_name matched — this is why the
+# dashboard showed nothing at all.
+box_geo_city = get_env_var("LOOMA_BOX_GEO_CITY") ?? ""
+if box_geo_city != "" { .box_geo_city = box_geo_city }
+box_geo_country = get_env_var("LOOMA_BOX_GEO_COUNTRY") ?? ""
+if box_geo_country != "" { .box_geo_country = box_geo_country }
 '''
 
 # ---------------------------------------------------------------------------
@@ -498,10 +534,24 @@ compression = "gzip"
   when_full = "block"
 
 
+# Docker image labels are free-form strings, but OpenSearch dynamically maps the
+# ISO-looking ones to `date`. Images that write the same label as e.g.
+# "2026-08-20 09:40:05+00:00" then fail with mapper_parsing_exception and those
+# documents are lost. No dashboard reads these three, so drop them. Sits in front
+# of the sink so it covers this host's Metricbeat and the agents' alike.
+[transforms.metricbeat_sanitized]
+type = "remap"
+inputs = ["metricbeat_enriched", "agents_metricbeat_raw"]
+source = '''
+del(.docker.image.labels.org_opencontainers_image_created)
+del(.docker.image.labels."org_label-schema_build-date")
+del(.docker.image.labels."build-date")
+'''
+
 # Metricbeat Sink to Opensearch
 [sinks.opensearch_metricbeat]
 type = "elasticsearch"
-inputs = ["metricbeat_enriched", "agents_metricbeat_raw"]
+inputs = ["metricbeat_sanitized"]
 endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
 api_version = "v7"
 mode = "bulk"

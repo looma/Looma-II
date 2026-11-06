@@ -19,6 +19,12 @@
 services:
   vector:
     mem_limit: 256m
+    # looma-web is native here (Apache + PHP, not a container), so its logs
+    # never reach sources.docker_logs — vector-agent.toml's apache_web_logs
+    # file source tails the real files directly instead. Read-only: Vector
+    # only ever reads these, never rotates/deletes them.
+    volumes:
+      - /var/log/apache2:/var/log/apache2:ro
     environment:
       # The agent role — see the big comment at the top of vector-agent.toml.
       # Overridden back to vector.toml only if this box is ever pointed at
@@ -33,9 +39,33 @@ services:
       # or the hostname; IP resolved fresh each boot).
       LOOMA_BOX_NAME: ${LOOMA_BOX_NAME:-}
       LOOMA_BOX_IP: ${LOOMA_BOX_IP:-}
+      # This box's public IP, captured once at install time (empty if it had
+      # no internet then) — box_ip above is LAN-private and has no real-world
+      # location, so the data server's geoip ingest pipeline resolves this one
+      # instead. See /etc/looma-odroid.env.
+      LOOMA_BOX_PUBLIC_IP: ${LOOMA_BOX_PUBLIC_IP:-}
+      # Rough city/country from that same install-time lookup — lets Grafana
+      # filter machines/scores by location, not just by device name.
+      LOOMA_BOX_GEO_CITY: ${LOOMA_BOX_GEO_CITY:-}
+      LOOMA_BOX_GEO_COUNTRY: ${LOOMA_BOX_GEO_COUNTRY:-}
 
   metricbeat:
     mem_limit: 384m
+    environment:
+      # Container/Mongo infra stats only need to be hourly on a school box —
+      # what actually matters in real time (pages opened, chapters/exercises/
+      # games/exams/lessons/quizzes/maps opened, every score) ships through a
+      # completely separate path (looma-telemetry.php -> OTLP) unaffected by
+      # this. See metricbeat/metricbeat.yml.
+      LOOMA_METRICBEAT_PERIOD: ${LOOMA_METRICBEAT_PERIOD:-1h}
+      # An odroid install is native — MongoDB is host-installed, not a
+      # "looma-db" container on this bridge network (that hostname only ever
+      # resolves on a Docker-mode app deployment). "auto" makes the image's
+      # own entrypoint wrapper (metricbeat/docker-entrypoint-wrapper.sh)
+      # resolve this container's own default-route gateway at startup — the
+      # loomanet subnet Docker assigns isn't the same on every box, so a
+      # fixed IP here would only work on the one box it was measured on.
+      LOOMA_METRICBEAT_MONGO_HOST: auto
 
 # The canonical observability compose declares `loomanet` as a compose-managed
 # network. On the box the network is created up-front (by the installer/looma-up.sh)

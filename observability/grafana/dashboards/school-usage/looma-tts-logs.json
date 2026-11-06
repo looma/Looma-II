@@ -24,6 +24,42 @@
   "templating": {
     "list": [
       {
+        "name": "device",
+        "type": "query",
+        "label": "Device",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_name.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "city",
+        "type": "query",
+        "label": "City",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_city.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
+        "name": "country",
+        "type": "query",
+        "label": "Country",
+        "datasource": { "type": "grafana-opensearch-datasource", "uid": "opensearch-logs" },
+        "query": "{\"find\": \"terms\", \"field\": \"box_geo_country.keyword\"}",
+        "refresh": 2,
+        "includeAll": true,
+        "multi": true,
+        "allValue": "*",
+        "current": { "text": "All", "value": "$__all" }
+      },
+      {
         "name": "service",
         "type": "custom",
         "label": "Service",
@@ -49,7 +85,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:\"$q\" OR message:tts OR message:piper OR message:synthesis)",
+          "query": "(index_service:\"$service\" OR service:\"$service\" OR container_name:*${service}*) AND (message:\"$q\" OR message:tts OR message:piper OR message:synthesis) AND (box_name:${device:lucene} AND box_geo_city:${city:lucene} AND box_geo_country:${country:lucene})",
           "metrics": [ { "type": "logs", "id": "1" } ],
           "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "@timestamp" } ]
         }
@@ -74,7 +110,7 @@
       "targets": [
         {
           "refId": "A",
-          "query": "serviceName:\"$service\" AND (body:\"$q\" OR body:tts OR body:piper OR body:synthesis)",
+          "query": "serviceName:\"$service\" AND (body:\"$q\" OR body:tts OR body:piper OR body:synthesis) AND (resource.attributes.looma@device_name:${device:lucene} AND resource.attributes.looma@geo_city:${city:lucene} AND resource.attributes.looma@geo_country:${country:lucene})",
           "metrics": [ { "type": "logs", "id": "1" } ],
           "bucketAggs": [ { "type": "date_histogram", "id": "2", "settings": { "interval": "auto" }, "field": "time" } ]
         }

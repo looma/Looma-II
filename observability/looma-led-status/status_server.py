@@ -101,8 +101,10 @@ class Config:
     web_url: str
     mongo_host: str
     mongo_port: int
+    mongo_url: str
     piper_container: str
     piper_port: int
+    piper_url: str
     search_url: str
     ai_container: str
     ai_url: str
@@ -126,8 +128,10 @@ class Config:
             web_url=_env("LOOMA_LED_WEB_URL", "http://localhost:48080/"),
             mongo_host=_env("LOOMA_LED_MONGO_HOST", "localhost"),
             mongo_port=_env_int("LOOMA_LED_MONGO_PORT", 47017),
+            mongo_url=_env("LOOMA_LED_MONGO_URL", ""),
             piper_container=_env("LOOMA_LED_PIPER_CONTAINER", "looma-piper"),
             piper_port=_env_int("LOOMA_LED_PIPER_PORT", 5002),
+            piper_url=_env("LOOMA_LED_PIPER_URL", ""),
             search_url=_env("LOOMA_LED_SEARCH_URL", "http://localhost:46333/health"),
             ai_container=_env("LOOMA_LED_AI_CONTAINER", "looma-ai"),
             ai_url=_env("LOOMA_LED_AI_URL", "http://localhost:8089/health"),
@@ -149,7 +153,7 @@ class Config:
 def _http(url: str, timeout: float) -> tuple[int, bytes]:
     """(status, body) — HTTP errors are returned, not raised."""
     req = urllib.request.Request(
-        url, headers={"User-Agent": "looma-ledstatus/2.0", "Accept": "application/json"}
+        url, headers={"User-Agent": _env("LOOMA_LED_USER_AGENT", "looma-ledstatus/2.0"), "Accept": "application/json"}
     )
     try:
         with urllib.request.urlopen(req, timeout=timeout) as resp:
@@ -213,6 +217,17 @@ def read_web(cfg: Config) -> tuple[str, str]:
 
 
 def read_mongo(cfg: Config) -> tuple[str, str]:
+    # A remote box keeps Mongo on loopback, so read a known dictionary word
+    # through its PHP instead. Only a returned `_id` proves a real document was
+    # read: a word that isn't found still answers HTTP 200 with a stub.
+    if cfg.mongo_url:
+        try:
+            body = _http_json(cfg.mongo_url, cfg.timeout)
+        except Exception as exc:  # noqa: BLE001
+            return "red", f"{exc.__class__.__name__}: {exc}"[:80]
+        if isinstance(body, dict) and body.get("_id"):
+            return "green", "document read"
+        return "red", "no document returned"
     try:
         with socket.create_connection((cfg.mongo_host, cfg.mongo_port), timeout=cfg.timeout):
             return "green", f"accepting on :{cfg.mongo_port}"
@@ -221,10 +236,13 @@ def read_mongo(cfg: Config) -> tuple[str, str]:
 
 
 def read_piper(cfg: Config) -> tuple[str, str]:
-    # Not published to the host — reach it on its Docker-network IP.
+    # Local Piper isn't published to the host, so reach it on its Docker-network
+    # IP; a remote box's Piper is reached directly at LOOMA_LED_PIPER_URL.
     try:
-        ip = _container_ip(cfg.piper_container, cfg)
-        body = _http_json(f"http://{ip}:{cfg.piper_port}/health", cfg.timeout)
+        url = cfg.piper_url
+        if not url:
+            url = f"http://{_container_ip(cfg.piper_container, cfg)}:{cfg.piper_port}/health"
+        body = _http_json(url, cfg.timeout)
     except Exception as exc:  # noqa: BLE001
         return "red", f"{exc.__class__.__name__}: {exc}"[:80]
     if not body.get("ok"):
@@ -247,6 +265,9 @@ def read_search(cfg: Config) -> tuple[str, str]:
 
 
 def read_ai(cfg: Config) -> tuple[str, str]:
+    # Blank container = looma-ai is on a remote box, so only its URL can be checked.
+    if not cfg.ai_container:
+        return _http_up(cfg.ai_url, cfg)
     state = _container_state(cfg.ai_container, cfg)
     if state is None:
         return "yellow", "not installed"

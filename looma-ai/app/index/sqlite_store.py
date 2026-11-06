@@ -120,6 +120,16 @@ def _ensure_schema(conn: sqlite3.Connection):
             conn.execute("ALTER TABLE documents ADD COLUMN country TEXT")
             conn.execute("CREATE INDEX IF NOT EXISTS idx_documents_country ON documents(country)")
             conn.commit()
+        # Added later than the tables themselves -- without these, any query
+        # joining chapters/chunks back to documents (the country catalog,
+        # the per-country export, _resolve_exam_chapters's SQLite fallback)
+        # does a full scan of chunks on every call; at a few million rows
+        # that is minutes, not milliseconds. CREATE INDEX IF NOT EXISTS is a
+        # no-op on a box that already has them.
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_chapters_document_id ON chapters(document_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_chunks_document_id ON chunks(document_id)")
+        conn.execute("CREATE INDEX IF NOT EXISTS idx_chunks_chapter_id ON chunks(chapter_id)")
+        conn.commit()
 
     _ensure_fts(conn)
 

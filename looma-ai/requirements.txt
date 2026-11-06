@@ -34,9 +34,14 @@ scipy==1.11.4
 setuptools==80.9.0
 shellingham==1.5.4
 soupsieve==2.8.3
-sympy==1.14.0
+sympy==1.13.1  # torch==2.6.0 requires this exact version
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.4.1
+# >=2.6 is required by transformers (CVE-2025-32434): torch.load on a
+# pickle (.bin) checkpoint is refused below 2.6 even with weights_only=True.
+# facebook/nllb-200-distilled-600M (translate_text()'s NLLB path) only ships
+# a .bin, no safetensors, so this floor is what makes LOOMA_NLLB=1 usable at
+# all, not just the embedding model's own loading.
+torch==2.6.0
 sentence-transformers==3.0.1
 # Extractive QA (app/qa/extractor.py) — the shipped model is ONNX int8, so
 # this only needs onnxruntime's CPU wheel, not a second copy of

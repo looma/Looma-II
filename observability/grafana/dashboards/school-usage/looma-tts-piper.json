@@ -6,7 +6,7 @@
   "editable": true,
   "graphTooltip": 1,
   "schemaVersion": 39,
-  "version": 5,
+  "version": 7,
   "refresh": "30s",
   "title": "Looma — TTS · Piper",
   "uid": "looma-tts-piper",
@@ -127,13 +127,891 @@
   },
   "panels": [
     {
+      "id": 40,
+      "type": "row",
+      "title": "Piper · from pressing Speak to the first sound",
+      "collapsed": false,
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 24,
+        "h": 1
+      },
+      "panels": []
+    },
+    {
+      "id": 41,
+      "type": "stat",
+      "title": "Presses",
+      "description": "Speak presses that started a new Piper reading and reached the first sound. Pausing and resuming a reading is not a new press.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 42,
+      "type": "stat",
+      "title": "Wait p50",
+      "description": "Median time from pressing Speak until sound actually starts, measured in the browser (audio \"playing\" event). This is what the listener experiences, over the selected time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 3,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 43,
+      "type": "stat",
+      "title": "Wait p95",
+      "description": "95% of presses started speaking within this time.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 44,
+      "type": "stat",
+      "title": "Wait max",
+      "description": "The slowest press in the selected time range.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 9,
+        "y": 1,
+        "w": 3,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "max",
+              "field": "durationInNanos"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 45,
+      "type": "stat",
+      "title": "Not cached p50",
+      "description": "Median wait when Piper had to synthesize the first sentence.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.piper@cache_hit:false",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 46,
+      "type": "stat",
+      "title": "Cached p50",
+      "description": "Median wait when the first sentence was already in the Piper cache.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2 AND span.attributes.piper@cache_hit:true",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "decimals": 2,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 2000000000.0
+              },
+              {
+                "color": "red",
+                "value": 5000000000.0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 47,
+      "type": "stat",
+      "title": "Failed",
+      "description": "Presses where no sound ever started: the TTS request or playback failed.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 1,
+        "w": 4,
+        "h": 4
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "count"
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "terms",
+              "field": "name",
+              "settings": {
+                "size": "1",
+                "order": "desc",
+                "orderBy": "_term",
+                "min_doc_count": "1"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^(?!Name$|name$).*/"
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "decimals": 0,
+          "noValue": "no presses",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      }
+    },
+    {
+      "id": 48,
+      "type": "timeseries",
+      "title": "Wait from Speak to first sound",
+      "description": "p50 and p95 of the wait per time bucket. Empty stretches mean nobody pressed Speak, not that the wait was zero.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/ AND NOT status.code:2",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "percentiles",
+              "field": "durationInNanos",
+              "settings": {
+                "percents": [
+                  "50",
+                  "95"
+                ]
+              }
+            }
+          ],
+          "bucketAggs": [
+            {
+              "id": "9",
+              "type": "date_histogram",
+              "field": "startTime",
+              "settings": {
+                "interval": "auto",
+                "min_doc_count": "1",
+                "trimEdges": "0"
+              }
+            }
+          ],
+          "luceneQueryType": "Metric",
+          "format": "time_series"
+        }
+      ],
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi"
+        }
+      },
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ns",
+          "min": 0,
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "showPoints": "always",
+            "pointSize": 6,
+            "spanNulls": true,
+            "fillOpacity": 0
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p50.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p50"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "/p95.*/"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "p95"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": 49,
+      "type": "table",
+      "title": "Latest presses",
+      "description": "Each recent press with its exact wait, voice, cache state and text length.",
+      "datasource": {
+        "type": "grafana-opensearch-datasource",
+        "uid": "opensearch-traces"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 5,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "refId": "A",
+          "datasource": {
+            "type": "grafana-opensearch-datasource",
+            "uid": "opensearch-traces"
+          },
+          "queryType": "lucene",
+          "query": "name:\"tts.piper.first_audio\" AND resource.attributes.looma@device_name:/${device:regex}/ AND resource.attributes.looma@geo_city:/${city:regex}/ AND resource.attributes.looma@geo_country:/${country:regex}/",
+          "timeField": "startTime",
+          "metrics": [
+            {
+              "id": "1",
+              "type": "raw_data",
+              "settings": {
+                "size": "50"
+              }
+            }
+          ],
+          "bucketAggs": [],
+          "luceneQueryType": "Metric",
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showHeader": true,
+        "sortBy": [
+          {
+            "displayName": "Time",
+            "desc": true
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {},
+            "includeByName": {
+              "startTime": true,
+              "durationInNanos": true,
+              "span.attributes.piper@voice": true,
+              "span.attributes.piper@cache_hit": true,
+              "span.attributes.tts@language": true,
+              "span.attributes.tts@text_chars": true,
+              "span.attributes.tts@source": true,
+              "status.code": true,
+              "resource.attributes.looma@device_name": true
+            },
+            "indexByName": {
+              "startTime": 0,
+              "durationInNanos": 1,
+              "span.attributes.piper@cache_hit": 2,
+              "span.attributes.piper@voice": 3,
+              "span.attributes.tts@language": 4,
+              "span.attributes.tts@text_chars": 5,
+              "span.attributes.tts@source": 6,
+              "resource.attributes.looma@device_name": 7,
+              "status.code": 8
+            },
+            "renameByName": {
+              "startTime": "Time",
+              "durationInNanos": "Wait",
+              "span.attributes.piper@voice": "Voice",
+              "span.attributes.piper@cache_hit": "Cached",
+              "span.attributes.tts@language": "Language",
+              "span.attributes.tts@text_chars": "Characters",
+              "span.attributes.tts@source": "Page",
+              "resource.attributes.looma@device_name": "Device",
+              "status.code": "Status (2 = failed)"
+            }
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Wait"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "ns"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "thresholds",
+                "value": {
+                  "mode": "absolute",
+                  "steps": [
+                    {
+                      "color": "green",
+                      "value": null
+                    },
+                    {
+                      "color": "orange",
+                      "value": 2000000000.0
+                    },
+                    {
+                      "color": "red",
+                      "value": 5000000000.0
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "dateTimeAsLocal"
+              },
+              {
+                "id": "custom.width",
+                "value": 170
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
       "type": "row",
       "id": 1,
       "title": "Piper · requests & end-to-end latency (looma-TTS.php)",
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 0,
+        "y": 13,
         "w": 24,
         "h": 1
       }
@@ -149,7 +1027,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -191,7 +1069,7 @@
       },
       "gridPos": {
         "x": 4,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -246,7 +1124,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -301,7 +1179,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -339,7 +1217,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -394,7 +1272,7 @@
       },
       "gridPos": {
         "x": 20,
-        "y": 1,
+        "y": 14,
         "w": 4,
         "h": 4
       },
@@ -428,7 +1306,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 5,
+        "y": 18,
         "w": 24,
         "h": 1
       }
@@ -444,7 +1322,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -499,7 +1377,7 @@
       },
       "gridPos": {
         "x": 4,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -554,7 +1432,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -609,7 +1487,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -664,7 +1542,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -702,7 +1580,7 @@
       },
       "gridPos": {
         "x": 20,
-        "y": 6,
+        "y": 19,
         "w": 4,
         "h": 4
       },
@@ -757,7 +1635,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 10,
+        "y": 23,
         "w": 12,
         "h": 8
       },
@@ -817,7 +1695,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 10,
+        "y": 23,
         "w": 12,
         "h": 8
       },
@@ -867,7 +1745,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 18,
+        "y": 31,
         "w": 12,
         "h": 8
       },
@@ -917,7 +1795,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 18,
+        "y": 31,
         "w": 12,
         "h": 8
       },
@@ -968,7 +1846,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 26,
+        "y": 39,
         "w": 24,
         "h": 1
       }
@@ -984,7 +1862,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 27,
+        "y": 40,
         "w": 12,
         "h": 8
       },
@@ -1031,7 +1909,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 27,
+        "y": 40,
         "w": 12,
         "h": 8
       },
@@ -1085,7 +1963,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 35,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -1132,7 +2010,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 35,
+        "y": 48,
         "w": 12,
         "h": 7
       },
@@ -1176,7 +2054,7 @@
       "collapsed": false,
       "gridPos": {
         "x": 0,
-        "y": 42,
+        "y": 55,
         "w": 24,
         "h": 1
       }
@@ -1192,7 +2070,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 43,
+        "y": 56,
         "w": 24,
         "h": 10
       },

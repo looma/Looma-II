@@ -131,6 +131,18 @@ services:
       OTEL_RESOURCE_ATTRIBUTES: service.name=looma-ai,service.namespace=looma,service.version=dev,deployment.environment=looma,looma.device_name=${LOOMA_BOX_NAME:-unknown},looma.public_ip=${LOOMA_BOX_PUBLIC_IP:-},looma.geo_city=${LOOMA_BOX_GEO_CITY:-},looma.geo_country=${LOOMA_BOX_GEO_COUNTRY:-}
       LOOMA_ENV: "${LOOMA_ENV:-looma}"
       LOOMA_SOURCE_ROOT: /looma/content
+      # Drives translate_text()'s default target language for generated
+      # exams/lessons/quizzes (looma-ai/app/country_languages.py maps this
+      # name to a language + NLLB code). Blank/unrecognized = English only.
+      LOOMA_CURRICULUM_COUNTRY: "${LOOMA_CURRICULUM_COUNTRY:-Nepal}"
+      # Model-quality translation for every language besides Nepali (which
+      # also has the Looma dictionary/glossary fallback) -- see
+      # translate_text() in scripts/looma_server.py. Needs torch>=2.6
+      # (CVE-2025-32434 -- facebook/nllb-200-distilled-600M ships no
+      # safetensors). First call per language downloads ~2.4GB into the
+      # looma_ai_data volume's HF cache and is slow; every call after that
+      # reuses the cached model and a warm pipeline.
+      LOOMA_NLLB: "${LOOMA_NLLB:-1}"
       LOOMA_DEVICE: cpu
       # Enable embeddings for curriculum zvec ingestion/search. If this host is
       # moved to an older CPU that cannot run torch, set these back to 1/0.

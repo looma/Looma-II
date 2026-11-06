@@ -1,0 +1,7 @@
+
+[1;31m[error][0m aborted: the command below failed (exit ), at line 18 of 
+    printf "\n\033[1;31m[error]\033[0m aborted: the command below failed (exit %s), at line %s of %s\n    %s\n" "$rc" "$LINENO" "$(basename "$SCRIPT_PATH")" "$BASH_COMMAND" ERR >&2' ERR
+        "$rc" "$LINENO" "$(basename "$SCRIPT_PATH")" "$BASH_COMMAND" >&2'
+
+[1;31m[error][0m aborted: the command below failed (exit ERR), at line  of 
+    

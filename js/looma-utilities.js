@@ -1906,6 +1906,10 @@ LOOMA.speak = function(text, engine, voice, rate) {
         //      in speechSynthesis  SpeachSynthesisUtterance.rate = rate ( e.g. if rate === 0.5 speak slower)
         //  for Looma in Nepal, use default rate = 2/3
 
+    // The moment Speak was pressed: the start of the press-to-first-audio time
+    // reported for Piper below.
+    var speakPressT0 = Date.now();
+
     // Engine/voice/rate resolution (cookies, defaults, per-language maps) is
     // shared with LOOMA.speak.prefetch(), which needs the exact same choices
     // the real press will make so its cache-warming request lands on the same
@@ -3093,6 +3097,32 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      console.log("Done with all phrases.");
                  }
 
+                 /* Report how long the listener waited, from pressing Speak until
+                  * sound actually started (or the attempt failed). The rest of the
+                  * TTS telemetry is server-side and can't see this: it stops when
+                  * looma-TTS.php answers, before the browser has played anything.
+                  * looma-telemetry.php turns it into a tts.piper.first_audio span. */
+                 function reportFirstAudio(preparedBlock, status, errorMessage) {
+                     try {
+                         if (!window.LOOMA || !LOOMA.telemetry || !LOOMA.telemetry.track) return;
+                         var firstText = preparedBlock ? preparedBlock.blockText : playbackSegments[0];
+                         var firstLang = detectSegmentLanguage(firstText);
+                         LOOMA.telemetry.track('tts_speak', {
+                             tts_engine:     'piper',
+                             tts_voice:      (preparedBlock && preparedBlock.voiceUsed) ||
+                                             ((firstLang === 'ne') ? voiceNp : voiceEn) || '',
+                             tts_language:   firstLang,
+                             tts_rate:       rateForLang(firstLang),
+                             tts_text_chars: (firstText || '').length,
+                             tts_source:     location.pathname || '',
+                             tts_status:     status,
+                             tts_error:      errorMessage || '',
+                             tts_cache:      (preparedBlock && preparedBlock.cacheStatus) || '',
+                             duration_ms:    Date.now() - speakPressT0
+                         });
+                     } catch (e) {}
+                 }
+
                  function fetchSegmentAudio(segmentText) {
                      // Each segment is fetched independently so the first phrase can start while later ones are still loading.
                      var piperParams = {
@@ -3113,10 +3143,13 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      // here instead (cheaper on the ODROID — see _synthesis_plan() in
                      // piper_server.py). No header = an older server: play as is.
                      var playbackRate = 1;
+                     var cacheStatus = '', voiceUsed = '';
                      return request.then(function (response) {
                          if (!response.ok) throw new Error('Browser TTS request failed: ' + response.status);
                          var headerRate = parseFloat(response.headers.get('X-Looma-TTS-Playback-Rate'));
                          if (headerRate >= 0.25 && headerRate <= 4) playbackRate = headerRate;
+                         cacheStatus = response.headers.get('X-Looma-TTS-Cache') || '';
+                         voiceUsed = response.headers.get('X-Looma-TTS-Voice') || '';
                          return response.blob();
                      }).then(function (audioBlob) {
                          var audioUrl = URL.createObjectURL(audioBlob);
@@ -3129,7 +3162,9 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          return {
                              blockText: segmentText,
                              objectUrl: audioUrl,
-                             playbackRate: playbackRate
+                             playbackRate: playbackRate,
+                             cacheStatus: cacheStatus,
+                             voiceUsed: voiceUsed
                          };
                      });
                  }
@@ -3150,6 +3185,15 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          audio.playbackRate = preparedBlock.playbackRate;
                      }
                      LOOMA.speak.playingAudio = audio;
+
+                     // 'playing', not 'play': 'play' only means playback was
+                     // requested, 'playing' that the audio has actually started.
+                     if (blockIndex === 0) {
+                         audio.addEventListener('playing', function () {
+                             if (currentRunId !== LOOMA.speak.runId) return;
+                             reportFirstAudio(preparedBlock, 'ok');
+                         }, {once: true});
+                     }
 
                      audio.addEventListener('play', function () {
                          if (currentRunId !== LOOMA.speak.runId) return;
@@ -3261,6 +3305,9 @@ LOOMA.speak = function(text, engine, voice, rate) {
                      return playPreparedBlock(preparedBlock, 0);
                  }).catch(function (error) {
                      console.log('Browser playback error: ', error);
+                     if (currentRunId === LOOMA.speak.runId) {
+                         reportFirstAudio(null, 'error', String((error && error.message) || error));
+                     }
                      LOOMA.speak.buttonPending = false;
                      LOOMA.speak.clearPendingButtonState();
                      if (LOOMA.speak.playingAudio && LOOMA.speak.playingAudio.loomaObjectUrl) {

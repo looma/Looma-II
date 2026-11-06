@@ -28,6 +28,13 @@ Two parts:
 | `U` | log/trace pipeline (`looma-vector`) | `docker inspect` | green = running, red = anything else |
 | `P` | metrics (`looma-prometheus`) | `GET http://<container-ip>:{PROM_PORT}{PROM_HEALTH_PATH}` (not published to the host, so the container's Docker-network IP is looked up on every poll) | green = HTTP 200–399, red = anything else |
 
+**On the data server, `H d t S A` should describe the Looma box, not this
+host** — by default they probe local containers, which here are absent or are
+dev copies, so the panel would say nothing about the box. Point them at it in
+`config.env` (see the "Remote box" notes in `config.env.sample`). `O U P` stay
+local: that stack runs here. Mongo is on the box's loopback, so `d` reads a
+known dictionary word through PHP and only a returned `_id` counts as green.
+
 `O`/`H`/`U`/`d`/`P` keep the letters of the original 5-signal firmware, so
 a panel that hasn't been re-flashed still shows those five. A probe that
 fails never crashes the loop — check `journalctl` or the `detail` field in

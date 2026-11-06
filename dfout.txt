@@ -1,0 +1,20 @@
+Sistema de ficheiros Tamanho   Uso Livre Uso% Montado em
+/dev/nvme0n1p2          473G  243G  227G  52% /
+devtmpfs                 24G     0   24G   0% /dev
+tmpfs                    24G   42M   24G   1% /dev/shm
+efivarfs                128K   29K   95K  24% /sys/firmware/efi/efivars
+tmpfs                   9.4G  5.2M  9.4G   1% /run
+none                    1.0M     0  1.0M   0% /run/credentials/systemd-journald.service
+none                    1.0M     0  1.0M   0% /run/credentials/systemd-resolved.service
+/dev/nvme0n1p2          473G  243G  227G  52% /root
+/dev/nvme0n1p2          473G  243G  227G  52% /home
+tmpfs                    24G   24G     0 100% /tmp
+/dev/nvme0n1p2          473G  243G  227G  52% /srv
+/dev/nvme0n1p2          473G  243G  227G  52% /var/cache
+/dev/nvme0n1p2          473G  243G  227G  52% /var/log
+/dev/nvme0n1p2          473G  243G  227G  52% /var/tmp
+/dev/sdb1               440G  301G  117G  73% /mnt/twosa
+/dev/sda1               916G  256G  614G  30% /mnt/looma
+/dev/nvme0n1p1          4.0G  1.8G  2.3G  45% /boot
+tmpfs                   4.7G   80K  4.7G   1% /run/user/1000
+/dev/sdc2               3.7T  373G  3.3T  10% /run/media/twosa/Seagate Basic

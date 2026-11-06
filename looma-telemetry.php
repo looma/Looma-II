@@ -83,6 +83,7 @@ $tts_rate       = isset($payload['tts_rate'])       ? (float)$payload['tts_rate'
 $tts_source     = trim((string)($payload['tts_source']     ?? ''));
 $tts_status     = strtolower(trim((string)($payload['tts_status']   ?? '')));
 $tts_error      = trim((string)($payload['tts_error']      ?? ''));
+$tts_cache      = strtolower(trim((string)($payload['tts_cache'] ?? '')));
 
 // Best-effort enrichment: many browser calls don't include grade/subject/chapter context.
 // Try to infer missing fields from the page URL (HTTP_REFERER) so we can slice dashboards by
@@ -125,6 +126,7 @@ $doc = [
     'tts_source'     => $tts_source     !== '' ? $tts_source     : null,
     'tts_status'     => $tts_status     !== '' ? $tts_status     : null,
     'tts_error'      => $tts_error      !== '' ? $tts_error      : null,
+    'tts_cache'      => $tts_cache      !== '' ? $tts_cache      : null,
     'utc'          => $utc,
     'time'         => date('Y-m-d\TH:i:s\Z', $utc),
     'ip'           => $_SERVER['REMOTE_ADDR'] ?? null,
@@ -423,5 +425,48 @@ function looma_telemetry_emit_otlp(array $doc): void {
         ]],
     ]);
     if ($metricsBody !== false) looma_telemetry_post($endpoint . '/v1/metrics', $metricsBody);
+
+    if ($doc['event'] === 'tts_speak' && $doc['tts_engine'] === 'piper') {
+        looma_telemetry_emit_first_audio_span($doc, $endpoint, $resource);
+    }
+}
+
+// Press-to-first-audio for Piper, measured in the browser (LOOMA.speak). A span
+// because that's what the TTS dashboards chart, and it keeps each press's exact
+// duration. Ignore durations no real wait could produce (bad client clock/input).
+function looma_telemetry_emit_first_audio_span(array $doc, string $endpoint, array $resource): void {
+    $ms = $doc['duration_ms'];
+    if ($ms === null || $ms <= 0 || $ms > 600000) return;
+
+    $endNanos = (int)round(microtime(true) * 1e9);
+    $attrs = [];
+    if (!empty($doc['tts_voice']))    $attrs[] = ['key' => 'piper.voice',    'value' => ['stringValue' => (string)$doc['tts_voice']]];
+    if (!empty($doc['tts_language'])) $attrs[] = ['key' => 'tts.language',   'value' => ['stringValue' => (string)$doc['tts_language']]];
+    if (!empty($doc['tts_source']))   $attrs[] = ['key' => 'tts.source',     'value' => ['stringValue' => (string)$doc['tts_source']]];
+    if (!empty($doc['tts_error']))    $attrs[] = ['key' => 'error.message',  'value' => ['stringValue' => (string)$doc['tts_error']]];
+    if ($doc['tts_text_chars'] !== null) $attrs[] = ['key' => 'tts.text_chars', 'value' => ['intValue' => (string)$doc['tts_text_chars']]];
+    if ($doc['tts_cache'] === 'hit' || $doc['tts_cache'] === 'miss') {
+        $attrs[] = ['key' => 'piper.cache_hit', 'value' => ['boolValue' => $doc['tts_cache'] === 'hit']];
+    }
+
+    $body = json_encode([
+        'resourceSpans' => [[
+            'resource' => $resource,
+            'scopeSpans' => [[
+                'scope' => ['name' => 'looma-telemetry'],
+                'spans' => [[
+                    'traceId' => bin2hex(random_bytes(16)),
+                    'spanId'  => bin2hex(random_bytes(8)),
+                    'name'    => 'tts.piper.first_audio',
+                    'kind'    => 1, // INTERNAL
+                    'startTimeUnixNano' => (string)($endNanos - $ms * 1000000),
+                    'endTimeUnixNano'   => (string)$endNanos,
+                    'attributes' => $attrs,
+                    'status' => ['code' => $doc['tts_status'] === 'error' ? 2 : 0],
+                ]],
+            ]],
+        ]],
+    ]);
+    if ($body !== false) looma_telemetry_post($endpoint . '/v1/traces', $body);
 }
 ?>

@@ -376,43 +376,72 @@ _NP_FALLBACK_GLOSSARY = {
 _translation_cache: "dict[str, str]" = {}
 
 
-def translate_text_en_to_np(text: str) -> str:
-    """Translate English text into Nepali using:
+# NLLB-200 needs one pipeline per target language (src_lang is always
+# 'eng_Latn' -- everything we generate from is English first), so this is a
+# dict keyed by FLORES-200 code rather than the single `_nllb_pipe` a
+# Nepali-only translator could get away with.
+_nllb_pipes: "dict[str, object]" = {}
 
-      1. The looma `dictionary` Mongo collection (if reachable),
-      2. A small built-in glossary, and
-      3. As a last resort, a transformer model (NLLB) when available locally.
 
-    Words that cannot be translated are kept verbatim — so AI pages always
-    render *something* in Nepali rather than collapsing to empty content.
+def translate_text(text: str, target_lang: str) -> str:
+    """Translate English text into `target_lang` using:
+
+      1. For Nepali specifically: the looma `dictionary` Mongo collection
+         (if reachable) + a small built-in glossary, word-by-word -- this is
+         Looma's original bilingual pair and predates NLLB.
+      2. NLLB-200 (LOOMA_NLLB=1) when a FLORES-200 code is known for the
+         language (app.country_languages.COUNTRY_LANGUAGES) -- the only
+         path for every language besides Nepali, since there is no
+         per-language dictionary collection the way there is for Nepali.
+
+    Unresolvable text is kept verbatim (English) rather than going empty, so
+    AI-generated pages always render *something* rather than collapsing to
+    empty content.
     """
     if not text or not isinstance(text, str):
         return text or ''
 
-    key = ('np:' + text)[:512]
+    lang = (target_lang or '').strip().lower()
+    if lang in {'', 'en', 'eng', 'english'}:
+        return text
+    is_np = lang in {'np', 'ne', 'nepali'}
+
+    key = (lang + ':' + text)[:512]
     if key in _translation_cache:
         return _translation_cache[key]
 
-    # Optional: NLLB-200 if installed (single-shot, cached). Best quality.
-    try:
-        if os.environ.get('LOOMA_NLLB') == '1':
-            from transformers import pipeline  # type: ignore
-            global _nllb_pipe
-            try:
-                _nllb_pipe  # type: ignore[name-defined]
-            except NameError:
-                _nllb_pipe = pipeline(
-                    'translation', model='facebook/nllb-200-distilled-600M',
-                    src_lang='eng_Latn', tgt_lang='npi_Deva',
-                )
-            out = _nllb_pipe(text, max_length=512)
-            if out and isinstance(out, list) and out[0].get('translation_text'):
-                _translation_cache[key] = out[0]['translation_text']
-                return _translation_cache[key]
-    except Exception:
-        pass
+    from app.country_languages import COUNTRY_LANGUAGES  # local import: cheap, avoids a cycle
+    flores = 'npi_Deva' if is_np else next(
+        (v['nllb'] for v in COUNTRY_LANGUAGES.values() if v.get('lang_code') == lang and v.get('nllb')),
+        None,
+    )
 
-    # Word-by-word fallback using Mongo dictionary + built-in glossary.
+    # Optional: NLLB-200 if installed (single-shot per language, cached). Best quality.
+    if flores:
+        try:
+            if os.environ.get('LOOMA_NLLB') == '1':
+                from transformers import pipeline  # type: ignore
+                pipe = _nllb_pipes.get(flores)
+                if pipe is None:
+                    pipe = pipeline(
+                        'translation', model='facebook/nllb-200-distilled-600M',
+                        src_lang='eng_Latn', tgt_lang=flores,
+                    )
+                    _nllb_pipes[flores] = pipe
+                out = pipe(text, max_length=512)
+                if out and isinstance(out, list) and out[0].get('translation_text'):
+                    _translation_cache[key] = out[0]['translation_text']
+                    return _translation_cache[key]
+        except Exception:
+            pass
+
+    if not is_np:
+        # No dictionary fallback exists for languages besides Nepali -- keep
+        # the English text verbatim rather than guessing.
+        _translation_cache[key] = text
+        return text
+
+    # Word-by-word fallback using Mongo dictionary + built-in glossary (Nepali only).
     try:
         url = (os.environ.get('LOOMA_MONGO_URL') or 'mongodb://looma-db:27017').strip()
         db_name = (os.environ.get('LOOMA_MONGO_DB') or 'looma').strip()
@@ -443,6 +472,22 @@ def translate_text_en_to_np(text: str) -> str:
     out_text = ''.join(parts)
     _translation_cache[key] = out_text
     return out_text
+
+
+def translate_text_en_to_np(text: str) -> str:
+    """Back-compat alias for the 5 existing call sites -- unchanged behavior."""
+    return translate_text(text, 'ne')
+
+
+def default_curriculum_language() -> str:
+    """The language a generation endpoint should default to when the caller
+    didn't pass an explicit `language=` -- this box's LOOMA_CURRICULUM_COUNTRY
+    (set by the installer's "Country / curriculum" field) resolved through
+    app.country_languages, or 'en' for an unset/unrecognized country.
+    """
+    from app.country_languages import country_language
+    country = os.environ.get('LOOMA_CURRICULUM_COUNTRY', '').strip()
+    return country_language(country).get('lang_code', 'en')
 
 
 def find_chapter_dir(*, grade: int | None, subject: str | None, language: str | None) -> Path | None:
@@ -2955,12 +3000,18 @@ class Handler(BaseHTTPRequestHandler):
             # Make the final wording match the WH type.
             answer = _shape_answer_for_wh(wh_kind, answer, question)
 
-            # When the student has Nepali selected, answer in Nepali. Uses the
-            # Looma dictionary + glossary (set env LOOMA_NLLB=1 for model-quality
-            # translation) — the same path the AI pages use for summaries.
-            if answer and str(language or '').strip().lower() in ('np', 'ne', 'nep', 'nepali', 'native'):
+            # When the student has a non-English language selected, answer in
+            # that language. Nepali uses the Looma dictionary + glossary;
+            # every other language needs LOOMA_NLLB=1 (see translate_text()) --
+            # the same path the AI pages use for summaries. 'native' is the
+            # historic alias for Nepali specifically (looma-chapters.php),
+            # kept working exactly as before.
+            lang_l = str(language or '').strip().lower()
+            if answer and lang_l == 'native':
+                lang_l = 'ne'
+            if answer and lang_l and lang_l not in ('en', 'eng', 'english'):
                 try:
-                    answer = translate_text_en_to_np(answer)
+                    answer = translate_text(answer, lang_l)
                 except Exception:
                     pass
 
@@ -4823,7 +4874,7 @@ class Handler(BaseHTTPRequestHandler):
             try:
                 grade    = _parse_grade_value(q1('grade', None))
                 subject  = (q1('subject', '') or '').strip()
-                language = (q1('language', 'en') or 'en').strip().lower()
+                language = (q1('language', None) or default_curriculum_language()).strip().lower()
                 prefix   = (q1('prefix', '') or '').strip()
                 # `seed` is supplied by looma-chapters.php so each "Generate
                 # Exam" click produces a different question pool. The exam

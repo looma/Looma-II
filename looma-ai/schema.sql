@@ -39,6 +39,8 @@ CREATE TABLE IF NOT EXISTS chapters (
   FOREIGN KEY(document_id) REFERENCES documents(id)
 );
 
+CREATE INDEX IF NOT EXISTS idx_chapters_document_id ON chapters(document_id);
+
 CREATE TABLE IF NOT EXISTS chunks (
   id TEXT PRIMARY KEY,
   document_id TEXT NOT NULL,
@@ -64,6 +66,9 @@ CREATE TABLE IF NOT EXISTS chunks (
   FOREIGN KEY(document_id) REFERENCES documents(id),
   FOREIGN KEY(chapter_id) REFERENCES chapters(id)
 );
+
+CREATE INDEX IF NOT EXISTS idx_chunks_document_id ON chunks(document_id);
+CREATE INDEX IF NOT EXISTS idx_chunks_chapter_id ON chunks(chapter_id);
 
 CREATE TABLE IF NOT EXISTS glossary (
   id TEXT PRIMARY KEY,

@@ -121,6 +121,22 @@ WITH_AI="${WITH_AI:-1}"                    # derived from WITH_SEARCH; may be de
 # so nobody is left pressing a button that cannot answer. Applies to BOTH
 # deployments; it used to be a native-only flag.
 WITH_SEARCH="${WITH_SEARCH:-1}"            # zvec stack: search + AI + exams
+# Which country's official curriculum this box is for. Tags the generation
+# layer (exam/lesson/quiz) with a target language on top of English — see
+# looma-ai/app/country_languages.py for the country -> language table and
+# scripts/looma_server.py's translate_text(). Blank = English only (also
+# what an unrecognized country name falls back to, so a typo never breaks
+# the install, it just skips the second language). Does NOT yet partition
+# which curriculum content ships on the box — every box still gets the full
+# content directory; this only drives the language generated content comes
+# out in. Only matters while WITH_SEARCH=1 (the zvec stack is what runs
+# generation at all).
+CURRICULUM_COUNTRY="${CURRICULUM_COUNTRY:-Nepal}"
+# Model-quality translation (NLLB-200) for every language the country-
+# languages table knows besides Nepali. Off by default on the odroid — see
+# the comment on the compose/systemd templates for why (RAM + a ~2.4GB
+# download per language on hardware that's already tight).
+LOOMA_NLLB="${LOOMA_NLLB:-0}"
 INSTALL_KIOSK="${INSTALL_KIOSK:-1}"
 KIOSK_URL="${KIOSK_URL:-}"                 # empty = derive from DEPLOY (docker :48080, native :80)
 # Swap is ON by default: 8 GB of RAM is not enough headroom for Looma plus Piper
@@ -335,6 +351,12 @@ Looma ODROID installer — one script, all deployments.
        $0 build-bundle docker|native|all [--bundle-dir PATH]
                                    build the offline payload — run on a build box
                                    WITH internet, same arch (arm64) as the odroid
+       $0 build-bundle ai-index --country NAME [--bundle-dir PATH]
+                                   export a per-country SQLite+ZVEC slice of
+                                   THIS machine's master index (step 3 of the
+                                   country/curriculum plan) — run where the
+                                   master index actually lives, not a generic
+                                   build box; no internet needed
   $0 --help
 
 Install flags (all optional; passing any flag skips the form):
@@ -376,6 +398,16 @@ Install flags (all optional; passing any flag skips the form):
                           Assistant, no exam generation, and the app hides all
                           three rather than offering buttons with nothing behind
                           them. Piper TTS is unaffected.
+  --country NAME          Which country's official curriculum this box is for
+                          (default: $CURRICULUM_COUNTRY). Generated exams/lessons/
+                          quizzes come out in English plus this country's official
+                          language — see looma-ai/app/country_languages.py for the
+                          table. Blank or unrecognized = English only. Only
+                          matters with the zvec stack on (--no-search disables it).
+  --nllb | --no-nllb      Model-quality translation (NLLB-200) for every language
+                          besides Nepali (default: off — ~2.4GB download + a full
+                          transformer in RAM per language; only turn on if this
+                          box has the headroom).
   --ai | --no-ai          Obsolete, accepted and ignored: the assistant is part of
                           the zvec stack. Use --no-search.
   --cpu-max-freq kHz      Cap every CPU's max frequency at boot, before Looma starts
@@ -671,6 +703,19 @@ services:
       LOOMA_MONGO_DB: looma
       LOOMA_MONGO_COLLECTION: activities
       LOOMA_SOURCE_ROOT: /looma/content
+      # Drives translate_text()'s default target language for generated
+      # exams/lessons/quizzes (app/country_languages.py maps this name to a
+      # language + NLLB code). Blank or unrecognized = English only.
+      LOOMA_CURRICULUM_COUNTRY: "@CURRICULUM_COUNTRY@"
+      # Off by default on the odroid: model-quality translation (NLLB-200,
+      # see translate_text() in scripts/looma_server.py) downloads ~2.4GB
+      # and loads a full transformer in RAM per language translated — real
+      # cost on an 8GB board that's already tight (see the swap/CPU-cap
+      # notes elsewhere in this script re: Piper TTS brownouts). Nepali
+      # still works without this (the Looma dictionary/glossary fallback).
+      # Set LOOMA_NLLB=1 (env or /etc/looma-odroid.env) only on a box known
+      # to have the headroom.
+      LOOMA_NLLB: "@LOOMA_NLLB@"
       LOOMA_DEVICE: cpu
       LOOMA_DISABLE_EMBEDDINGS: "0"
       LOOMA_ENABLE_EMBED_INDEXING: "1"
@@ -885,6 +930,13 @@ Environment=HOME=@LOOMA_ROOT@/@REPO_NAME@
 # assistant finds no textbooks/lessons to work with at all on a native install.
 Environment=LOOMA_SOURCE_ROOT=@LOOMA_ROOT@/content
 Environment=LOOMA_EXAMS_DIR=@LOOMA_ROOT@/content/exams
+# Drives translate_text()'s default target language for generated
+# exams/lessons/quizzes (app/country_languages.py maps this name to a
+# language + NLLB code). Blank/unrecognized = English only.
+Environment=LOOMA_CURRICULUM_COUNTRY=@CURRICULUM_COUNTRY@
+# Off by default on the odroid — see the matching comment in
+# native_sidecars_docker()'s compose template.
+Environment=LOOMA_NLLB=@LOOMA_NLLB@
 Environment=HF_HOME=@HF_DIR@
 Environment=TRANSFORMERS_OFFLINE=@HF_OFFLINE@
 Environment=HF_HUB_OFFLINE=@HF_OFFLINE@
@@ -1071,6 +1123,11 @@ box_name_label() {
   else echo "$(hostname) (this box's hostname)"; fi
 }
 
+country_label() {
+  if [ -n "$CURRICULUM_COUNTRY" ]; then echo "$CURRICULUM_COUNTRY"
+  else echo "(none — English only)"; fi
+}
+
 # CPU_MAX_FREQ is in kHz, because that is what /sys/.../scaling_max_freq takes.
 # The form talks MHz — that is how the board is described everywhere else — and
 # converts, so nobody has to type five zeros to ask for 1.5 GHz.
@@ -1133,6 +1190,8 @@ summary() {
   printf "$row" "Observability" "$(obs_label)"
   printf "$row" "Box name (obs)" "$(box_name_label)"
   printf "$row" "zvec" "$(onoff "$WITH_SEARCH")$([ "$WITH_SEARCH" = 1 ]       && echo ' — semantic search + AI Assistant + exams'       || echo ' — no semantic search, no AI Assistant, no exams')"
+  [ "$WITH_SEARCH" = 1 ] && printf "$row" "Country / curriculum" "$(country_label)"
+  [ "$WITH_SEARCH" = 1 ] && printf "$row" "Model-quality translation" "$(onoff "$LOOMA_NLLB")"
   printf "$row" "Kiosk autostart" "$(onoff "$INSTALL_KIOSK")$([ "$INSTALL_KIOSK" = 1 ] && echo " -> $(kiosk_url)")"
   printf "$row" "Swapfile (${SWAP_GB}G)" "$(yesno "$MAKE_SWAP")"
   printf "$row" "CPU max freq" "$(cpu_freq_label)"
@@ -1153,6 +1212,9 @@ run_form() {
       "boxname" "Box name (obs tag) .... $(box_name_label)"
       "zvec"    "zvec .................. $(onoff "$WITH_SEARCH")  (search + AI + exams)"
     )
+    [ "$WITH_SEARCH" = "1" ] && rows+=(
+      "country" "Country / curriculum .. $(country_label)"
+      "nllb"    "Model-quality translation .. $(onoff "$LOOMA_NLLB")  (NLLB-200; ~2.4GB/language, needs RAM headroom)" )
     # The tag is the left-hand column whiptail shows, i.e. the field NAME the person
     # installing reads — so it says what the row is about ("zvec deploy"), not the
     # internal word for how it happens to be deployed ("sidecars"). The description
@@ -1226,6 +1288,30 @@ Turn zvec on now? It brings semantic search, the AI Assistant and exam generatio
       boxname)  ui_input BOX_NAME "Name that identifies this box in the observability data (Vector's box_name tag on logs/metrics, looma.device_name on app traces).
 
 Blank = use the box's hostname. The box's LAN IP is added automatically as box_ip." "$BOX_NAME" || true ;;
+      country)  ui_input CURRICULUM_COUNTRY "Which country's official curriculum is this box for?
+
+Generated exams/lessons/quizzes come out in English PLUS this country's
+official language (see looma-ai/app/country_languages.py for the table —
+e.g. Nepal -> Nepali, Senegal -> French, Kenya -> Swahili). An unrecognized
+name, or blank, just means English only — it never breaks the install.
+
+This does not yet change which curriculum content ships on the box, only
+the language generated content comes out in." "$CURRICULUM_COUNTRY" || true ;;
+      nllb)     if ui_yesno "Turn on model-quality translation (NLLB-200)?
+
+Nepali already works without this (the Looma dictionary/glossary). Every
+other language in the country table (French, Swahili, Portuguese, ...)
+needs this to produce real translations instead of falling back to
+English.
+
+Cost: ~2.4GB downloaded once per language translated, and a full
+transformer model held in RAM while translating. This board is already
+tight on RAM (see the swap and CPU-frequency-cap notes elsewhere in this
+form) — only turn this on if you know this box has the headroom."; then
+                  LOOMA_NLLB=1
+                else
+                  LOOMA_NLLB=0
+                fi ;;
       zvec)     if ui_yesno "Install the zvec stack?
 
 It provides SEMANTIC SEARCH, the AI ASSISTANT and EXAM GENERATION — one switch, because all three run on it.
@@ -2018,6 +2104,45 @@ ensure_shared_volumes() {
       && log "  created the shared volume $v" \
       || warn "  could not create the volume $v"
   done
+  restore_country_ai_index
+}
+
+# Step 3 of the country/curriculum plan: if this box has a per-country
+# AI-index bundle (build-bundle ai-index --country X, see build_bundle_ai_index)
+# for CURRICULUM_COUNTRY, AND looma_ai_data has never been populated (a
+# genuinely fresh volume — looma-ai hasn't started yet, so nothing has run
+# _ensure_schema() to create even an empty looma.db), copy the bundle in
+# before looma-ai's first start. Without this a fresh box starts with an
+# EMPTY assistant/exam index regardless of what CURRICULUM_COUNTRY says —
+# there is still no bundle on a box until someone runs build-bundle ai-index
+# and puts it on the disk next to the docker/native bundles.
+#
+# Deliberately conservative: once looma.db exists at all (bundle-provisioned
+# or the box did its own ingestion), this never touches the volume again —
+# re-running 'up' must never silently discard real data.
+restore_country_ai_index() {
+  [ "$WITH_SEARCH" = "1" ] || return 0
+  [ -n "${CURRICULUM_COUNTRY:-}" ] || return 0
+  command -v docker >/dev/null 2>&1 || return 0
+
+  local bundle_dir="$BUNDLE_ROOT/ai-index/$CURRICULUM_COUNTRY"
+  [ -d "$bundle_dir/index" ] && [ -d "$bundle_dir/zvec" ] || return 0
+
+  if docker image inspect looma-ai:latest >/dev/null 2>&1 \
+      && docker run --rm -v looma_ai_data:/app/data looma-ai:latest \
+           sh -c 'test -f /app/data/index/looma.db' >/dev/null 2>&1; then
+    return 0  # already provisioned (bundle or the box's own ingestion) — never overwrite
+  fi
+  docker image inspect looma-ai:latest >/dev/null 2>&1 || {
+    warn "  looma-ai:latest isn't built/loaded yet — skipping the $CURRICULUM_COUNTRY AI-index bundle for now (it will be retried on the next 'up')"
+    return 0
+  }
+
+  log "  provisioning looma_ai_data from the $CURRICULUM_COUNTRY AI-index bundle ($bundle_dir)"
+  if ! docker run --rm -v looma_ai_data:/app/data -v "$bundle_dir":/bundle:ro looma-ai:latest \
+      sh -c 'mkdir -p /app/data/index /app/data/zvec && cp -r /bundle/index/. /app/data/index/ && cp -r /bundle/zvec/. /app/data/zvec/'; then
+    warn "  failed to copy the AI-index bundle — looma-ai will start with an empty index instead"
+  fi
 }
 
 disable_native_stack() {
@@ -2191,6 +2316,14 @@ LOOMA_BOX_GEO_COUNTRY=$box_geo_country
 # search, AI Assistant or exams in the app (looma-web reads LOOMA_ZVEC).
 WITH_SEARCH=$WITH_SEARCH
 WITH_AI=$WITH_AI
+# Which country's official curriculum this box is for — looma-ai generates
+# exams/lessons/quizzes in English PLUS this country's official language
+# (looma-ai/app/country_languages.py). Blank or unrecognized = English only.
+LOOMA_CURRICULUM_COUNTRY=$CURRICULUM_COUNTRY
+# Model-quality translation (NLLB-200) for languages besides Nepali. Off by
+# default on the odroid — ~2.4GB download + a full transformer in RAM per
+# language. Edit this to 1 only on a box with the headroom.
+LOOMA_NLLB=$LOOMA_NLLB
 # 1 = ship Vector+Metricbeat+telemetry to the data server below — set by
 # settle_observability() the moment it was reachable at install time (or by
 # --remote-obs/--no-observability). Re-run 'looma-installer.sh install' (or
@@ -2333,7 +2466,8 @@ native_sidecars_docker() {
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" \
     -e "s#@BOX_NAME@#$box_name#g" -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" \
-    -e "s#@BOX_GEO_CITY@#$box_geo_city#g" -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" > "$f"
+    -e "s#@BOX_GEO_CITY@#$box_geo_city#g" -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" \
+    -e "s#@CURRICULUM_COUNTRY@#$CURRICULUM_COUNTRY#g" -e "s#@LOOMA_NLLB@#$LOOMA_NLLB#g" > "$f"
 
   # Only the halves that asked for Docker. Piper and the zvec stack are chosen
   # independently, so this can legitimately be Piper alone, zvec alone, or both.
@@ -3014,6 +3148,7 @@ install_deploy_native() {
                  -e "s#@OTEL_ENABLED@#$otel_enabled#g" -e "s#@BOX_NAME@#$box_name#g"
                  -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g"
                  -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g"
+                 -e "s#@CURRICULUM_COUNTRY@#$CURRICULUM_COUNTRY#g" -e "s#@LOOMA_NLLB@#$LOOMA_NLLB#g"
                  -e "s#@PIPER_CPUQUOTA@#$PIPER_CPUQUOTA#g" -e "s#@PIPER_THREADS@#$PIPER_THREADS#g")
   log "installing the systemd services"
   # The LEGACY `piper.service` (from piper/piper.service) raises the CPU to its
@@ -3559,6 +3694,14 @@ cmd_up() {
   # container starts, LOOMA_ZVEC decides whether the app offers the features.
   LOOMA_ZVEC="$WITH_SEARCH"; export LOOMA_ZVEC
   LOOMA_AI="$WITH_AI"; export LOOMA_AI
+  # Picked up by docker-compose.yml's ${LOOMA_CURRICULUM_COUNTRY:-Nepal} for the
+  # looma-ai container — see app/country_languages.py.
+  LOOMA_CURRICULUM_COUNTRY="${LOOMA_CURRICULUM_COUNTRY:-}"; export LOOMA_CURRICULUM_COUNTRY
+  # Must be exported explicitly: docker-compose.yml's own default
+  # (${LOOMA_NLLB:-1}) is right for a dev machine but wrong for an odroid —
+  # exporting the installer's own default (0, see its declaration above)
+  # overrides that rather than leaving it to coincidence.
+  LOOMA_NLLB="${LOOMA_NLLB:-0}"; export LOOMA_NLLB
 
   local app_profiles=() build_args=() pull_args=()
   [ "$WITH_SEARCH" = "1" ] && app_profiles+=(--profile search)
@@ -3571,6 +3714,7 @@ cmd_up() {
 
   docker network inspect loomanet >/dev/null 2>&1 || docker network create loomanet
   docker volume inspect looma_apache_logs >/dev/null 2>&1 || docker volume create looma_apache_logs >/dev/null
+  restore_country_ai_index
 
   # Make sure nothing on the host is squatting on the ports the app publishes — a
   # leftover native looma-search.service (Restart=always) is the usual reason
@@ -3701,6 +3845,61 @@ EOF
   log "Docker offline payload ready: $OFFLINE_DIR  (images: $(du -h "$OFFLINE_DIR/images/looma-images.tar" | awk '{print $1}'))"
 }
 
+# build-bundle ai-index — step 3 of the country/curriculum plan: produce a
+# SLIM, per-country SQLite+ZVEC store (looma-ai/scripts/export_country_build.py)
+# from THIS machine's master index, so an odroid box installs only the
+# curriculum it needs instead of the whole global index (OpenStax/Wikipedia/
+# MIT OCW + every country ever ingested).
+#
+# Unlike build_bundle_docker(), this needs no internet — it needs THIS
+# machine's looma_ai_data volume to already hold the master index (i.e. run
+# it on the box where ingestion actually happened, not a generic "build
+# machine"). It also needs looma-ai:latest already built (build-bundle
+# docker, or just `docker compose --profile ai build`), since the export
+# script's dependencies (zvec, torch) live in that image, not necessarily on
+# the host running this installer.
+build_bundle_ai_index() {
+  local country="$1"
+  [ -n "$country" ] || die "build-bundle ai-index needs --country NAME"
+  command -v docker >/dev/null 2>&1 || die "docker is required"
+  docker image inspect looma-ai:latest >/dev/null 2>&1 \
+    || die "looma-ai:latest is not built here yet — run: (cd $SRC_REPO && docker compose --profile ai build)"
+  docker volume inspect looma_ai_data >/dev/null 2>&1 \
+    || die "no looma_ai_data volume on this machine — this needs to run where the master index actually lives"
+
+  # export_country_build.py only READS the master SQLite+ZVEC (no writes to
+  # them), but zvec's own lock is exclusive either way (see zvec_store.py) —
+  # a looma-ai container with the master collection open read-write blocks
+  # this exactly like a second ingest run would. Stop it for the export,
+  # same trade as the ingestion runs this plan's content work already made;
+  # this is a read+copy, so it is short, not hours.
+  local was_running=0
+  if [ "$(docker inspect -f '{{.State.Running}}' looma-ai 2>/dev/null)" = "true" ]; then
+    was_running=1
+    log "stopping looma-ai (held open read-write; export needs the lock) — will restart it after"
+    docker stop looma-ai >/dev/null
+  fi
+
+  local out_dir="$BUNDLE_ROOT/ai-index/$country"
+  mkdirs "$out_dir"
+  log "exporting country=$country from the master index -> $out_dir"
+  if ! docker run --rm \
+      -v looma_ai_data:/app/data \
+      -v "$out_dir":/out \
+      looma-ai:latest \
+      python3 scripts/export_country_build.py --country "$country" --out /out; then
+    [ "$was_running" = "1" ] && docker start looma-ai >/dev/null
+    die "export_country_build.py failed — see output above"
+  fi
+
+  if [ "$was_running" = "1" ]; then
+    log "restarting looma-ai"
+    docker start looma-ai >/dev/null
+  fi
+
+  log "AI index bundle ready: $out_dir (index/looma.db + zvec/curriculum_chunks)"
+}
+
 build_bundle_native() {
   [ "$(id -u)" -eq 0 ] || die "the native bundle needs apt + pecl: sudo $0 build-bundle native"
   . /etc/os-release 2>/dev/null || true
@@ -3777,19 +3976,21 @@ EOF
 }
 
 cmd_build_bundle() {
-  local what=all
+  local what=all bundle_country=""
   while [ $# -gt 0 ]; do case "$1" in
-    docker|native|all) what="$1"; shift;;
+    docker|native|all|ai-index) what="$1"; shift;;
     --bundle-dir) BUNDLE_ROOT="$2"; set_bundle_paths; shift 2;;
+    --country) bundle_country="$2"; shift 2;;
     -h|--help) usage; exit 0;;
-    *) die "build-bundle takes: docker | native | all  [--bundle-dir PATH]";;
+    *) die "build-bundle takes: docker | native | all | ai-index --country NAME  [--bundle-dir PATH]";;
   esac; done
 
   log "bundle destination: $BUNDLE_ROOT"
   case "$what" in
-    docker) build_bundle_docker ;;
-    native) build_bundle_native ;;
-    all)    build_bundle_docker; build_bundle_native ;;
+    docker)   build_bundle_docker ;;
+    native)   build_bundle_native ;;
+    all)      build_bundle_docker; build_bundle_native ;;
+    ai-index) build_bundle_ai_index "$bundle_country"; return 0 ;;
   esac
   cat <<EOF
 
@@ -3818,6 +4019,9 @@ cmd_install() {
     --no-observability) WITH_AGENTS=0; OBS_EXPLICIT=1; shift;;
     --remote-obs) WITH_AGENTS=1; REMOTE_OBS_HOST="$2"; OBS_EXPLICIT=1; shift 2;;
     --box-name) BOX_NAME="$2"; shift 2;;
+    --country) CURRICULUM_COUNTRY="$2"; shift 2;;
+    --nllb) LOOMA_NLLB=1; shift;;
+    --no-nllb) LOOMA_NLLB=0; shift;;
     # The assistant is no longer selectable on its own — it is half of the zvec
     # stack. Accept the old flags so existing scripts do not die on them, but say
     # plainly that they no longer decide anything; --no-search leaves the stack out.

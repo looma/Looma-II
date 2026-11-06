@@ -534,10 +534,24 @@ compression = "gzip"
   when_full = "block"
 
 
+# Docker image labels are free-form strings, but OpenSearch dynamically maps the
+# ISO-looking ones to `date`. Images that write the same label as e.g.
+# "2026-08-20 09:40:05+00:00" then fail with mapper_parsing_exception and those
+# documents are lost. No dashboard reads these three, so drop them. Sits in front
+# of the sink so it covers this host's Metricbeat and the agents' alike.
+[transforms.metricbeat_sanitized]
+type = "remap"
+inputs = ["metricbeat_enriched", "agents_metricbeat_raw"]
+source = '''
+del(.docker.image.labels.org_opencontainers_image_created)
+del(.docker.image.labels."org_label-schema_build-date")
+del(.docker.image.labels."build-date")
+'''
+
 # Metricbeat Sink to Opensearch
 [sinks.opensearch_metricbeat]
 type = "elasticsearch"
-inputs = ["metricbeat_enriched", "agents_metricbeat_raw"]
+inputs = ["metricbeat_sanitized"]
 endpoints = ["${LOOMA_OPENSEARCH_URL:-http://looma-opensearch:9200}"]
 api_version = "v7"
 mode = "bulk"

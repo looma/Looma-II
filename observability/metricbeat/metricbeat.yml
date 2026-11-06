@@ -59,6 +59,15 @@ metricbeat.modules:
     period: ${LOOMA_METRICBEAT_PERIOD:30s}
     enabled: ${LOOMA_METRICBEAT_MONGO_ENABLED:true}
 
+  # The whole machine's RAM, which the docker module can't see: on a native box
+  # Apache, MongoDB and the desktop run outside Docker. /proc/meminfo isn't
+  # namespaced, so this reads the host's real figures even from a container.
+  - module: system
+    metricsets:
+      - memory
+    period: ${LOOMA_METRICBEAT_PERIOD:30s}
+    enabled: true
+
 processors:
   - add_host_metadata: ~
   - add_docker_metadata: ~

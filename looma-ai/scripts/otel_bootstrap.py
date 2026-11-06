@@ -349,20 +349,27 @@ def _safe_instrument(module: str, cls: str) -> None:
         _LOG.debug("Instrumentation %s.%s skipped: %s", module, cls, exc)
 
 
-def _instrument_basehttp() -> None:
-    """Wrap http.server.BaseHTTPRequestHandler so each request is a span."""
-    from http import server as _hsrv
-    from opentelemetry import trace
-    from opentelemetry.propagate import extract
-    from opentelemetry.trace import SpanKind
+def instrument_http_handler(handler_cls) -> None:
+    """Make each request to this handler class a SERVER span named "<METHOD> <route>".
 
-    if getattr(_hsrv.BaseHTTPRequestHandler, "_otel_wrapped", False):
+    It must be given the real handler class: BaseHTTPRequestHandler itself defines
+    no do_GET/do_POST, so there is nothing to wrap on the base class. Safe no-op
+    without OpenTelemetry, because telemetry must never stop the service starting.
+    """
+    try:
+        from opentelemetry import trace
+        from opentelemetry.propagate import extract
+        from opentelemetry.trace import SpanKind
+    except Exception:
+        return
+    # vars(), not getattr(): the base class has its own flag, which would be inherited.
+    if vars(handler_cls).get("_otel_handler_wrapped"):
         return
 
     tracer = trace.get_tracer("looma-ai.http")
 
     def _wrap(method_name: str):
-        original = getattr(_hsrv.BaseHTTPRequestHandler, method_name, None)
+        original = getattr(handler_cls, method_name, None)
         if original is None:
             return
 
@@ -372,8 +379,8 @@ def _instrument_basehttp() -> None:
             span_name = f"{method_name[3:].upper()} {route}"
             carrier = {}
             try:
-                # email.message.Message -> dict-like
-                carrier = {k: v for (k, v) in getattr(self, "headers", {}).items()}
+                # email.message.Message -> dict; propagators look up lowercase names
+                carrier = {k.lower(): v for (k, v) in getattr(self, "headers", {}).items()}
             except Exception:  # pragma: no cover
                 carrier = {}
             ctx = extract(carrier)
@@ -395,10 +402,20 @@ def _instrument_basehttp() -> None:
                     raise
 
         wrapped.__name__ = method_name
-        setattr(_hsrv.BaseHTTPRequestHandler, method_name, wrapped)
+        setattr(handler_cls, method_name, wrapped)
 
     for m in ("do_GET", "do_POST", "do_OPTIONS", "do_PUT", "do_DELETE"):
         _wrap(m)
+    handler_cls._otel_handler_wrapped = True
+
+
+def _instrument_basehttp() -> None:
+    """Record each response's status code on the current request span."""
+    from http import server as _hsrv
+    from opentelemetry import trace
+
+    if getattr(_hsrv.BaseHTTPRequestHandler, "_otel_wrapped", False):
+        return
 
     # Best-effort status code attribution: BaseHTTPRequestHandler sends the
     # status via send_response(). Capture it on the current span.

@@ -1,4 +1,5 @@
 import argparse
+import functools
 import json
 import os
 import re
@@ -60,6 +61,24 @@ except Exception:
         def log_model_event(*args, **kwargs): pass
 
 logger = get_structured_logger(__name__)
+
+def _otel_span(name: str):
+    """Decorator: run this function inside a child span of the current request, so
+    a trace shows where the time went. Exceptions are recorded on the span by the
+    context manager. A plain passthrough when OpenTelemetry is not installed."""
+    def _decorate(fn):
+        try:
+            from opentelemetry import trace  # type: ignore
+        except Exception:
+            return fn
+
+        @functools.wraps(fn)
+        def _inner(*args, **kwargs):
+            with trace.get_tracer("looma-ai").start_as_current_span(name):
+                return fn(*args, **kwargs)
+        return _inner
+    return _decorate
+
 
 def _otel_set_attrs(attrs: dict) -> None:
     """Best-effort: annotate the current server span with useful request fields."""
@@ -328,6 +347,7 @@ _NP_FALLBACK_GLOSSARY = {
 _translation_cache: "dict[str, str]" = {}
 
 
+@_otel_span('ai.translate')
 def translate_text_en_to_np(text: str) -> str:
     """Translate English text into Nepali using:
 
@@ -969,6 +989,7 @@ def _navigate_chapters(conn, question: str, *, grade: int | None = None, subject
     return results[:limit]
 
 
+@_otel_span('rag.compose_answer')
 def _compose_answer(question: str, context_texts: list[str], *, history: list | None = None, wh: str | None = None) -> str:
     """Multi-sentence extractive answer using token-overlap scoring + MMR diversity.
 
@@ -1170,6 +1191,7 @@ def _text_from_chapter_html(path: "Path") -> list[str]:
     return _chunk_text_simple(joined, chunk_size=1400, overlap=200)
 
 
+@_otel_span('ai.extract_chapter_text')
 def _extract_chapter_text_from_pdf(*, chapter_id: str, grade: int | None, subject: str | None, language: str | None) -> list[str]:
     """Chapter text for summaries, keywords, assistant answers and exams.
 
@@ -1513,6 +1535,7 @@ def open_or_create_vector_collection(path: str, name: str, dim: int):
     return zvec.create_and_open(path=path, schema=schema)
 
 
+@_otel_span('rag.lexical_search')
 def lexical_search(conn, query, *, subject=None, grade_level=None, chapter_id=None, limit=10):
     # SQLite FTS5 "MATCH" uses its own query language; user text like "?" or "-" can
     # trigger syntax errors. Normalize into a safe bag-of-words query.
@@ -1558,6 +1581,7 @@ def lexical_search(conn, query, *, subject=None, grade_level=None, chapter_id=No
     return out
 
 
+@_otel_span('rag.semantic_search')
 def semantic_search(
     collection,
     model,
@@ -6441,6 +6465,15 @@ def build_arg_parser():
 
 def main():
     args = build_arg_parser().parse_args()
+    try:
+        from scripts.otel_bootstrap import instrument_http_handler
+    except Exception:
+        try:
+            from otel_bootstrap import instrument_http_handler  # type: ignore
+        except Exception:
+            instrument_http_handler = None  # type: ignore
+    if instrument_http_handler is not None:
+        instrument_http_handler(Handler)
     server = HTTPServer((args.host, args.port), Handler)
     print(f'LOOMA server listening on http://{args.host}:{args.port}')
     server.serve_forever()

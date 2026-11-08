@@ -137,12 +137,12 @@
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 2.2em;
-    height: 2.2em;
-    margin: -1.1em 0 0 -1.1em;
+    width: 3em;
+    height: 3em;
+    margin: -1.5em 0 0 -1.5em;
     box-sizing: border-box;
     border-radius: 50%;
-    border: 0.28em solid rgba(0, 0, 0, 0.18);
+    border: 0.6em solid rgba(0, 0, 0, 0.18);
     border-top-color: #1565d8;
     border-right-color: rgba(21, 101, 216, 0.75);
     animation: ttsPendingSpin 0.8s linear infinite;

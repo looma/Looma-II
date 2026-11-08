@@ -569,12 +569,17 @@ button.looma-control-button.speak.tts-pending::after {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 38%;
-    height: 38%;
-    margin-left: -19%;
-    margin-top: -19%;
+    width: 56%;
+    height: 56%;
+    margin-left: -28%;
+    margin-top: -28%;
     border-radius: 50%;
-    border: 0.22em solid rgba(255, 255, 0, 0.3);
+    /* In vh, like the button (12vh) it sits in, so the ring keeps the same
+       proportion on every screen. It was 0.22em, a fixed ~3px that read as a
+       hairline on a projector. Thick, but still a ring: about a third of the
+       ring's diameter, which is why the ring is wider than the hold
+       countdown's 38% below. */
+    border: max(6px, 1.1vh) solid rgba(255, 255, 0, 0.3);
     border-top-color: rgba(255, 212, 0, 1);
     border-right-color: rgba(255, 212, 0, 0.85);
     box-sizing: border-box;
@@ -615,6 +620,8 @@ button.looma-control-button.speak.tts-holding::after {
     background: conic-gradient(
         rgba(255, 212, 0, 1) calc(var(--tts-hold, 0) * 360deg),
         rgba(255, 255, 0, 0.28) 0);
+    /* Thinner than the pending spinner on purpose: a thicker band would cover
+       the stop square drawn in the middle of the button while it is held. */
     -webkit-mask: radial-gradient(circle, transparent 56%, #000 58%);
             mask: radial-gradient(circle, transparent 56%, #000 58%);
     pointer-events: none;

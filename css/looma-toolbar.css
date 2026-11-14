@@ -12,6 +12,30 @@
     background-color: var(--looma-toolbar);
 }
 
+/* looma.css sets 'button {overflow:hidden}' for every button, and the tooltip
+   is a span INSIDE the toolbar button, so that clipped it. Toolbar buttons
+   only hold their icon, so letting them overflow is safe. */
+.toolbar-button, .toolbar-button-vertical {
+    overflow: visible;
+}
+
+/* Clip the toolbar only along its length (buttons squeezed on narrow screens),
+   not across it: the hover tooltips (span.tip) pop up ABOVE the horizontal
+   toolbar / beside the vertical one, and 'overflow:hidden' cut them off.
+   'clip' (unlike 'hidden') lets the other axis stay visible. Inside @supports
+   so an engine without 'clip' keeps 'hidden' instead of turning the other axis
+   into 'auto' (a scrollbar on hover). */
+@supports (overflow-x: clip) {
+    #toolbar-container {
+        overflow-x: clip;
+        overflow-y: visible;
+    }
+    #toolbar-container-vertical {
+        overflow-y: clip;
+        overflow-x: visible;
+    }
+}
+
 #toolbar-container-vertical {
     display:flex;
     user-select: none;
@@ -107,6 +131,22 @@ button.flag-vertical {
     transform: scale(1.2,1.2);
     background-color:#888;
     border: 2px solid white;
+}
+
+/* Keep the toolbar above the page content.
+   looma.css gives #fullscreen position:relative; z-index:1000, so on every page
+   that has #fullscreen (dictionary, paint, games, players, ...) the page painted
+   over the hover tooltips (span.tip pops up above the toolbar, and the button's
+   hover transform traps the tip's own z-index inside the button). On some pages
+   (life, map games, text-scan) the content even spills over the toolbar itself
+   and hides its buttons.
+   While a LOOMA popup is open, makeTransparent() adds .all-transparent to the
+   toolbar: drop back to normal stacking then, so a tall popup (which lives inside
+   #fullscreen) is not covered by the toolbar. */
+#toolbar-container:not(.all-transparent),
+#toolbar-container-vertical:not(.all-transparent) {
+    position: relative;
+    z-index: 1001;
 }
 
 #toolbar span {

@@ -442,9 +442,23 @@ function renderRag(out) {
         }
         return '';
       }).join('');
+      // How the answer was produced. 'llm' answers passed the server's check
+      // that every fact in them is written in the cited sources; 'extract' is
+      // a sentence quoted verbatim from the best source.
+      var SRC_LABELS = {
+        llm: ['Answer checked against the sources', 'स्रोतहरूसँग जाँच गरिएको उत्तर'],
+        extract: ['Quoted from the source', 'स्रोतबाट उद्धृत'],
+        dictionary: ['From the Looma dictionary', 'Looma शब्दकोशबाट'],
+        llm_open: ['Written by the assistant from Looma content (not checked)', 'Looma सामग्रीबाट सहायकले लेखेको उत्तर (जाँच नगरिएको)'],
+        none: ['Not found in Looma', 'Looma मा भेटिएन']
+      };
+      var lbl = SRC_LABELS[String(src || 'none')] || SRC_LABELS.none;
+      var lblHtml = (window.LOOMA && typeof window.LOOMA.translatableSpans === 'function')
+        ? window.LOOMA.translatableSpans(lbl[0], lbl[1])
+        : escHtml(lbl[0]);
+      var cites = (out && Array.isArray(out.cited) && out.cited.length) ? (' [' + out.cited.join('] [') + ']') : '';
       meta.innerHTML = '<span class="muted" style="font-size:12px;">'
-        + (wh ? ('<b>' + escHtml(wh) + '</b>') : '')
-        + (src ? ('  •  source: ' + escHtml(String(src))) : '')
+        + lblHtml + escHtml(cites)
         + refHtml
         + '</span>';
       msg.bubble.appendChild(meta);
@@ -512,8 +526,9 @@ function renderRag(out) {
     card.className = 'ai-rag-context';
 
     var text = (c.rag_text || c.text || '').trim();
-    var score = (typeof c.score === 'number') ? c.score : (typeof c.hybrid_score === 'number' ? c.hybrid_score : null);
-    var scoreStr = (score === null) ? '' : ('score: ' + score.toFixed(4));
+    if (c.n) text = '[' + c.n + '] ' + text;
+    if (c.cited) card.className += ' ai-rag-cited';
+    var scoreStr = '';
 
     // If the context is in Looma "search result" shape (ft/fp/fn), render it like search results.
     if (window.LOOMA && typeof window.LOOMA.makeActivityButton === 'function' && c.ft) {
@@ -549,26 +564,6 @@ function renderRag(out) {
     ctxBox.appendChild(card);
   });
 
-  // Navigation cards (when server detected a "find chapter" intent)
-  var navItems = (out && Array.isArray(out.navigation)) ? out.navigation : [];
-  if (navItems.length) {
-    var navSec = document.createElement('div');
-    navSec.className = 'ai-nav-cards';
-    navSec.innerHTML = '<div class="ai-nav-label">Related chapters:</div>';
-    navItems.forEach(function (n) {
-      if (!n || !n.chapter_id) return;
-      var nc = document.createElement('div');
-      nc.className = 'ai-nav-card';
-      var label = escHtml(n.title || n.chapter_id);
-      var meta = [];
-      if (n.grade) meta.push('Grade ' + escHtml(String(n.grade)));
-      if (n.subject) meta.push(escHtml(n.subject));
-      nc.innerHTML = '<div class="ai-nav-card-title">' + label + '</div>'
-        + (meta.length ? '<div class="ai-nav-card-meta">' + meta.join(' · ') + '</div>' : '');
-      navSec.appendChild(nc);
-    });
-    msg.bubble.appendChild(navSec);
-  }
 }
 
 async function runRag() {

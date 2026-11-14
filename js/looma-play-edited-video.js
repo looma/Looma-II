@@ -41,7 +41,9 @@ var frameID;    // the ID of the current requestAnimationFrame call, in case we 
 
 // Important Functions - Video
 function playVideo(vid) {
-    vid.play();
+    var p = vid.play();
+    // play() rejects with AbortError if the video is paused/removed before it starts; that is expected
+    if (p && p.catch) p.catch(function (e) { if (e.name !== 'AbortError') console.log(e); });
     $('.play-pause').css('backgroundImage','url("images/pause.png")');
 }
 

@@ -249,7 +249,7 @@
       "id": 6,
       "type": "stat",
       "title": "Vectors indexed",
-      "description": "Chunks in the curriculum_chunks zvec collection this box is searching.",
+      "description": "Chunks in the rag_chunks zvec collection this box is searching.",
       "datasource": {
         "type": "prometheus",
         "uid": "prometheus"

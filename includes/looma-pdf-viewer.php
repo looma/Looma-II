@@ -29,6 +29,6 @@ echo '<div id="pdf" class="scroll"'  .
 ?>
 
 <script src="js/pdfjs/pdf.min.js"></script>
-<script src="js/looma-pdf-utilities.js"></script>
+<script src="js/looma-pdf-utilities.js?v=<?php echo @filemtime(__DIR__ . '/../js/looma-pdf-utilities.js') ?: time(); ?>"></script>
 <script src="js/looma-play-pdf.js"></script>
 

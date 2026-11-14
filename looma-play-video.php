@@ -26,8 +26,9 @@ they want to edit a video
             $fn = rawurldecode($_REQUEST['fn']);
             $fp = urldecode($_REQUEST['fp']);
             $dn = urldecode($_REQUEST['dn']);
-            if (isset($_REQUEST['captions']) && $_REQUEST['captions'] === 'false' || $_REQUEST['captions'] === 'undefined')
-                $captions = false; else $captions = true;
+            // captions are on unless the caller explicitly sends captions=false (or 'undefined')
+            $captions = !(isset($_REQUEST['captions']) &&
+                          ($_REQUEST['captions'] === 'false' || $_REQUEST['captions'] === 'undefined'));
             $thumbFile = thumbnail($fn,$fp,"mp4");
             $prefix = substr($fn,0,strrpos($fn, "."));
 	    ?>
@@ -49,6 +50,9 @@ they want to edit a video
                             <div id="fullscreen-buttons">
                                 <?php include ('includes/looma-control-buttons.php');?>
                                 <?php downloadButton($fp,$fn); ?>
+                                <button id="fullscreen-language" class="looma-control-button">
+                                    <?php tooltip("अनुवाद") ?>
+                                </button>
                             </div>
                         </div>
                     </div>

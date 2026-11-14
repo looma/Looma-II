@@ -59,7 +59,7 @@ RAW_DIR = _from_env('LOOMA_RAW_PATH', DATA_DIR / 'raw' / 'looma')
 
 
 def zvec_collection_path(name: str) -> Path:
-    """Path of one zvec collection (`curriculum_chunks`, `glossary_entries`, ...)."""
+    """Path of one zvec collection (`rag_chunks`, `activities`, ...)."""
     return ZVEC_DIR / name
 
 

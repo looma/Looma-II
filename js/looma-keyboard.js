@@ -43,13 +43,34 @@ function frameDocument(frame) {
     }
 }
 
+/*
+ * Frame documents are searched with the native DOM (querySelectorAll / matches), never with a
+ * jQuery selector: jQuery 3.6's selector engine (Sizzle setDocument) adds an "unload" listener
+ * to every frame window it searches, which Chrome now blocks and reports as
+ * "[Violation] Permissions policy violation: unload is not allowed in this document".
+ */
+function queryAll(doc, selector) {
+    return Array.prototype.slice.call(doc.querySelectorAll(selector));
+}
+
+function matchesInput(element) {
+    var matches = element && element.nodeType === 1 &&
+                  (element.matches || element.msMatchesSelector || element.webkitMatchesSelector);
+    return !!matches && matches.call(element, validInputsString);
+}
+
+// same test as jQuery's ':visible'
+function isVisible(element) {
+    return !!(element.offsetWidth || element.offsetHeight || element.getClientRects().length);
+}
+
 // this page's document, plus the document of every readable frame on it
 function allDocuments(doc, list) {
     doc  = doc  || document;
     list = list || [];
     list.push(doc);
-    $('iframe, embed, object', doc).each(function() {
-        var framedoc = frameDocument(this);
+    queryAll(doc, 'iframe, embed, object').forEach(function(frame) {
+        var framedoc = frameDocument(frame);
         if (framedoc && list.indexOf(framedoc) < 0) allDocuments(framedoc, list);
     });
     return list;
@@ -59,7 +80,7 @@ function allDocuments(doc, list) {
 function allValidInputs() {
     var $inputs = $();
     allDocuments().forEach(function(doc) {
-        $inputs = $inputs.add($(validInputsString, doc));
+        $inputs = $inputs.add(queryAll(doc, validInputsString));
     });
     return $inputs;
 }
@@ -69,7 +90,7 @@ function focusedInput() {
     var $focused = $();
     allDocuments().forEach(function(doc) {
         var focused = doc.activeElement;
-        if (focused && $(focused).is(validInputsString)) $focused = $focused.add(focused);
+        if (matchesInput(focused)) $focused = $focused.add(focused);
     });
     return $focused.last();    // an activity's input wins over anything focused on the Looma page
 }
@@ -96,7 +117,14 @@ function watchFrames() {
     allDocuments().forEach(function(doc) {
         if (doc === document || doc.loomaKeyboardWatched) return;
         doc.loomaKeyboardWatched = true;
-        $(doc).on('focusin click', validInputsString, elementFocused);
+        // delegated by hand (see queryAll above): the target or the input that contains it
+        var delegate = function(event) {
+            for (var el = event.target; el && el !== doc; el = el.parentNode) {
+                if (matchesInput(el)) { destination = $(el); return; }
+            }
+        };
+        doc.addEventListener('focusin', delegate, false);
+        doc.addEventListener('click', delegate, false);
     });
 }
 
@@ -104,7 +132,7 @@ function watchFrames() {
 // can type into is on the screen
 function updateKeyboardButton() {
     if ($('#looma-keyboard-container').is(':visible')) return;   // leave it alone while typing
-    $('.show-keyboard').toggle(allValidInputs().filter(':visible').length > 0);
+    $('.show-keyboard').toggle(allValidInputs().toArray().some(isVisible));
 }
 
 // Check if the "shift" key is down.

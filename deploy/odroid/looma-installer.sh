@@ -122,6 +122,12 @@ WITH_AI="${WITH_AI:-1}"                    # derived from WITH_SEARCH; may be de
 # so nobody is left pressing a button that cannot answer. Applies to BOTH
 # deployments; it used to be a native-only flag.
 WITH_SEARCH="${WITH_SEARCH:-1}"            # zvec stack: search + AI + exams
+# Local LLM for the AI Assistant (llm-service/). Qwen2.5 0.5B Instruct, Q4_0:
+# ~6 s per answer on an ODROID-C4, against ~22 s for the 1.5B (more accurate
+# by one test question out of 15; set LLM_MODEL_FILE/LLM_MODEL_URL to use it).
+# See llm-service/README.md for the measurements.
+LLM_MODEL_FILE="${LLM_MODEL_FILE:-qwen2.5-0.5b-instruct-q4_0.gguf}"
+LLM_MODEL_URL="${LLM_MODEL_URL:-https://huggingface.co/Qwen/Qwen2.5-0.5B-Instruct-GGUF/resolve/main/qwen2.5-0.5b-instruct-q4_0.gguf}"
 INSTALL_KIOSK="${INSTALL_KIOSK:-1}"
 KIOSK_URL="${KIOSK_URL:-}"                 # empty = derive from DEPLOY (docker :48080, native :80)
 # Swap is ON by default: 8 GB of RAM is not enough headroom for Looma plus Piper
@@ -612,8 +618,9 @@ Define LOOMA_ROOT @LOOMA_ROOT@
     # zvec/Piper/AI listen on the host here, whether they run as containers with
     # host networking (the default) or as systemd services.
     SetEnv LOOMA_SEARCH_ENGINE zvec
-    SetEnv LOOMA_SEARCH_URL http://127.0.0.1:46333/search
-    SetEnv LOOMA_SEARCH_URL_ZVEC http://127.0.0.1:46333/search
+    SetEnv LOOMA_SEARCH_URL http://127.0.0.1:8089/search_activities
+    SetEnv LOOMA_SEARCH_URL_ZVEC http://127.0.0.1:8089/search_activities
+    SetEnv LOOMA_SEARCH_URL_SEMANTIC http://127.0.0.1:8089/search_activities
     SetEnv LOOMA_AI_URL http://127.0.0.1:8089
 
     # Telemetry. WITHOUT these the PHP shim (includes/otel.php) falls back to its
@@ -709,10 +716,14 @@ Define LOOMA_ROOT @LOOMA_ROOT@
         Require all granted
     </Directory>
 
-    # ePaath lives at content/epaath on the box; expose it at /ePaath.
-    Alias /ePaath/ "${LOOMA_ROOT}/content/epaath/"
-    Alias /ePaath  "${LOOMA_ROOT}/content/epaath"
-    <Directory "${LOOMA_ROOT}/content/epaath">
+    # ePaath (2019 + ePaath2022 / Early Grade Reading) lives at ${LOOMA_ROOT}/ePaath,
+    # next to Looma/ and content/ — the code opens ../ePaath/index.html and
+    # ../ePaath/ePaath2022/index.html. content/epaath only holds the old 2015
+    # activities (no index.html), which are served through /content/; pointing
+    # /ePaath at it made ePaath and Early Grade Reading open as a 404.
+    Alias /ePaath/ "${LOOMA_ROOT}/ePaath/"
+    Alias /ePaath  "${LOOMA_ROOT}/ePaath"
+    <Directory "${LOOMA_ROOT}/ePaath">
         Options -Indexes +FollowSymLinks
         Require all granted
     </Directory>
@@ -738,34 +749,6 @@ tpl_native_sidecars() {
 # so we run that image with the Piper Flask server as its command.
 cat <<'EOF'
 services:
-  looma-search:
-    build:
-      context: ..
-      dockerfile: @REPO_NAME@/search-service/Dockerfile
-    image: loomasearch:latest
-    container_name: looma-search
-    network_mode: host
-    environment:
-      MONGO_URL: mongodb://127.0.0.1:27017
-      MONGO_DB: looma
-      MONGO_COLLECTION: activities
-      MODEL_NAME: sentence-transformers/all-MiniLM-L6-v2
-      HF_HOME: /models/hf
-      INDEX_DIR: /data/zvec-index
-      SEARCH_REBUILD_ON_START: "0"
-      SEARCH_PORT: "46333"
-      OTEL_SERVICE_NAME: looma-search
-      OTEL_EXPORTER_OTLP_ENDPOINT: "@OTEL_ENDPOINT@"
-      OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
-      OTEL_TRACES_EXPORTER: "@OTEL_TRACES@"
-      OTEL_LOGS_EXPORTER: "@OTEL_TRACES@"
-      OTEL_METRICS_EXPORTER: none
-      OTEL_RESOURCE_ATTRIBUTES: "looma.device_name=@BOX_NAME@,looma.public_ip=@BOX_PUBLIC_IP@,looma.geo_city=@BOX_GEO_CITY@,looma.geo_country=@BOX_GEO_COUNTRY@"
-    volumes:
-      - looma_search_index:/data
-      - looma_search_hf:/models/hf
-    restart: unless-stopped
-
   looma-piper:
     build:
       context: .
@@ -807,6 +790,7 @@ services:
       LOOMA_DEVICE: cpu
       LOOMA_DISABLE_EMBEDDINGS: "0"
       LOOMA_ENABLE_EMBED_INDEXING: "1"
+      LOOMA_LLM_URL: http://127.0.0.1:8091
       HF_HOME: /app/data/models/hf
       TRANSFORMERS_CACHE: /app/data/models/hf
       OTEL_SERVICE_NAME: looma-ai
@@ -823,6 +807,24 @@ services:
     command: ["python", "scripts/looma_server.py", "--host", "0.0.0.0", "--port", "8089"]
     restart: unless-stopped
 
+  # Local LLM for the AI Assistant (llama.cpp, see llm-service/). Answers are
+  # written only from retrieved sources and checked by looma-ai before they are
+  # shown. Listens on 127.0.0.1 only: looma-ai is its single client.
+  looma-llm:
+    profiles: ["ai"]
+    build:
+      context: ./llm-service
+    image: looma-llm:latest
+    container_name: looma-llm
+    network_mode: host
+    command: ["-m", "/models/@LLM_MODEL_FILE@", "--host", "127.0.0.1", "--port", "8091",
+              "-t", "4", "-c", "2048", "-np", "1", "--no-webui"]
+    volumes:
+      - looma_llm_models:/models:ro
+    mem_swappiness: 1
+    restart: unless-stopped
+
+
 # These three are SHARED with the Docker app stack (docker-compose.yml), which
 # declares them under its own project. `external: true` makes Compose skip the
 # ownership check entirely instead of warning
@@ -832,15 +834,11 @@ services:
 # INSTEAD of throwing them away. `external` also means Compose never creates them,
 # so the installer does (ensure_shared_volumes) before it brings this file up.
 volumes:
-  looma_search_index:
-    name: looma_search_index
-    external: true
-  looma_search_hf:
-    name: looma_search_hf
-    external: true
   looma_ai_data:
     name: looma_ai_data
     external: true
+  looma_llm_models:
+    name: looma_llm_models
 EOF
 }
 
@@ -2266,7 +2264,11 @@ install_deploy_docker() {
   chmod +x "$repo_dest/deploy/odroid/looma-installer.sh" 2>/dev/null || true
   # 4c) content
   copy_content
-  [ -d "$epaath_dir" ] || epaath_dir="$content_dir/ePaath"   # fall back to the capitalised name
+  # The ePaath the app opens (index.html + ePaath2022/) is $WWW/ePaath, next to
+  # content/; content/epaath is only the old 2015 activities.
+  if [ -f "$WWW/ePaath/index.html" ]; then epaath_dir="$WWW/ePaath"
+  elif [ ! -d "$epaath_dir" ]; then epaath_dir="$content_dir/ePaath"   # fall back to the capitalised name
+  fi
 
   # 5) Options for `up` / systemd
   log "writing /etc/looma-odroid.env"
@@ -2408,6 +2410,49 @@ EOF
 EOF
 }
 
+# The LLM weights live in the looma_llm_models volume. Copied from the install
+# disk when it carries them ($SRC_REPO/../llm-models/), downloaded otherwise.
+ensure_llm_model() {
+  docker volume create looma_llm_models >/dev/null
+  local dir; dir="$(docker volume inspect looma_llm_models --format '{{.Mountpoint}}')"
+  [ -s "$dir/$LLM_MODEL_FILE" ] && { log "LLM model present: $LLM_MODEL_FILE"; return 0; }
+  local src="${SRC_REPO:-}/../llm-models/$LLM_MODEL_FILE"
+  if [ -s "$src" ]; then
+    log "copying the LLM model from the install disk"
+    cp "$src" "$dir/$LLM_MODEL_FILE.part" && mv "$dir/$LLM_MODEL_FILE.part" "$dir/$LLM_MODEL_FILE"
+  elif [ "$OFFLINE" != "1" ]; then
+    log "downloading the LLM model ($LLM_MODEL_FILE, ~430 MB)"
+    curl -fL --retry 3 -o "$dir/$LLM_MODEL_FILE.part" "$LLM_MODEL_URL" \
+      && mv "$dir/$LLM_MODEL_FILE.part" "$dir/$LLM_MODEL_FILE" \
+      || warn "LLM model download failed — the assistant will quote sources instead of answering"
+  else
+    warn "offline and no $LLM_MODEL_FILE on the disk — the assistant will quote sources instead of answering"
+  fi
+}
+
+# looma-ai's two zvec collections. rag_chunks reuses the vectors of an older
+# curriculum_chunks collection when one is there; activities is embedded from
+# Mongo. Both build in the background: tens of minutes on an ODROID.
+ensure_zvec_indexes() {
+  local dir; dir="$(docker volume inspect looma_ai_data --format '{{.Mountpoint}}')/zvec"
+  if [ ! -d "$dir/rag_chunks" ] && [ -d "$dir/curriculum_chunks" ]; then
+    log "building the RAG index (rag_chunks) in the background — docker logs looma-rag-build"
+    docker rm -f looma-rag-build >/dev/null 2>&1 || true
+    docker run -d --name looma-rag-build -v looma_ai_data:/app/data looma-ai:latest \
+      sh -c 'cp -r /app/data/zvec/curriculum_chunks /app/data/zvec/curriculum_chunks.copy && rm -f /app/data/zvec/curriculum_chunks.copy/LOCK && python scripts/build_rag_index.py --old /app/data/zvec/curriculum_chunks.copy && rm -rf /app/data/zvec/curriculum_chunks.copy' >/dev/null \
+      || warn "could not start the RAG index build"
+  fi
+  if [ ! -d "$dir/activities" ]; then
+    log "building the Search index (activities) in the background — docker logs looma-act-build"
+    log "  (hours on an ODROID; a build made on a PC can be copied into $dir instead)"
+    docker rm -f looma-act-build >/dev/null 2>&1 || true
+    docker run -d --name looma-act-build --network host -v looma_ai_data:/app/data \
+      -e HF_HOME=/app/data/models/hf looma-ai:latest \
+      sh -c 'python scripts/build_activities_index.py && echo "restart looma-ai to load it"' >/dev/null \
+      || warn "could not start the Search index build"
+  fi
+}
+
 # zvec search + Piper TTS (+ looma-ai) as CONTAINERS next to the native app.
 # They use host networking, so they reach the HOST's MongoDB on 127.0.0.1:27017 and
 # publish 46333 / 5002 / 8089 exactly where the native Apache/PHP looks for them —
@@ -2437,15 +2482,14 @@ native_sidecars_docker() {
   tpl_native_sidecars | sed -e "s#@REPO_NAME@#$REPO_NAME#g" -e "s#@WWW@#$WWW#g" \
     -e "s#@OTEL_ENDPOINT@#$otel_endpoint#g" -e "s#@OTEL_TRACES@#$otel_traces#g" \
     -e "s#@BOX_NAME@#$box_name#g" -e "s#@BOX_PUBLIC_IP@#$box_public_ip#g" -e "s#@BOX_GEO_CITY@#$box_geo_city#g" \
-    -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" > "$f"
+    -e "s#@BOX_GEO_COUNTRY@#$box_geo_country#g" -e "s#@LLM_MODEL_FILE@#$LLM_MODEL_FILE#g" > "$f"
 
   # Only the halves that asked for Docker. Piper and the zvec stack are chosen
   # independently, so this can legitimately be Piper alone, zvec alone, or both.
   local svcs=() profiles=() build=(--build) pull=()
   [ "$PIPER_MODE" = "docker" ] && svcs+=(looma-piper)
   if [ "$SIDECARS" = "docker" ]; then
-    [ "$WITH_SEARCH" = "1" ] && svcs+=(looma-search)
-    [ "$WITH_AI" = "1" ] && { svcs+=(looma-ai); profiles+=(--profile ai); }
+    [ "$WITH_AI" = "1" ] && { ensure_llm_model; svcs+=(looma-ai looma-llm); profiles+=(--profile ai); }
   fi
   [ "$OFFLINE" = "1" ] && { build=(); pull=(--pull never); }
 
@@ -2479,13 +2523,10 @@ native_sidecars_docker() {
 
   # They restart with Docker on every boot (restart: unless-stopped), so there is no
   # systemd unit to install here.
-  if [ "$SIDECARS" = "docker" ] && [ "$WITH_SEARCH" = "1" ]; then
-    for _ in $(seq 1 90); do curl -fsS http://127.0.0.1:46333/health >/dev/null 2>&1 && break; sleep 5; done
-    ingest_chapters_html      # chapter HTML -> mongo, before the index is built
-    log "building the zvec index (first build; slow on ARM)…"
-    curl -fsS -X POST --max-time 60 http://127.0.0.1:46333/rebuild >/dev/null 2>&1 \
-      || warn "zvec did not accept the rebuild request — check: docker logs looma-search"
-    wait_for_zvec_index "http://127.0.0.1:46333" "docker logs looma-search --tail 50" || true
+  if [ "$SIDECARS" = "docker" ] && [ "$WITH_AI" = "1" ]; then
+    for _ in $(seq 1 60); do curl -fsS http://127.0.0.1:8089/health >/dev/null 2>&1 && break; sleep 5; done
+    ingest_chapters_html      # chapter HTML -> mongo, before the Search index is built
+    ensure_zvec_indexes
   fi
   if [ "$PIPER_MODE" = "docker" ]; then
     for _ in $(seq 1 24); do curl -fsS http://127.0.0.1:5002/health >/dev/null 2>&1 && break; sleep 5; done

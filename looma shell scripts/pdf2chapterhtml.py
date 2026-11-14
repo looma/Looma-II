@@ -128,7 +128,13 @@ def line_runs(line):
     out = []                       # [x0, y0, x1, y1, text, span]
     prev_zero = False
     for s in line["spans"]:
-        text = []
+        # A space much wider than a normal one is a gap the PDF leaves for
+        # something drawn as line art (the radical in "Does √64"). One span
+        # stretched across it squeezes or stretches the words on either side
+        # over that drawing, so the run is split there.
+        # (horizontal lines only: a rotated label has no such gaps to find)
+        gap = 0.8 * (s.get("size") or 0) if abs(line["dir"][1]) < 0.05 else 0
+        segs = [[[], None, None]]  # [chars, x0, x1]
         for c in s["chars"]:
             ch = c["c"]
             w = c["bbox"][2] - c["bbox"][0]
@@ -136,9 +142,25 @@ def line_runs(line):
                 prev_zero = False   # the advance is spent; don't eat the next one
                 continue
             prev_zero = (w <= 0)
-            text.append(ch)
-        t = "".join(text)
+            if ch.isspace() and gap and w > gap and segs[-1][0]:
+                segs.append([[], None, None])
+                continue
+            # ... or no space at all, just a jump in position
+            if (gap and w > 0 and segs[-1][2] is not None
+                    and c["bbox"][0] - segs[-1][2] > 0.5 * s["size"]):
+                segs.append([[], None, None])
+            seg = segs[-1]
+            seg[0].append(ch)
+            if w > 0:
+                seg[1] = c["bbox"][0] if seg[1] is None else seg[1]
+                seg[2] = c["bbox"][2]
+        segs = [x for x in segs if "".join(x[0]).strip()] if len(segs) > 1 else segs
         b = list(s["bbox"])
+        if len(segs) > 1 and all(x[1] is not None for x in segs):
+            for chars, x0, x1 in segs:
+                out.append([x0, b[1], x1, b[3], "".join(chars), s])
+            continue
+        t = "".join(ch for x in segs for ch in x[0])
         if not t:
             # nothing left: give the width to the previous run so it still ends
             # where the ink does
@@ -171,6 +193,10 @@ def runs(page, maps, decode_text):
                 if b.height <= 0:
                     continue
                 mode, deva = "text", False
+                if abs(line["dir"][1]) >= 0.05:
+                    # rotated (a chart's axis title): HTML text is laid out
+                    # horizontally, so this one keeps its ink (see page_html)
+                    s = dict(s, rotated=True)
                 if decode_text:
                     table, legacy = preeti.resolve(s["font"], maps)
                     if legacy and table:
@@ -203,6 +229,38 @@ def strip_page_text(page, boxes):
                               text=fitz.PDF_REDACT_TEXT_REMOVE)
 
 
+_PUA = re.compile("[\ue000-\uf8ff]")
+# Text whose font maps some glyphs to the wrong characters (a CID font with an
+# incomplete ToUnicode: "'iscuss in \\our grouS ... ansZer" for "Discuss in
+# your group ... answer"): control characters, backslashes, a capital inside a
+# lowercase word. A false positive costs nothing visible (the ink stays).
+_GARBLED = re.compile("[\x00-\x08\x0b\x0c\x0e-\x1f\\\\]|[a-z][A-Z][a-z]")
+
+
+def text_left(page, kept):
+    """True when text other than the deliberately kept runs is still on the
+    page after strip_page_text(). Redaction does not reach every glyph (text
+    inside some form XObjects: tables of contents, equation objects in the
+    Grade 8 maths books); the svg would then draw that text under the HTML
+    text, showing every word twice. Character centres, so a glyph with a
+    degenerate box still counts."""
+    mat = page.rotation_matrix
+    for block in page.get_text("rawdict")["blocks"]:
+        if block.get("type") != 0:
+            continue
+        for line in block["lines"]:
+            for span in line["spans"]:
+                for c in span["chars"]:
+                    if c["c"].isspace():
+                        continue
+                    r = fitz.Rect(c["bbox"]) * mat
+                    r.normalize()
+                    mid = fitz.Point((r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2)
+                    if not any(mid in k for k in kept):
+                        return True
+    return False
+
+
 def page_html(doc, page, n, kind, maps):
     r = page.rect
     W, Hh = r.width, r.height
@@ -221,7 +279,33 @@ def page_html(doc, page, n, kind, maps):
     else:
         crops = [(b, page.get_pixmap(clip=b, dpi=CROP_DPI))
                  for b, _t, _s, mode, _d in items if mode == "image"]
-        strip_page_text(page, [b for b, _t, _s, _m, _d in items])
+        # Symbol-font runs with no Unicode (big-bracket pieces, Wingdings
+        # bullets: Private Use Area code points) have no glyph in any browser
+        # font. Leave their ink in the artwork and give them a transparent span.
+        # Math-font runs (Word equations, Cambria Math) extract each letter
+        # twice ("𝑥𝑥" for one drawn x), rotated runs cannot be redrawn as
+        # horizontal HTML text, and garbled runs would show wrong letters:
+        # same treatment.
+        keep = {i for i, (_b, t, s, mode, _d) in enumerate(items)
+                if mode == "text" and (_PUA.search(t) or "math" in s["font"].lower()
+                                       or s.get("rotated") or _GARBLED.search(t))}
+        boxes = [it[0] for i, it in enumerate(items) if i not in keep]
+        # Try the redaction on a copy first. Where some text survives it
+        # (text in some form XObjects: tables of contents, equation objects),
+        # the svg would draw it under the HTML text (every word twice), and
+        # redaction can also take only part of a run. So on such a page strip
+        # nothing: the artwork keeps all its original text, exactly as in the
+        # PDF, and every span becomes an invisible, selectable copy.
+        probe = fitz.open()
+        probe.insert_pdf(doc, from_page=page.number, to_page=page.number)
+        strip_page_text(probe[0], boxes)
+        surv = text_left(probe[0], [items[i][0] + (-1, -1, 1, 1) for i in keep])
+        probe.close()
+        if surv:
+            ghost = {i for i, it in enumerate(items) if it[3] == "text"}
+        else:
+            strip_page_text(page, boxes)
+            ghost = keep
         parts.append(namespace_svg(page.get_svg_image(text_as_path=True), n))
         for b, pm in crops:
             if pm.alpha:
@@ -234,10 +318,15 @@ def page_html(doc, page, n, kind, maps):
                                   .decode("ascii")))
 
     spans = []
-    for b, t, s, mode, deva in items:
+    for i, (b, t, s, mode, deva) in enumerate(items):
         left, top = b.x0 / W * 100, b.y0 / Hh * 100
         if mode == "image":
             continue        # already placed above, as a crop of the original ink
+        if kind != "scan" and i in ghost:
+            # its ink is still in the svg: an invisible, selectable copy only
+            t = _PUA.sub("", re.sub("[\x00-\x08\x0b\x0c\x0e-\x1f]", "", t))
+            if not t.strip():
+                continue
 
         if kind == "scan":
             style = "left:%.3f%%;top:%.3f%%;font-size:%.3fcqw" % (
@@ -250,6 +339,8 @@ def page_html(doc, page, n, kind, maps):
                 style += ";font-weight:700"
             if s["flags"] & 2:
                 style += ";font-style:italic"
+            if i in ghost:
+                style += ";color:transparent"
         # No width fit when the page is rotated (a horizontal span cannot match
         # rotated ink) or when the bbox is degenerate.
         if rot in (90, 270) or b.width <= 0:

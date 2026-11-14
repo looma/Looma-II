@@ -232,11 +232,30 @@
    search results page. This grid only positions them: 3 per row (so the default
    6 contexts form 2 rows), centred inside the answer bubble. */
 #looma-assistant-modal .ai-result-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;     /* 1, 2 or 3 cards always sit centred */
     gap: 14px;
     max-width: 900px;
     margin: 0 auto;              /* centre the grid in the answer bubble */
+}
+#looma-assistant-modal .ai-result-grid > * {
+    /* Fixed share of the row (3 per row) instead of sizing to the title text:
+       a long title used to grow a card to max-width:30vw, so two cards no longer
+       fit the answer bubble and stacked. Now 2 cards always sit side by side. */
+    flex: 0 0 calc((100% - 28px) / 3);
+    width: calc((100% - 28px) / 3);
+    max-width: none;
+    min-width: 0;
+    box-sizing: border-box;
+    margin-left: 0;
+    margin-right: 0;
+}
+@media screen and (max-width: 600px) {
+    #looma-assistant-modal .ai-result-grid > * {
+        flex-basis: calc((100% - 14px) / 2);   /* 2 per row on phones */
+        width: calc((100% - 14px) / 2);
+    }
 }
 
 /* External references (Wikipedia / dictionary fallbacks) */

@@ -203,11 +203,11 @@ function mongoUpdateMany($collection, $filter, $set) {
     return $result;
 }
 
-function mongoUpdate($collection, $filter, $set) {
+function mongoUpdate($collection, $filter, $set, $upsert = false) {
     global $mongo_level, $logcollections;
     if (!loggedIn() && !in_array($collection, $logcollections)  ) return null;
-    if ($mongo_level >= 3 ) $result = $collection->updateOne( $filter, $set);
-    else                    $result = $collection->update($filter, $set);
+    if ($mongo_level >= 3 ) $result = $collection->updateOne( $filter, $set, array('upsert' => $upsert));
+    else                    $result = $collection->update($filter, $set, array('upsert' => $upsert));
     return $result;
 }
 

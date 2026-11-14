@@ -57,7 +57,9 @@ var displayArea;
                 vmodal.style.display = "block";
                 modalVid.src = this.getAttribute('data-video');   // the sign-language mp4
                 modalVid.muted = false;                           // play with sound
-                modalVid.play();
+                var p = modalVid.play();
+                // closing the modal before the video starts aborts play(); that is expected
+                if (p && p.catch) p.catch(function (e) { if (e.name !== 'AbortError') console.log(e); });
             };
             // Get the <span> element (x) that closes the modal (and stops playback)
             var vspan = document.getElementsByClassName("close-video")[0];

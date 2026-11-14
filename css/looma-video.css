@@ -47,7 +47,7 @@ button#fullscreen-playpause {
     background-image: url("../images/video.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
-	background-color:rgba(200,200,200,1);  /*transparent light gray*/
+	background-color:rgba(200,200,200,0.7);  /*transparent light gray, like the other control buttons*/
 }
 
 
@@ -58,4 +58,39 @@ button#fullscreen-playpause:-webkit-full-screen {
 
 button.download {
     display:inline-block;
+}
+
+/* CC button while captions are ON (class set by updateCaptionsButton() in looma.js) */
+button.looma-control-button.captions.captions-on {
+    border: 4px solid yellow;
+    opacity: 1;
+    box-shadow: 0 0 10px rgba(255,212,0,0.6);
+}
+
+/* LANGUAGE button (English <-> Nepali): only in fullscreen, where the toolbar is hidden.
+   bottom:2vh puts it at the bottom of the control-button stack, under #fullscreen-control
+   (the stack in looma-utilities.js anchors on the lowest visible button) */
+button#fullscreen-language {
+    display: none;
+    bottom: 2vh;
+    background-color: rgba(200,200,200,0.7);
+    background-image: url("../images/native-flag.png");
+    background-size: 75% 75%;
+    background-position: center;
+    background-repeat: no-repeat;
+    cursor: pointer;
+}
+:fullscreen button#fullscreen-language,
+:-webkit-full-screen button#fullscreen-language {
+    display: inline-block;
+}
+
+/* fullscreen: play/pause button gray like the other control buttons, white only on hover */
+:fullscreen button#fullscreen-playpause,
+:-webkit-full-screen button#fullscreen-playpause {
+    background-color: rgba(200,200,200,0.7);
+}
+:fullscreen button#fullscreen-playpause:hover,
+:-webkit-full-screen button#fullscreen-playpause:hover {
+    background-color: white;
 }

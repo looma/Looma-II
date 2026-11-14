@@ -122,4 +122,5 @@ echo "<div id='main-container-horizontal'>";
 <?php include ('includes/toolbar.php'); ?>
 <?php include ('includes/js-includes.php'); ?>
 <script src="js/looma-html.js?v=<?php echo @filemtime('js/looma-html.js') ?: time(); ?>"></script>
-<script src="js/looma-keyboard.js?v=<?php echo @filemtime('js/looma-keyboard.js') ?: time(); ?>"></script>
+<!-- looma-keyboard.js is already loaded by js-includes.php: loading it twice made two keyboard buttons -->
+

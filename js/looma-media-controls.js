@@ -1,3 +1,14 @@
+/* playMedia: media.play() returns a promise that rejects with AbortError when the
+ * element is paused or removed (page change, lesson item change) before playback starts.
+ * That is expected, so swallow it instead of logging "Uncaught (in promise)". */
+function playMedia(m) {
+    var p = m.play();
+    if (p && p.catch) {
+        p.catch(function (e) { if (e.name !== 'AbortError') console.log('play() failed: ', e); });
+    }
+    return p;
+}
+
 /*
 LOOMA javascript file
 Filename: looma-media-controls.js
@@ -37,8 +48,8 @@ function mediaPlayPause () { // play or pause the currently playing MEDIA - stor
     }
 */
     if (media.paused) {
-        media.play();
-        $('.play-pause').css('background-image', 'url("images/pause.png")');
+        playMedia(media);
+        $('.play-pause').css('background-image', 'url("images/pause.png?v=2")');
     } else {
         media.pause();
         $('.play-pause').css('background-image', 'url("images/video.png")');
@@ -113,7 +124,7 @@ function attachMediaControls (myMedia) {
         $seekbar.on("mousedown", function() { media.pause(); });
 
         // Play the media when the slider handle is dropped
-        $seekbar.on("mouseup", function() { media.play(); });
+        $seekbar.on("mouseup", function() { playMedia(media); });
     
     media.addEventListener('loadeddata', function () {
         $('#totaltime').text(minuteSecondTime(media.duration));

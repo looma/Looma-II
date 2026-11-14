@@ -23,11 +23,10 @@ from app.index.sqlite_store import get_conn, upsert_document, replace_chapters, 
 
 try:
     import zvec
-    from app.index.zvec_store import open_curriculum_chunks, insert_curriculum_docs
+    from app.index import rag_store
 except Exception:
     zvec = None
-    open_curriculum_chunks = None
-    insert_curriculum_docs = None
+    rag_store = None
 
 
 # LOOMA_SOURCE_ROOT is what the compose sets (/looma/content). Without it we
@@ -411,27 +410,27 @@ def main():
     embed_model = None
     curriculum_collection = None
     if embeddings_enabled:
-        if zvec is None or open_curriculum_chunks is None or insert_curriculum_docs is None:
+        if zvec is None or rag_store is None:
             print('[WARN] zvec is not available; continuing with SQLite/FTS-only ingestion.')
             embeddings_enabled = False
         else:
             try:
                 embed_model = load_model()
-                curriculum_collection = open_curriculum_chunks()
+                curriculum_collection = rag_store.open_collection() if os.path.exists(rag_store.path()) else rag_store.create(rag_store.path())
             except Exception as exc:
                 print(f'[WARN] Embeddings unavailable ({exc}); continuing with SQLite/FTS-only ingestion.')
                 embeddings_enabled = False
     seen_hashes = set()
     pending_zvec_ids = []
     pending_zvec_texts = []
+    pending_zvec_fields = []
 
     def flush_zvec_pending():
-        nonlocal pending_zvec_ids, pending_zvec_texts
+        nonlocal pending_zvec_ids, pending_zvec_texts, pending_zvec_fields
         if (
             not embeddings_enabled
             or embed_model is None
             or curriculum_collection is None
-            or insert_curriculum_docs is None
             or zvec is None
             or not pending_zvec_ids
         ):
@@ -439,12 +438,13 @@ def main():
 
         embeddings = embed_model.encode(pending_zvec_texts, normalize_embeddings=True)
         docs = [
-            zvec.Doc(id=chunk_id, vectors={'embedding': emb.tolist()})
-            for chunk_id, emb in zip(pending_zvec_ids, embeddings)
+            zvec.Doc(id=chunk_id, vectors={'embedding': emb.tolist()}, fields=fields)
+            for chunk_id, emb, fields in zip(pending_zvec_ids, embeddings, pending_zvec_fields)
         ]
-        insert_curriculum_docs(curriculum_collection, docs)
+        curriculum_collection.upsert(docs)
         pending_zvec_ids = []
         pending_zvec_texts = []
+        pending_zvec_fields = []
 
     for path in tqdm(files, desc='Ingesting LOOMA'):
         try:
@@ -535,9 +535,18 @@ def main():
                     }
                     chunk_rows.append(chunk_row)
 
-                    if embeddings_enabled:
+                    if embeddings_enabled and rag_store.is_indexable(str(path), doc_row['file_type'], chunk):
+                        fields = {'tier': rag_store.tier_for(str(path))}
+                        if grade_level is not None:
+                            fields['grade'] = int(grade_level)
+                        if subject:
+                            fields['subject'] = str(subject)
+                        lang = {'np': 'ne', 'nep': 'ne'}.get(language, language) or rag_store.lang_of_text(chunk)
+                        if lang:
+                            fields['lang'] = lang
                         pending_zvec_ids.append(chunk_id)
                         pending_zvec_texts.append(chunk)
+                        pending_zvec_fields.append(fields)
                         if len(pending_zvec_ids) >= max(1, args.embedding_batch_size):
                             flush_zvec_pending()
 

@@ -1,22 +1,251 @@
-/*  looma-mobile.css
+/*  looma-mobile.css  -  the responsive layer
 
-    Portrait phones. A page laid out for a wide screen fits a portrait phone fine,
-    which is what fullscreen shows: the one thing that does not fit is the toolbar,
-    whose buttons force the page to about three screens wide, so the browser zooms
-    everything out. So fit the toolbar to the screen and leave the pages alone.
+    Looma's pages are laid out for a landscape projector or laptop screen, mostly
+    in vh units. This sheet makes them fit any screen, in either orientation:
+    phones, tablets, laptops and the box's 1920x1080 display.
 
-    Loaded last (includes/js-includes.php), after each page's own stylesheet.
+    Loaded last (includes/js-includes.php), after each page's own stylesheet, so
+    these rules win over the page's at equal specificity.
+
+    1. every screen    toolbars shrink to fit instead of running off the edge;
+                       popups and frames never wider than the screen
+    2. narrow screens  (max-width 900px) popups use the width, thin scrollbars,
+                       form fields never wider than the screen
+    3. portrait        (up to 1199px wide: phones and tablets held upright)
+                       the vertical toolbar moves to the bottom, the toolbar
+                       wraps to two rows, the home page is sized by width
+    4. phone portrait  (max-width 767px) toolbar in two rows of eight
 */
 
-@media (max-width: 767px) and (orientation: portrait) {
 
-    /* The columns must not grow with what is inside them. */
-    body {
-        grid-template-rows:    [top] repeat(9, minmax(0, 1fr)) [toolbar] auto [bottom];
-        grid-template-columns: [left] repeat(16, minmax(0, 1fr)) [toolbar] minmax(0, 1fr) [right];
+/* ---------- 1. every screen ---------- */
+
+/* The page grid's columns must not grow with what is inside them (a wide
+   table or image would push the toolbar and the page off the screen). */
+body > * {
+    min-width: 0;
+}
+#subjects {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+/* Horizontal toolbar: the buttons are 8vh squares, so on a tall, narrow screen
+   (a tablet held upright: 17 x 82px > 768px) the last ones were cut off. Let
+   them shrink, keeping them square, so the whole row always fits. */
+#toolbar {
+    min-width: 0;
+}
+#toolbar button {
+    flex: 0 1 8vh;
+    min-width: 0;
+    width: auto;
+    height: auto;
+    max-height: 8vh;
+    aspect-ratio: 1 / 1;
+}
+#toolbar button img {
+    max-width: 100%;
+}
+#logo-div {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Vertical toolbar (PDF, HTML pages): same idea, along the height. */
+#toolbar-vertical {
+    min-height: 0;
+    max-height: 100%;
+}
+.toolbar-button.vertical {
+    flex: 0 1 6vh;
+    min-height: 0;
+}
+
+/* Speak button with no text selected (.tts-disabled, css/looma.css): 35%
+   opacity + grayscale on a dark grey background made the dark speech-bubble
+   icon vanish, so the button looked empty. Keep it looking "off" (dimmer, no
+   clicks) but keep the icon visible. */
+button.speak.tts-disabled {
+    opacity: 0.55 !important;
+    background-color: rgba(200, 200, 200, 0.7);
+    border-color: rgba(150, 150, 150, 0.65);
+}
+
+/* Popups (LOOMA.alert / confirm / prompt) never wider or taller than the screen. */
+.popup {
+    max-width: 96vw;
+    max-height: 85vh;
+    max-height: 85dvh;
+    box-sizing: border-box;
+}
+.popup-button {
+    min-width: 3.5em;
+    min-height: 2em;
+    height: auto;
+    font-size: max(1.5vw, 14px);
+}
+.dismiss-popup {
+    min-width: 2.2em;
+}
+
+/* Frames that host a page (HTML chapters, activities) were 100% wide plus a
+   border: a few pixels too wide, so the page scrolled sideways. */
+iframe#iframe {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+
+/* ---------- 2. narrow screens ---------- */
+
+@media (max-width: 900px) {
+
+    /* Popups: most of the width, readable text (2.5em of a phone was huge). */
+    .popup {
+        left: 2vw;
+        right: 2vw;
+        width: auto;
+        top: 6vh;
+        font-size: 1.3em;
     }
 
-    /* Toolbar: two rows of eight, nothing but buttons. */
+    /* Looma's 40px scrollbars took a tenth of a phone's width. */
+    ::-webkit-scrollbar {
+        width: 12px;
+        height: 12px;
+    }
+
+    select,
+    input,
+    textarea {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    /* Library / search / lesson buttons: picture beside 30px text left ~70px for
+       the words on a phone ("Wikipe dia"); put the picture above the text. */
+    button.img.play,
+    button.img.activity,
+    button.img.map {
+        font-size: clamp(11px, 3.2vw, 18px);
+    }
+    button.img {
+        height: auto;
+        min-height: 18vh;
+        padding: 4px 4px 22px;     /* room for the file-type icon in the corner */
+        overflow-wrap: break-word;
+        hyphens: auto;
+    }
+    button.img > img.icon {
+        max-width: 20px;
+        max-height: 16px;
+        right: 3px;
+        bottom: 3px;
+    }
+    button.img img,
+    button.img object {
+        float: none;
+        display: block;
+        margin: 0 auto 4px;
+        width: auto;
+        height: auto;
+        max-width: 70%;
+        max-height: 9vh;
+    }
+
+    /* Page titles (3em) were cut off, e.g. "Grade 7 Scie" under the Exams button. */
+    h1.title {
+        font-size: clamp(1.3em, 6.5vw, 3em);
+        padding: 0 4.5em 0 0.3em;
+        box-sizing: border-box;
+    }
+
+    /* AI page: the chapter list has an inline min-width of 520px. */
+    #ai-chapter {
+        min-width: 0 !important;
+        width: 100%;
+    }
+
+    /* Chapters page: six columns (English chapter, lesson, resources, then the
+       same in Nepali) do not fit; use three, with each Nepali row under its
+       English one, and text sized by the width so titles are not cut. */
+    #main-container-horizontal:has(> button.en-chapter) {
+        grid-template-columns: [left] 3fr 1fr 1.2fr [right];
+        align-content: start;
+    }
+    button.np-chapter    { grid-column: 1; }
+    button.np-lesson     { grid-column: 2; }
+    button.np-activities { grid-column: 3; }
+    button.en-chapter,
+    button.np-chapter {
+        height: auto;
+        min-height: 9vh;
+        max-height: none;
+        font-size: clamp(12px, 3.4vw, 3.2vh);
+        word-break: normal;
+        overflow-wrap: normal;
+        hyphens: auto;
+    }
+    button.en-lesson,
+    button.np-lesson,
+    button.en-activities,
+    button.np-activities {
+        height: auto;
+        min-height: 9vh;
+        max-height: none;
+        font-size: clamp(10px, 2.8vw, 2.5vh);
+        overflow-wrap: anywhere;
+    }
+    #main-container-horizontal:has(> button.en-chapter) button {
+        margin: 5px 4px;
+    }
+
+    /* PDF viewer: its top toolbar (page arrows, page number, zoom) ran off the
+       right edge; let it wrap, drop the spacer buttons and the "Zoom:" label. */
+    #pdf-toolbar {
+        height: auto;
+        min-height: 44px;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        font-size: 1em;
+    }
+    #pdf-toolbar button.blank,
+    #zoom-label {
+        display: none;
+    }
+    #pdf-toolbar button {
+        flex: 0 0 auto;
+        width: 40px;
+        height: 40px;
+    }
+    #pdf-toolbar span,
+    #pdf-toolbar input {
+        font-size: 1.2em;
+    }
+    #zoom-menu button {
+        width: auto;
+        font-size: 1em;
+        padding: 0 6px;
+    }
+    #zoom-dropdown {
+        width: 50vw;
+    }
+}
+
+
+/* ---------- 3. portrait: phones and tablets held upright ---------- */
+
+@media (orientation: portrait) and (max-width: 1199px) {
+
+    /* The page grid: the toolbar row takes the height its buttons need. The
+       columns are left as each page defines them (some pages have their own
+       grid; replacing it squeezed e.g. the exams list into one 1/17 column). */
+    body {
+        grid-template-rows: [top] repeat(9, minmax(0, 1fr)) [toolbar] auto [bottom];
+    }
+
+    /* Horizontal toolbar: two rows, buttons only (the logo has no room). */
     #toolbar-container {
         display: block;
         width: 100%;
@@ -25,33 +254,122 @@
         padding: 2px;
         box-sizing: border-box;
     }
-
     #logo-div,
     #toolbar-container .logo,
     #toolbar-container .toolbar-logo {
         display: none !important;
     }
-
     #toolbar {
         display: flex;
         flex-wrap: wrap;
-        justify-content: flex-start;
+        justify-content: center;
         width: 100%;
         height: auto;
     }
-
     #toolbar button {
-        flex: 0 0 calc(12.5% - 2px);
-        width: calc(12.5% - 2px);
-        min-width: 0;
-        height: 46px;
-        margin: 1px;
+        flex: 0 0 calc(11.11% - 4px);
+        width: calc(11.11% - 4px);
+        height: 6vh;
+        max-height: none;
+        aspect-ratio: auto;
+        margin: 2px;
         padding: 2px;
     }
-
     #toolbar button img {
         width: 100%;
         height: 100%;
         object-fit: contain;
+    }
+
+    /* Vertical toolbar (PDF, HTML, ... pages): a column 1/17 of an upright
+       phone is 23px wide, so put it along the bottom instead. */
+    #main-container-vertical {
+        grid-row: top / toolbar;
+        grid-column: left / right;
+    }
+    #toolbar-container-vertical {
+        grid-row: toolbar / bottom;
+        grid-column: left / right;
+        flex-direction: row;
+        height: auto;
+        padding: 2px;
+        box-sizing: border-box;
+    }
+    #toolbar-container-vertical .logo,
+    #toolbar-container-vertical .toolbar-logo,
+    #toolbar-container-vertical #toolbar-logo-CEHRD,
+    #toolbar-container-vertical #padlock-div {
+        display: none !important;
+    }
+    #toolbar-vertical {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        max-height: none;
+    }
+    .toolbar-button.vertical {
+        flex: 0 0 calc(11.11% - 4px);
+        width: calc(11.11% - 4px);
+        height: 6vh !important;
+        margin: 2px;
+    }
+    .toolbar-button.vertical img {
+        height: 100%;
+        max-width: 100%;
+        object-fit: contain;
+    }
+
+    /* Home page: logos and buttons were sized by the screen height (32vh logo,
+       12vh Looma logo, 30vh book covers), far too big for an upright screen. */
+    #CEHRD-logo {
+        height: auto;
+        width: min(55vw, 30vh);
+        margin: 0 auto;
+    }
+    #CEHRD-text {
+        font-size: clamp(1.1em, 5vw, 2em);
+    }
+    #looma-logo-div {
+        top: 1vh;
+        right: 2vw;
+        height: min(12vh, 8vw);
+    }
+    #main-container-horizontal #classes {
+        padding: 4px;
+    }
+    #classes button {
+        flex: 1 1 0;
+        min-width: 0;
+        margin: 0.4vw;
+        padding: 0 1px;
+        font-size: min(4.2vw, 6vh);
+        white-space: nowrap;      /* "10" was broken over two lines */
+    }
+    #main-container-horizontal #subjects {
+        flex-wrap: wrap;
+        align-content: center;
+    }
+    #subjects button {
+        width: 20vw;
+        height: auto;
+        aspect-ratio: 3 / 4;
+        max-height: 28vh;
+    }
+}
+
+
+/* ---------- 4. phone portrait ---------- */
+
+@media (max-width: 767px) and (orientation: portrait) {
+
+    /* Toolbar: two rows of eight, a little taller for fingers. */
+    #toolbar button,
+    .toolbar-button.vertical {
+        flex: 0 0 calc(12.5% - 2px);
+        width: calc(12.5% - 2px);
+        height: 46px !important;
+        margin: 1px;
+        padding: 2px;
     }
 }

@@ -83,8 +83,44 @@ Description:
      "text":"images/textfile.png",
      "textfile":"images/textfile.png",
      "looma":"images/LoomaLogo_small.png",
-     "chapter":"images/book.png"
+     "chapter":"images/book.png",
+     "worksheet":"images/worksheet.png",
+     "textbook":"images/pdf.png",
+     "MOV":"images/video.png",
+     "evi":"images/video.png",
+     "txt":"images/textfile.png",
+     "text-template":"images/textfile.png",
+     "docx":"images/document.png"
  };
+
+/* Missing or broken covers, site-wide.
+ * An <img> 'error' event does not bubble, but it does pass through the capture
+ * phase, so this one listener on document sees every image that fails to load,
+ * including the thumbnails in buttons the PHP generates (chapters, search,
+ * lessons...). When a cover inside an item that has a data-ft fails, show that
+ * filetype's icon instead: a PDF without a cover (or with a broken one) gets
+ * the PDF logo rather than an empty box.
+ * Images built by makeActivityButton carry data-thumb-chain: they try their own
+ * fallbacks first (original image, folder thumbnail.png, then this same icon),
+ * so they are left to that chain. */
+document.addEventListener('error', function (event) {
+    var img = event.target, holder, ft, icon;
+    if (!img || img.tagName !== 'IMG') return;
+    if (img.getAttribute('data-thumb-chain') || img.getAttribute('data-icon-fallback')) return;
+
+    for (holder = img.parentNode; holder && holder.getAttribute; holder = holder.parentNode) {
+        if (holder.getAttribute('data-ft')) break;
+    }
+    if (!holder || !holder.getAttribute) return;
+
+    ft = holder.getAttribute('data-ft');
+    if (!icons[ft] && /\.pdf$/i.test(holder.getAttribute('data-fn') || '')) ft = 'pdf';
+    icon = icons[ft];
+    if (!icon || img.getAttribute('src') === icon) return;
+
+    img.setAttribute('data-icon-fallback', '1');   // only once: never loop if the icon fails too
+    img.src = icon;
+}, true);
 
 var LOOMA = (function() {
 
@@ -186,8 +222,10 @@ playMedia : function(button) {
         case "pdf":      //PDF
         case "document": //DOCUMENT (some PDFs)
         case "textbook":
+        case "worksheet": //WORKSHEET (displayed like a PDF)
             var pdfZoom =  button.getAttribute('data-zoom');
-            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto") pdfZoom = '2.3';
+            if ( ! pdfZoom || pdfZoom === "undefined" || pdfZoom === "auto")
+                pdfZoom = (button.getAttribute("data-ft").toLowerCase() === "worksheet") ? '1.25' : '2.3';
             var pdfPage =  button.getAttribute('data-page') ? button.getAttribute('data-page') : 1;
             var pdfLen =  button.getAttribute('data-len') ? button.getAttribute('data-len') : 1000;
             var altFn  = button.getAttribute('data-nfn') || '';
@@ -208,7 +246,8 @@ playMedia : function(button) {
                     '&ch=' + encodeURIComponent(pdfChId) +
                     '&chdn=' + encodeURIComponent(pdfChDn) +
                     '&grade=' + encodeURIComponent(pdfGrade) +
-                    '&subject=' + encodeURIComponent(pdfSubj);
+                    '&subject=' + encodeURIComponent(pdfSubj) +
+                    '&ft=' + encodeURIComponent(button.getAttribute('data-ft'));
             break;
 
         case "chapter":  //CHAPTER
@@ -529,6 +568,10 @@ playMedia : function(button) {
                         chain.push(filePath + fileName);          // the original image
                     }
                     if (filePath) chain.push(filePath + 'thumbnail.png');  // folder placeholder
+                    // last resort: the filetype's icon (e.g. the PDF logo for a PDF with
+                    // no cover, a broken cover, and no folder image)
+                    if (ftype && icons[ftype]) chain.push(icons[ftype]);
+                    $img.attr('data-thumb-chain', '1');   // the global fallback below leaves this one alone
                     $img.on('error', function () {
                         var next = null;
                         while (chain.length) {
@@ -561,7 +604,8 @@ playMedia : function(button) {
             //var displayname = ((language === 'native' || (! 'dn' in result)) && result.ndn )  ? result.ndn : result.dn;
             $newButton.append($('<span class="dn">').text(displayname));
 
-            $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
+            // types without an icon (quiz, exercise, vocab...) get none - not a request for "/undefined"
+            if (icons[result.ft]) $newButton.append($('<img class="icon" src="' + icons[result.ft] + '">'));
 
             $newButton.click(function() {LOOMA.playMedia(this);});
             $newButton.appendTo(appendToDiv);
@@ -659,6 +703,10 @@ filepath: function(filetype) {
 
             case "pdf": //pdf
                 path = homedirectory + "content/pdfs/";
+                break;
+
+            case "worksheet": //worksheet (displayed like a pdf, stored in its own folder)
+                path = homedirectory + "content/worksheets/";
                 break;
 
             case "epaath":
@@ -797,7 +845,8 @@ typename: function(ft) {
         html:'HTML',
         looma:'Looma Page',
         chapter:'Chapter',
-        text: 'Text File'
+        text: 'Text File',
+        worksheet: 'Worksheet'
     };
 
     return (ft in names) ? names[ft] : ft;
@@ -2938,7 +2987,18 @@ LOOMA.speak = function(text, engine, voice, rate) {
                          LOOMA.speak.disable();
                      }, {once: true});
 
-                     return audio.play();
+                     var clipPlay = audio.play();
+                     /* Mark the rejection as handled: clips after the first are started from the
+                      * 'ended' handler or resumeReading(), where nobody receives this promise, so an
+                      * AbortError (see the first clip's catch below) was reported as
+                      * "Uncaught (in promise)". Returned unchanged for the first clip's chain. */
+                     if (clipPlay && clipPlay.catch) {
+                         clipPlay.catch(function loomaPlayHandled(error) {
+                             // the first clip's error is logged by its own catch below
+                             if (blockIndex > 0 && (!error || error.name !== 'AbortError')) console.log('Browser playback error: ', error);
+                         });
+                     }
+                     return clipPlay;
                  }
 
                  // Segments are fetched strictly in order through the single
@@ -2968,7 +3028,8 @@ LOOMA.speak = function(text, engine, voice, rate) {
                  playPromise = blockPromises[0].then(function (preparedBlock) {
                      return playPreparedBlock(preparedBlock, 0);
                  }).catch(function (error) {
-                     console.log('Browser playback error: ', error);
+                     // an interrupted play() (AbortError) is expected, see below - don't log it
+                     if (!error || error.name !== 'AbortError') console.log('Browser playback error: ', error);
                      if (currentRunId === LOOMA.speak.runId) {
                          reportFirstAudio(null, 'error', String((error && error.message) || error));
                      }
@@ -4401,7 +4462,7 @@ var loginname = LOOMA.loggedIn();
     // Bottom-to-top stacking order. A button not listed here (e.g.
     // #bagh-chal, alone on looma-games.php and never sharing a page with any
     // of these) is left exactly as CSS positions it.
-    var STACK_ORDER = ['fullscreen-control', 'speak', 'lookup', 'show-keyboard',
+    var STACK_ORDER = ['fullscreen-language', 'fullscreen-control', 'speak', 'lookup', 'show-keyboard',
                         'captions', 'download', 'next-item', 'prev-item'];
     var GAP = 6; // px between stacked buttons
 
@@ -4411,6 +4472,25 @@ var loginname = LOOMA.loggedIn();
             if (el.classList.contains(STACK_ORDER[i])) return STACK_ORDER[i];
         }
         return null;
+    }
+
+    // The anchor's CSS `bottom` must be re-read whenever the layout state changes
+    // (in/out of fullscreen, resize, different lowest button). The inline bottom this
+    // function wrote must be cleared first, and the transition (looma.css: `all 0.2s`)
+    // switched off while reading, or the read returns the stale/animating value.
+    // Only done on a state change, so hover transitions on the anchor aren't cut.
+    var anchorKey = null;
+    function resetAnchor(el) {
+        var key = el.id + '|' + el.className + '|' + !!document.fullscreenElement + '|' +
+                  window.innerWidth + 'x' + window.innerHeight;
+        if (key === anchorKey) return;
+        anchorKey = key;
+        var keep = el.style.transition;
+        el.style.transition = 'none';
+        el.style.bottom = '';
+        el.style.bottom = window.getComputedStyle(el).bottom;
+        void el.offsetHeight;          // apply without animating, then restore
+        el.style.transition = keep;
     }
 
     function layoutControlButtons() {
@@ -4428,6 +4508,7 @@ var loginname = LOOMA.loggedIn();
         // normally #fullscreen-control's, which already differs between
         // normal / :fullscreen / the small-screen media query — so the whole
         // stack keeps the right distance from the corner everywhere.
+        resetAnchor(visible[0]);
         var cumulative = parseFloat(window.getComputedStyle(visible[0]).bottom) || 0;
         visible.forEach(function (el) {
             el.style.bottom = cumulative + 'px';

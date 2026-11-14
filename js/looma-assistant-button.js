@@ -225,8 +225,20 @@
     var entry = $('<div class="ai-chat-entry assistant">');
     entry.append($('<div class="ai-answer">').html(renderAnswerHtml(data.answer || t('noAnswer'))));
 
+    // One card per activity: the server already merges repeats, this keeps it
+    // that way whatever it sends (same chapter, same file, same activity id).
+    var seenCards = {};
     var contexts = (data.contexts || []).filter(function (c) {
-      return c && (c.dn || c.ndn || c.fn);
+      if (!c || !(c.dn || c.ndn || c.fn)) return false;
+      var key = c.ID ? 'ch:' + c.ID
+              : (c.fn ? 'f:' + String((c.fp || '') + c.fn).toLowerCase() : 'id:' + c._id);
+      // Two cards with the same type and title look identical to a user
+      // (e.g. "Organism and Environment" in two grades), so show one.
+      var nameKey = 'n:' + (c.ft || '') + ':' + String(c.dn || c.ndn || c.fn).toLowerCase().trim();
+      if (seenCards[key] || seenCards[nameKey]) return false;
+      seenCards[key] = true;
+      seenCards[nameKey] = true;
+      return true;
     });
     if (contexts.length) {
       entry.append($('<div class="ai-result-heading">').text(t('sources')));

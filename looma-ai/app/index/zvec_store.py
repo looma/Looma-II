@@ -27,10 +27,6 @@ def _open(name):
     return open_or_create_collection(zvec_collection_path(name), name)
 
 
-def open_curriculum_chunks():
-    return _open('curriculum_chunks')
-
-
 def open_glossary_entries():
     return _open('glossary_entries')
 
@@ -42,7 +38,3 @@ def open_exercise_bank():
 def open_generated_assets():
     return _open('generated_assets')
 
-
-def insert_curriculum_docs(collection, docs):
-    if docs:
-        collection.insert(docs)

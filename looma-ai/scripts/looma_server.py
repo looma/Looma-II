@@ -236,16 +236,20 @@ from bson import ObjectId
 from app import paths
 from app.embed.model import MODEL_NAME, load_model
 from app.index.sqlite_store import get_conn
+from app.index import rag_store, activities_store
+from app.rag import answer as rag_answer
+from app.rag import context as rag_context
+
+_LOAD_LOCK = threading.RLock()
 
 
 # app/paths.py owns the layout. These were CWD-relative strings, so the store
 # the server opened depended on where it was launched from -- which is how a
 # second, half-populated AI data tree came to exist on the dev disk.
 DB_PATH = str(paths.SQLITE_DB_PATH)
-COLLECTION_PATH = str(paths.zvec_collection_path('curriculum_chunks'))
-ACTIVITIES_INDEX_PATH = str(paths.zvec_collection_path('activities_index'))
-ACTIVITIES_BATCH_SIZE = 32
-ACTIVITIES_TOPK_DEFAULT = 12
+COLLECTION_PATH = rag_store.path()
+ACTIVITIES_INDEX_PATH = activities_store.path()
+ACTIVITIES_MIN_SCORE = float(os.environ.get('LOOMA_SEARCH_MIN_SCORE') or 0.3)
 CONTENT_ROOT = os.environ.get('LOOMA_SOURCE_ROOT') or '/looma/content'
 
 
@@ -646,74 +650,6 @@ def _learned_summary_sentence(
     return out
 
 
-def _rag_boost_context_ids(conn, *, question: str, chapter_id: str | None, limit: int = 2) -> set[str]:
-    """
-    Return a small set of context ids to boost based on past 👍 feedback for similar questions.
-    """
-    try:
-        from sklearn.feature_extraction.text import TfidfVectorizer  # noqa: WPS433
-    except Exception:
-        return set()
-
-    q = (question or '').strip()
-    if not q:
-        return set()
-
-    where = "helpful = 1"
-    params: list = []
-    if chapter_id:
-        where += " AND (chapter_id = ? OR chapter_id IS NULL)"
-        params.append(chapter_id)
-
-    try:
-        rows = conn.execute(
-            f"""
-            SELECT question, contexts_json
-            FROM rag_feedback
-            WHERE {where}
-            ORDER BY id DESC
-            LIMIT 40
-            """,
-            tuple(params),
-        ).fetchall()
-    except Exception:
-        return set()
-
-    past_q = []
-    past_ctx = []
-    for r in rows or []:
-        pq = (r['question'] or '').strip()
-        if not pq:
-            continue
-        past_q.append(pq)
-        past_ctx.append(r['contexts_json'] or '[]')
-
-    if not past_q:
-        return set()
-
-    corpus = past_q + [q]
-    try:
-        vec = TfidfVectorizer(lowercase=True, stop_words='english', ngram_range=(1, 2), max_features=12000)
-        X = vec.fit_transform(corpus)
-        qv = X[-1]
-        S = X[:-1]
-        scores = (S @ qv.T).toarray().ravel()
-    except Exception:
-        return set()
-
-    best_i = max(range(len(past_q)), key=lambda i: float(scores[i] or 0.0))
-    best_score = float(scores[best_i] or 0.0)
-    if best_score < 0.18:
-        return set()
-
-    try:
-        ids = json.loads(past_ctx[best_i] or '[]')
-        ids = [str(x) for x in ids if str(x).strip()]
-        return set(ids[: max(1, int(limit))])
-    except Exception:
-        return set()
-
-
 def _chunk_text_simple(text: str, *, chunk_size: int = 1200, overlap: int = 200) -> list[str]:
     text = re.sub(r'\s+', ' ', (text or '')).strip()
     if not text:
@@ -744,132 +680,6 @@ def _tokenize_query(text: str) -> list[str]:
     return [t for t in tokens if len(t) >= 2][:40]
 
 
-# ---------------------------------------------------------------------------
-# General-knowledge WH question handling
-# ---------------------------------------------------------------------------
-# The chat model has to answer ANY question — who/what/when/where/why/how —
-# even when the local curriculum index has nothing relevant. We classify the
-# question by interrogative, optionally rerank context sentences for the
-# expected answer shape (date for "when", location for "where", named entity
-# for "who", numeric for "how many"), and fall back to Wikipedia REST + the
-# Looma dictionary when the local index has no useful match.
-
-_WH_PATTERNS = [
-    ('who',     re.compile(r'^\s*(who|whose|whom)\b', re.I),
-                re.compile(r'\b(who|whom|by\s+whom)\b', re.I)),
-    ('when',    re.compile(r'^\s*when\b', re.I),
-                re.compile(r'\bwhen\b', re.I)),
-    ('where',   re.compile(r'^\s*where\b', re.I),
-                re.compile(r'\bwhere\b', re.I)),
-    ('why',     re.compile(r'^\s*why\b', re.I),
-                re.compile(r'\bwhy\b', re.I)),
-    ('how',     re.compile(r'^\s*how\b', re.I),
-                re.compile(r'\bhow\b', re.I)),
-    ('what',    re.compile(r'^\s*(what|which)\b', re.I),
-                re.compile(r'\b(what|which)\b', re.I)),
-    ('how_many', re.compile(r'^\s*how\s+(many|much)\b', re.I),
-                 re.compile(r'\bhow\s+(many|much)\b', re.I)),
-    ('define',  re.compile(r'^\s*(define|definition\s+of|meaning\s+of|what\s+(does|is|are)\s+(the\s+)?(meaning|definition))\b', re.I),
-                re.compile(r'\b(define|meaning|definition)\b', re.I)),
-]
-
-_WH_HINTS_NP = {
-    # Common Nepali interrogatives so the same routing works for `language=np`.
-    'who':   re.compile(r'\b(को|कस|कसले)\b'),
-    'when':  re.compile(r'\b(कहिले|कहिलेसम्म)\b'),
-    'where': re.compile(r'\b(कहाँ|कहां)\b'),
-    'why':   re.compile(r'\b(किन)\b'),
-    'how':   re.compile(r'\b(कसरी)\b'),
-    'what':  re.compile(r'\b(के|कुन)\b'),
-}
-
-_DATE_RE = re.compile(
-    r'\b('
-    r'\d{1,2}(?:st|nd|rd|th)?\s+'                          # 12th
-    r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)'
-    r'(?:\s+\d{2,4})?'                                     # March 2024
-    r'|'
-    r'(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|January|February|March|April|May|June|July|August|September|October|November|December)'
-    r'\s+\d{1,2}(?:,\s*\d{2,4})?'
-    r'|'
-    r'\d{4}'                                               # 1947
-    r'|'
-    r'\d{1,2}(?:st|nd|rd|th)?\s+century'
-    r')\b',
-    re.I,
-)
-_PROPER_NOUN_RE = re.compile(r'\b([A-Z][a-zà-ÿÀ-ɏ]{1,}(?:\s+[A-Z][a-zà-ÿÀ-ɏ]+){0,3})\b')
-_NUMBER_RE = re.compile(r'\b\d+(?:[.,]\d+)?\s*(?:%|percent|kg|km|m|cm|mm|°C|°F|years?|days?|hours?|minutes?|seconds?)?\b', re.I)
-
-
-def _classify_wh(question: str) -> str:
-    q = (question or '').strip()
-    if not q:
-        return 'open'
-    # Multi-word "how many" must beat plain "how".
-    if _WH_PATTERNS[6][1].search(q) or _WH_PATTERNS[6][2].search(q):
-        return 'how_many'
-    for tag, head, body in _WH_PATTERNS:
-        if tag == 'how_many':
-            continue
-        if head.search(q):
-            return tag
-    # Nepali fallbacks.
-    for tag, pat in _WH_HINTS_NP.items():
-        if pat.search(q):
-            return tag
-    # Imperative or trailing question mark with no leading WH → treat as "what".
-    if q.rstrip().endswith('?'):
-        return 'what'
-    return 'open'
-
-
-def _wh_score_bonus(wh: str, sentence: str) -> float:
-    """Boost sentences that contain the answer shape implied by the WH type."""
-    s = sentence or ''
-    if not s:
-        return 0.0
-    bonus = 0.0
-    if wh == 'when':
-        if _DATE_RE.search(s):
-            bonus += 12.0
-        if re.search(r'\b(in|on|during|since|until|after|before|by)\b\s+\d', s, re.I):
-            bonus += 4.0
-    elif wh == 'where':
-        if re.search(r'\b(in|at|near|on|inside|outside|northern|southern|eastern|western|located)\b', s, re.I):
-            bonus += 4.0
-        if _PROPER_NOUN_RE.search(s):
-            bonus += 6.0
-    elif wh == 'who':
-        if _PROPER_NOUN_RE.search(s):
-            bonus += 10.0
-        if re.search(r'\bby\s+[A-Z]', s):
-            bonus += 4.0
-    elif wh in ('how_many',):
-        if _NUMBER_RE.search(s):
-            bonus += 12.0
-    elif wh == 'why':
-        if re.search(r'\b(because|due to|owing to|since|so that|as a result|caused by|reason)\b', s, re.I):
-            bonus += 10.0
-    elif wh == 'how':
-        if re.search(r'\b(by|using|through|via|first|then|next|finally|step|process|method)\b', s, re.I):
-            bonus += 6.0
-    elif wh == 'what' or wh == 'define':
-        if re.search(r'\b(is|are|was|were|means|refers to|defined as|known as|called)\b', s, re.I):
-            bonus += 6.0
-    return bonus
-
-
-# LOCAL CONTENT ONLY. A `_wikipedia_lookup()` used to live here and call
-# en/ne.wikipedia.org whenever the curriculum index had no confident answer.
-# It is gone on purpose: the assistant answers from what this box carries and
-# nothing else. A school box is offline most of the time, so the fallback
-# mostly bought a 4s timeout per question; and on the rare box that DID reach
-# the network it put text nobody has on disk in front of a class, with a link
-# they cannot open. When the local content cannot answer, saying so is the
-# honest reply -- see the "I couldn't find a confident answer" branch below.
-
-
 def _dictionary_lookup_general(word: str) -> dict | None:
     """Look up a word in the Looma dictionary (Mongo) for define/what questions."""
     w = (word or '').strip()
@@ -894,201 +704,6 @@ def _dictionary_lookup_general(word: str) -> dict | None:
         return None
 
 
-def _shape_answer_for_wh(wh: str, raw_answer: str, question: str) -> str:
-    """Lightly post-process a composed extractive answer so it reads like a
-    natural reply to the WH question. We avoid hallucination — this is purely
-    cosmetic shaping (capitalisation + sentence trimming).
-    """
-    txt = (raw_answer or '').strip()
-    if not txt:
-        return ''
-    # Pick the most informative single sentence for short Q types.
-    sents = re.split(r'(?<=[.!?])\s+', txt)
-    if wh in ('when', 'where', 'who', 'how_many'):
-        ranked = sorted(sents, key=lambda s: -_wh_score_bonus(wh, s))
-        if ranked and _wh_score_bonus(wh, ranked[0]) > 0:
-            txt = ranked[0]
-    if not txt.endswith(('.', '!', '?', '…')):
-        txt += '.'
-    return txt[0].upper() + txt[1:] if txt else txt
-
-
-def _direct_answer(question: str, context_texts: list[str], *, max_chars: int = 260) -> str:
-    """Single-sentence fallback used when _compose_answer returns nothing."""
-    q_tokens = _tokenize_query(question)
-    qset = set(q_tokens)
-    best = ''
-    best_score = -1e9
-    for ctx in context_texts or []:
-        if not isinstance(ctx, str) or not ctx.strip():
-            continue
-        for sent in re.split(r'(?<=[.!?\u0964])\s+', ctx[:6000].strip()):
-            sent = sent.strip()
-            if len(sent) < 10:
-                continue
-            stoks = _tokenize_query(sent)
-            if not stoks:
-                continue
-            overlap = len(set(stoks) & qset) if qset else 0
-            score = overlap * 10.0 - (len(sent) / 80.0)
-            if score > best_score:
-                best_score = score
-                best = sent
-    best = (best or '').strip()
-    if not best:
-        for ctx in context_texts or []:
-            if isinstance(ctx, str) and ctx.strip():
-                best = ctx.strip()
-                break
-    if not best:
-        return ''
-    if len(best) > max_chars:
-        best = best[:max_chars].rsplit(' ', 1)[0].rstrip() + '…'
-    return best
-
-
-_NAV_RE = re.compile(
-    r'\b(find|show me|where (?:is|are|can I find)|navigate|go to|open|take me to|list|browse)\b'
-    r'|\b(which chapter|what chapter|find chapter|find lesson|show chapter|show lesson)',
-    re.IGNORECASE,
-)
-
-
-def _is_navigation_query(question: str) -> bool:
-    return bool(_NAV_RE.search(question or ''))
-
-
-def _navigate_chapters(conn, question: str, *, grade: int | None = None, subject: str | None = None, limit: int = 5) -> list[dict]:
-    q_tokens = _tokenize_query(question)
-    if not q_tokens:
-        return []
-    seen_ids: set = set()
-    results: list[dict] = []
-    for tok in q_tokens[:6]:
-        if len(tok) < 3:
-            continue
-        try:
-            rows = conn.execute(
-                'SELECT chapter_id, title, grade_level, subject FROM chapters WHERE title LIKE ? LIMIT 6',
-                (f'%{tok}%',),
-            ).fetchall()
-            for row in rows:
-                cid = row['chapter_id']
-                if cid not in seen_ids:
-                    seen_ids.add(cid)
-                    results.append({
-                        'chapter_id': cid,
-                        'title': row['title'],
-                        'grade': row['grade_level'],
-                        'subject': row['subject'],
-                    })
-        except Exception:
-            continue
-        if len(results) >= limit:
-            break
-    return results[:limit]
-
-
-@_otel_span('rag.compose_answer')
-def _compose_answer(question: str, context_texts: list[str], *, history: list | None = None, wh: str | None = None) -> str:
-    """Multi-sentence extractive answer using token-overlap scoring + MMR diversity.
-
-    Expands the query with recent conversation history so follow-up questions
-    retrieve better context coverage.
-    """
-    expanded_q = question
-    if history:
-        recent = [h.get('content', '') for h in (history or [])[-6:] if isinstance(h, dict) and h.get('content')]
-        if recent:
-            expanded_q = ' '.join(recent) + ' ' + question
-
-    q_tokens = set(_tokenize_query(expanded_q))
-
-    try:
-        import scripts.generate_assets as _gen
-        _split = _gen.split_sentences
-    except Exception:
-        def _split(t):
-            return [s.strip() for s in re.split(r'(?<=[.!?\u0964])\s+', (t or '').strip()) if len(s.strip()) >= 25]
-
-    all_sents: list[str] = []
-    for ctx in context_texts or []:
-        if not isinstance(ctx, str) or not ctx.strip():
-            continue
-        for sent in _split(ctx[:8000]):
-            sent = sent.strip()
-            if len(sent) >= 30:
-                all_sents.append(sent)
-
-    if not all_sents:
-        return ''
-
-    def _word_set(s: str) -> set:
-        return set(re.findall(r'\b\w{3,}\b', s.lower()))
-
-    def _overlap_sim(sa: set, sb: set) -> float:
-        if not sa or not sb:
-            return 0.0
-        return len(sa & sb) / max(len(sa | sb), 1)
-
-    wh_kind = wh or _classify_wh(question)
-
-    def _score(sent: str) -> float:
-        stoks = set(_tokenize_query(sent))
-        if not stoks or not q_tokens:
-            return 0.0
-        overlap = len(stoks & q_tokens)
-        precision = overlap / max(len(stoks), 1)
-        recall = overlap / max(len(q_tokens), 1)
-        base = overlap * 8.0 + precision * 4.0 + recall * 6.0
-        return base + _wh_score_bonus(wh_kind, sent)
-
-    scores = [_score(s) for s in all_sents]
-
-    lambda_mmr = 0.65
-    target = 5
-    candidates = list(range(len(all_sents)))
-    selected: list[int] = []
-    selected_wsets: list[set] = []
-
-    while candidates and len(selected) < target:
-        best_ci = None
-        best_sc = -1e9
-        for ci in candidates:
-            rel = scores[ci]
-            if not selected_wsets:
-                sc = rel
-            else:
-                max_sim = max(_overlap_sim(_word_set(all_sents[ci]), sw) for sw in selected_wsets)
-                sc = lambda_mmr * rel - (1.0 - lambda_mmr) * max_sim
-            if sc > best_sc:
-                best_sc = sc
-                best_ci = ci
-        if best_ci is None or scores[best_ci] < 2.0:
-            break
-        candidates.remove(best_ci)
-        selected.append(best_ci)
-        selected_wsets.append(_word_set(all_sents[best_ci]))
-
-    if not selected:
-        if all_sents and any(s > 0 for s in scores):
-            best_i = max(range(len(all_sents)), key=lambda i: scores[i])
-            return all_sents[best_i].strip()
-        return (all_sents[0] if all_sents else '').strip()
-
-    selected.sort()
-    out: list[str] = []
-    seen: set[str] = set()
-    for i in selected:
-        s = all_sents[i].strip()
-        key = s.lower()
-        if key not in seen:
-            seen.add(key)
-            out.append(s)
-
-    return ' '.join(out).strip()
-
-
 def _context_as_activity(doc: dict, *, text: str | None = None, score: float | None = None) -> dict:
     # Match the shape Looma search UI expects (fp/fn/ft/dn/ndn/etc.).
     out = {}
@@ -1110,6 +725,139 @@ def _context_as_activity(doc: dict, *, text: str | None = None, score: float | N
         out['score'] = float(score)
     if text:
         out['rag_text'] = str(text)
+    return out
+
+
+_SOURCE_CARDS_MAX = 3
+_MEDIA_EXTS = ('.mp4', '.m4v', '.webm', '.mov', '.mp3', '.m4a', '.ogg', '.wav')
+_VIDEO_EXTS = ('.mp4', '.m4v', '.webm', '.mov')
+_FT_BY_EXT = {'.pdf': 'pdf', '.htm': 'html', '.html': 'html'}
+_ACTIVITY_CACHE = {'at': 0.0, 'by_fn': None, 'chapters': {}, 'by_mongo': {}}
+# Text that lives only in Mongo (lessons, text files, timelines) is ingested from
+# exported files content/_mongo/<collection>/<_id>[_ne].html; a chunk from one
+# maps back to the activity that opens it (matched on its mongoID).
+_MONGO_DOC_FT = {'lessons': 'lesson', 'text_files': 'text', 'histories': 'history'}
+_ACTIVITY_CACHE_LOCK = threading.Lock()
+_ACTIVITY_CACHE_TTL = 600
+
+
+def _activity_maps(handler_cls) -> tuple[dict, dict]:
+    """fn (lower case) -> [activities], and chapter id -> chapter, from Mongo,
+    cached for 10 minutes (activities has no index on fn). Also fills
+    _ACTIVITY_CACHE['by_mongo']: mongoID -> lesson / text / history activity."""
+    c = _ACTIVITY_CACHE
+    if c['by_fn'] is not None and time.time() - c['at'] < _ACTIVITY_CACHE_TTL:
+        return c['by_fn'], c['chapters']
+    with _ACTIVITY_CACHE_LOCK:
+        if c['by_fn'] is None or time.time() - c['at'] >= _ACTIVITY_CACHE_TTL:
+            coll = handler_cls._mongo_collection()
+            by_fn = {}
+            proj = {'dn': 1, 'ndn': 1, 'ft': 1, 'fp': 1, 'fn': 1, 'thumb': 1, 'src': 1, 'ch_id': 1, 'lang': 1}
+            for d in coll.find({'fn': {'$type': 'string'}}, proj):
+                by_fn.setdefault(d['fn'].lower(), []).append(d)
+            chapters = {d['_id']: d for d in coll.database['chapters'].find({}, {'dn': 1, 'ndn': 1})}
+            by_mongo = {}
+            for d in coll.find({'ft': {'$in': list(_MONGO_DOC_FT.values())}, 'mongoID': {'$exists': True}},
+                               dict(proj, mongoID=1)):
+                by_mongo.setdefault(str(d['mongoID']), d)
+            c.update(at=time.time(), by_fn=by_fn, chapters=chapters, by_mongo=by_mongo)
+    return c['by_fn'], c['chapters']
+
+
+def _source_card(handler_cls, hit: dict) -> tuple[dict, str] | None:
+    """The Looma activity a retrieved chunk came from, as a card the UI renders
+    with LOOMA.makeActivityButton, plus a key to drop repeats. A subtitle
+    (.vtt / _np.vtt) maps to its video or audio, a chapter file to its chapter.
+    None for files Looma cannot open on their own (.txt, .docx, ...)."""
+    fp, fn = hit.get('looma_fp'), hit.get('looma_fn')
+    if not fn:
+        return None
+    try:
+        by_fn, chapters = _activity_maps(handler_cls)
+    except Exception as exc:
+        logger.warning('source cards without Mongo: %s', exc)
+        by_fn, chapters = {}, {}
+    stem, ext = os.path.splitext(fn)
+    ext = ext.lower()
+
+    if fp and '/_mongo/' in fp:
+        mid = re.sub(r'_ne$', '', stem)
+        d = (_ACTIVITY_CACHE.get('by_mongo') or {}).get(mid)
+        if not d:
+            return None
+        card = _context_as_activity(d)
+        card['mongoID'] = str(d['mongoID'])
+        return card, 'a:' + str(card.get('_id'))
+
+    if fp and '/chapters/' in fp:
+        cid = re.sub(r'-nepali$', '', stem)
+        ch = chapters.get(cid)
+        if ch:
+            nepali = stem.endswith('-nepali')
+            return ({'_id': cid, 'ID': cid, 'ft': 'chapter', 'ch_id': cid, 'lang': 'np' if nepali else 'en',
+                     'dn': ch.get('dn') or cid, 'ndn': ch.get('ndn') or ch.get('dn') or cid}, 'ch:' + cid)
+
+    names = [fn]
+    if ext == '.vtt':
+        base = re.sub(r'_np$', '', stem)
+        names = [base + e for e in _MEDIA_EXTS]
+    for name in names:
+        docs = by_fn.get(name.lower()) or []
+        if docs:
+            d = next((x for x in docs if x.get('fp') == fp), docs[0])
+            card = _context_as_activity(d)
+            if not d.get('fp') and fp:
+                card['fp'] = fp
+            return card, 'a:' + str(card.get('_id'))
+
+    # Not registered as an activity: a plain file card, when Looma can play it.
+    raw = hit.get('source_path_raw') or ''
+    if ext == '.vtt':
+        base = re.sub(r'_np$', '', stem)
+        for e in _MEDIA_EXTS:
+            if raw and os.path.exists(os.path.join(os.path.dirname(raw), base + e)):
+                fn, ft = base + e, ('video' if e in _VIDEO_EXTS else 'audio')
+                break
+        else:
+            return None
+    else:
+        ft = _FT_BY_EXT.get(ext)
+        if not ft:
+            return None
+    dn = re.sub(r'[_\s]+', ' ', os.path.splitext(fn)[0]).strip()
+    return {'_id': f'{fp}{fn}', 'ft': ft, 'fp': fp, 'fn': fn, 'dn': dn, 'ndn': dn}, 'f:' + f'{fp}{fn}'.lower()
+
+
+def _source_cards(handler_cls, items, limit: int = _SOURCE_CARDS_MAX) -> list[dict]:
+    """items: [(hit, text, n, cited)] best first -> at most `limit` cards, one
+    per activity (several chunks of one page, or a video and its Nepali
+    subtitles, give one card)."""
+    out, keys = [], set()
+    for hit, text, n, cited in items:
+        if len(out) >= limit:
+            break
+        try:
+            made = _source_card(handler_cls, hit)
+        except Exception as exc:
+            logger.warning('source card failed: %s', exc)
+            made = None
+        if not made or made[1] in keys:
+            continue
+        card, key = made
+        # Same type and title reads as a duplicate to a user even when the
+        # activities differ (one chapter title used in two grades): keep one.
+        name_key = 'n:%s:%s' % (card.get('ft') or '', str(card.get('dn') or card.get('ndn') or card.get('fn') or '').strip().lower())
+        if name_key in keys:
+            continue
+        keys.add(key)
+        keys.add(name_key)
+        text = (text or '').strip()
+        if len(text) > 600:
+            text = text[:600].rsplit(' ', 1)[0].rstrip() + '…'
+        card.update(rag_text=text, n=n, cited=bool(cited))
+        if hit.get('hybrid_score') is not None:
+            card['score'] = float(hit['hybrid_score'])
+        out.append(card)
     return out
 
 
@@ -1539,23 +1287,43 @@ def open_or_create_vector_collection(path: str, name: str, dim: int):
 def lexical_search(conn, query, *, subject=None, grade_level=None, chapter_id=None, limit=10):
     # SQLite FTS5 "MATCH" uses its own query language; user text like "?" or "-" can
     # trigger syntax errors. Normalize into a safe bag-of-words query.
-    def _fts5_safe_query(text: str) -> str:
-        t = (text or '').strip()
-        if not t:
-            return ''
-        tokens = _tokenize_query(t)
-        return ' '.join(tokens[:30]).strip()
-
-    safe_q = _fts5_safe_query(str(query or ''))
-    if not safe_q:
+    # FTS5 ANDs bare terms. The whole question used to be sent, so "why do we
+    # need to save water" only matched chunks containing "why", "do" and "we"
+    # too. Send the content words only, each quoted: Devanagari words are split
+    # at vowel signs by the unicode61 tokenizer, and quoting keeps their pieces
+    # together. (OR of the terms was tried: 2-26 s on the box's 1 M chunks.)
+    tokens = _tokenize_query(str(query or '').strip())
+    content = list(dict.fromkeys(t for t in tokens if len(t) >= 2 and t not in rag_answer.STOPWORDS)) or tokens
+    if not content:
         return []
+    attempts = [content[:8]]
+    if len(content) > 2:
+        attempts.append(sorted(content, key=len, reverse=True)[:2])   # longest = usually rarest
+    rows = []
+    for terms in attempts:
+        safe_q = ' '.join('"' + t.replace('"', '') + '"' for t in terms)
+        rows = _fts_rows(conn, safe_q, subject, grade_level, chapter_id, limit)
+        if rows:
+            break
+    out = []
+    for row in rows:
+        # Same exclusions as the vector index (quiz/keyword sidecars, glossary).
+        if (row['file_type'] or '').lower() in rag_store.EXCLUDED_FILE_TYPES:
+            continue
+        out.append({'id': row['chunk_id'], 'score': float(row['score']) if row['score'] is not None else 0.0,
+                    'tier': rag_store.tier_for(row['source_path']), 'source': 'fts'})
+    return out
+
+
+def _fts_rows(conn, safe_q, subject, grade_level, chapter_id, limit):
 
     rows = conn.execute(
         """
-        SELECT chunks_fts.chunk_id, bm25(chunks_fts) AS score
+        SELECT chunks_fts.chunk_id, bm25(chunks_fts) AS score, d.source_path, d.file_type
         FROM chunks_fts
         JOIN chunks c ON c.id = chunks_fts.chunk_id
         LEFT JOIN chapters ch ON c.chapter_id = ch.id
+        LEFT JOIN documents d ON c.document_id = d.id
         WHERE chunks_fts MATCH ?
           AND (? IS NULL OR ch.subject = ?)
           AND (? IS NULL OR ch.grade_level = ?)
@@ -1574,11 +1342,7 @@ def lexical_search(conn, query, *, subject=None, grade_level=None, chapter_id=No
             limit,
         ),
     ).fetchall()
-
-    out = []
-    for row in rows:
-        out.append({'id': row['chunk_id'], 'score': float(row['score']) if row['score'] is not None else 0.0, 'source': 'fts'})
-    return out
+    return rows
 
 
 @_otel_span('rag.semantic_search')
@@ -1591,64 +1355,201 @@ def semantic_search(
     subject=None,
     grade_level=None,
     chapter_id=None,
+    tiers=None,
+    lang=None,
     topk=25,
     limit=10,
-    min_score=0.20,
+    min_score=0.25,
+    qvec=None,
 ):
-    import zvec  # noqa: WPS433
-    q = model.encode(query, normalize_embeddings=True).tolist()
-    results = collection.query(zvec.VectorQuery('embedding', vector=q), topk=topk)
-
+    """HNSW search over `rag_chunks`. Subject/grade/tier filters run inside zvec
+    (before the top-k cut); only chapter_id, which is not a zvec field, is
+    checked against SQLite afterwards. Score = cosine similarity."""
+    if qvec is None:
+        qvec = model.encode(query, normalize_embeddings=True).tolist()
+    hits = rag_store.search(collection, qvec, topk=topk, tiers=tiers, grade=grade_level, subject=subject, lang=lang)
     out = []
-    for rank, r in enumerate(results, start=1):
-        doc_id = get_doc_id(r)
-        score = getattr(r, 'score', None)
-        if score is not None and min_score is not None and float(score) < float(min_score):
+    for h in hits:
+        if min_score is not None and h['score'] < min_score:
             continue
-
-        if subject is not None or grade_level is not None or chapter_id is not None:
-            row = conn.execute(
-                """
-                SELECT c.chapter_id, ch.subject, ch.grade_level
-                FROM chunks c
-                LEFT JOIN chapters ch ON c.chapter_id = ch.id
-                WHERE c.id = ?
-                """,
-                (doc_id,),
-            ).fetchone()
-            if not row:
+        if chapter_id is not None:
+            row = conn.execute('SELECT chapter_id FROM chunks WHERE id = ?', (h['id'],)).fetchone()
+            if not row or row['chapter_id'] != chapter_id:
                 continue
-            if subject is not None and row['subject'] != subject:
-                continue
-            if grade_level is not None and row['grade_level'] != grade_level:
-                continue
-            if chapter_id is not None and row['chapter_id'] != chapter_id:
-                continue
-
-        if score is None:
-            out.append({'id': doc_id, 'score': 1.0 / rank, 'source': 'zvec'})
-        else:
-            out.append({'id': doc_id, 'score': float(score), 'source': 'zvec'})
+        out.append({'id': h['id'], 'score': h['score'], 'tier': h.get('tier'), 'source': 'zvec'})
         if len(out) >= limit:
             break
-
     return out
 
 
-def merge_results(fts_results, zvec_results, limit=10):
+# How much to trust each shelf when two hits are otherwise equal: the textbook
+# a class uses beats a teacher guide, which beats general reference and the
+# Wikipedia-for-Schools mirror.
+TIER_WEIGHT = {'textbook': 1.25, 'teacher': 1.0, 'reference': 0.9, 'wiki': 0.85}
+
+
+def merge_results(*ranked_lists, limit=10, weights=None):
+    """Weighted reciprocal-rank fusion. Each list: [{'id', 'tier'?}, ...] best first."""
+    weights = weights or [1.0] * len(ranked_lists)
     merged = {}
-
-    for rank, item in enumerate(fts_results, start=1):
-        merged.setdefault(item['id'], 0.0)
-        merged[item['id']] += 2.0 / rank
-
-    for rank, item in enumerate(zvec_results, start=1):
-        merged.setdefault(item['id'], 0.0)
-        merged[item['id']] += 1.0 / rank
-
-    ranked = [{'id': k, 'hybrid_score': v} for k, v in merged.items()]
+    tiers = {}
+    for lst, w in zip(ranked_lists, weights):
+        for rank, item in enumerate(lst or [], start=1):
+            merged[item['id']] = merged.get(item['id'], 0.0) + w / (60.0 + rank)
+            if item.get('tier'):
+                tiers[item['id']] = item['tier']
+    ranked = [{'id': k, 'hybrid_score': v * TIER_WEIGHT.get(tiers.get(k), 1.0)} for k, v in merged.items()]
     ranked.sort(key=lambda x: x['hybrid_score'], reverse=True)
     return ranked[:limit]
+
+
+@_otel_span('rag.retrieve')
+def rag_retrieve(handler_cls, conn, question, *, grade=None, subject=None, chapter_id=None, limit=8):
+    """Hybrid retrieval for the assistant: BM25 + two zvec queries (curriculum
+    shelves for the student's grade, and everything), fused with RRF."""
+    model = handler_cls._get_model()
+    collection = handler_cls._get_collection()
+    qvec = model.encode(question, normalize_embeddings=True).tolist()
+    # The embedding model is multilingual, so an English question also matches
+    # Nepali chapters. Keep sources in the question's language: those are the
+    # ones the answer step can use.
+    lang = 'ne' if rag_answer.is_nepali(question) else 'en'
+    curriculum = semantic_search(collection, model, conn, question, grade_level=grade, subject=subject, lang=lang,
+                                 chapter_id=chapter_id, tiers=['textbook', 'teacher'], topk=24, limit=12, qvec=qvec)
+    everything = semantic_search(collection, model, conn, question, chapter_id=chapter_id, lang=lang,
+                                 topk=24, limit=12, qvec=qvec)
+    fts = lexical_search(conn, question, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=12)
+    # BM25 (all content words present) is the more precise signal, and the
+    # multilingual embedding is weak on Nepali: weight it accordingly.
+    fts_w = 2.5 if lang == 'ne' else 1.5
+    merged = merge_results(curriculum, everything, fts, limit=limit * 3, weights=[1.0, 0.8, fts_w])
+    # "What is X?": the sentences that define X ("X is ...", "Xs are ...",
+    # "... is called X") are rarely the best BM25 or vector match for the bare
+    # word; ask for them by phrase.
+    subj = rag_answer.definition_subject(question)
+    def_rows = []
+    if subj:
+        try:
+            seen = {m['id'] for m in merged}
+            def_rows = [{'id': r[0], 'hybrid_score': 0.0} for r in _definition_rows(conn, subj) if r[0] not in seen]
+        except Exception as exc:
+            logger.warning('definition search failed: %s', exc)
+    hits = hydrate_results(conn, merged)
+    hits = [h for h in hits if rag_store.is_evidence(h.get('source_path_raw') or h.get('source_path') or '')]
+    # Many chunks carry no language tag (teacher guides, reference), so the
+    # zvec lang filter lets them through: check the script of the text itself.
+    want_ne = lang == 'ne'
+    hits = [h for h in hits if rag_answer.is_nepali((h.get('text') or '')[:400]) == want_ne
+            or (not want_ne and _latin_share(h.get('text') or '') > 0.5)]
+    hits = hits[:limit] + [h for h in hydrate_results(conn, def_rows)
+                           if rag_store.is_evidence(h.get('source_path_raw') or h.get('source_path') or '')]
+    # The encyclopedia article the question is about ("Where is Mount
+    # Everest?" -> "Mount Everest"): its opening paragraph says what, where and
+    # when. Titles are English.
+    if not want_ne:
+        try:
+            art = rag_context.topic_article(conn, question)
+        except Exception as exc:
+            art = None
+            logger.warning('topic_article failed: %s', exc)
+        if art:
+            # Drop retrieved chunks that are part of this opening paragraph.
+            lead_ids = {art['chunk_id'].rsplit('_c', 1)[0] + f'_c{i}' for i in range(rag_context.LEAD_CHUNKS)}
+            hits = [h for h in hits if str(h.get('id') or '') not in lead_ids]
+            extra = hydrate_results(conn, [{'id': art['chunk_id'], 'hybrid_score': 0.0}])
+            if extra:
+                extra[0].update({'text': art['text'], 'chunk_text': art['text'], 'topic_article': True})
+                hits.insert(min(2, len(hits)), extra[0])
+    # Whole sentences: each chunk with its neighbours.
+    try:
+        rag_context.expand(conn, hits)
+    except Exception as exc:
+        logger.warning('expand failed: %s', exc)
+    return hits
+
+
+def _definition_rows(conn, subject: str, limit: int = 6):
+    if rag_answer.is_nepali(subject):
+        w = re.sub(r'[^\u0900-\u097f ]', '', subject).strip()
+        if not w:
+            return []
+        # "X भनेको ... हो", "... लाई X भनिन्छ", "Xलाई ... भनिन्छ"
+        phrases = [f'"{w} भनेको"', f'"{w} भनिन्छ"', f'"{w}लाई"']
+    else:
+        w = re.sub(r'[^A-Za-z \-]', '', subject).strip().lower()
+        if not w:
+            return []
+        forms = {w, w + 's'} if not w.endswith('s') else {w, w[:-1]}
+        phrases = []
+        for f in sorted(forms):
+            phrases += [f'"{f} is"', f'"{f} are"', f'"called {f}"', f'"called an {f}"', f'"called a {f}"', f'"known as {f}"']
+    q = ' OR '.join(phrases)
+    # bm25 favours short chunks that repeat the word ("Which pollution is
+    # shown ...?"), not definitions, so take a wide pool and rank it here: a
+    # sentence that starts with the subject and defines it first, from the
+    # school books before the teacher guides, the encyclopedia and the
+    # vocational books.
+    rows = conn.execute(
+        """
+        SELECT chunks_fts.chunk_id, d.source_path, d.file_type, c.clean_text
+        FROM chunks_fts
+        JOIN chunks c ON c.id = chunks_fts.chunk_id
+        JOIN documents d ON d.id = c.document_id
+        WHERE chunks_fts MATCH ?
+        ORDER BY bm25(chunks_fts)
+        LIMIT ?
+        """,
+        (q, max(limit * 4, _DEF_POOL)),
+    ).fetchall()
+    strong, weak = _definition_patterns(subject)
+    ranked = []
+    for rank, r in enumerate(rows):
+        if (r[2] or '').lower() in rag_store.EXCLUDED_FILE_TYPES or not rag_store.is_evidence(r[1], r[2]):
+            continue
+        text = rag_answer._QUOTES.sub('', r[3] or '')
+        score = 2 if strong and strong.search(text) else (1 if weak and weak.search(text) else 0)
+        ranked.append((-score, _source_tier(r[1]), rank, r[:3]))
+    ranked.sort()
+    return [r for *_, r in ranked[:limit]]
+
+
+_DEF_POOL = int(os.environ.get('LOOMA_RAG_DEF_POOL') or 200)
+
+
+def _source_tier(path: str) -> int:
+    p = (path or '').lower()
+    if '/content/chapters/' in p or '/textbooks/' in p:
+        return 0
+    if '/teacher tools/' in p or '/health/' in p:
+        return 1
+    if '/vocations/' in p:
+        return 3
+    return 2
+
+
+def _definition_patterns(subject: str):
+    """(strong, weak) regexes for a definition of the subject: a sentence that
+    starts with it and says what it is, or "... is called X"."""
+    if rag_answer.is_nepali(subject):
+        w = re.escape(re.sub(r'[^ऀ-ॿ ]', '', subject).strip())
+        if not w:
+            return None, None
+        return (re.compile(r'(?:^|[।?!]\s*)' + w + r'\s+भनेको'),
+                re.compile(w + r'(?:लाई)?\s+(?:[^।]{0,80}\s)?भनिन्छ'))
+    w = re.sub(r'[^A-Za-z \-]', '', subject).strip().lower()
+    if not w:
+        return None, None
+    name = r'\s+'.join(re.escape(x) for x in w.split()) + r'(?:e?s)?'
+    strong = re.compile(r'(?:^|[.!?:]\s+|\bthat\s+)(?:(?:a|an|the)\s+)?' + name +
+                        r'\s+(?:is|are|refers to|means)\s+(?:a|an|the|any|one|defined|called|known|used|made|said|'
+                        r'that|those|all)\b', re.I)
+    weak = re.compile(r'\b(?:is|are)\s+(?:also\s+)?(?:called|known as|termed)\s+(?:a\s+|an\s+|the\s+)?' + name + r'\b', re.I)
+    return strong, weak
+
+
+def _latin_share(text: str) -> float:
+    t = re.sub(r'[\s\d\W_]+', '', text[:400])
+    return (sum(c.isascii() for c in t) / len(t)) if t else 0.0
 
 
 def hydrate_results(conn, merged):
@@ -2127,15 +2028,21 @@ class Handler(BaseHTTPRequestHandler):
 
     @classmethod
     def _get_model(cls):
+        # The warm-up thread and the first request can arrive together: loading
+        # the model twice at once fails ("Cannot copy out of meta tensor"), and
+        # zvec allows one handle per collection.
         if cls._model is None:
-            cls._model = load_model()
+            with _LOAD_LOCK:
+                if cls._model is None:
+                    cls._model = load_model()
         return cls._model
 
     @classmethod
     def _get_collection(cls):
         if cls._collection is None:
-            import zvec  # noqa: WPS433
-            cls._collection = zvec.open(path=COLLECTION_PATH)
+            with _LOAD_LOCK:
+                if cls._collection is None:
+                    cls._collection = rag_store.open_collection()
         return cls._collection
 
     @classmethod
@@ -2379,79 +2286,49 @@ class Handler(BaseHTTPRequestHandler):
 
     @classmethod
     def _rebuild_activities_index(cls) -> int:
+        """(Re)build the Search page's zvec index from Mongo `activities`.
+        Builds beside the live collection and swaps it in when complete, so
+        the page keeps searching during a rebuild."""
         with cls._activities_lock:
             import zvec  # noqa: WPS433
 
-            coll = cls._mongo_collection()
-            cursor = coll.find({})
-
-            if os.path.exists(ACTIVITIES_INDEX_PATH):
-                shutil.rmtree(ACTIVITIES_INDEX_PATH, ignore_errors=True)
-
             model = cls._get_model()
-            dim = int(getattr(model, 'get_sentence_embedding_dimension', lambda: 384)())
-            vecs = open_or_create_vector_collection(ACTIVITIES_INDEX_PATH, 'activities', dim)
+            # The container pins OMP to 1 thread for request latency; a rebuild
+            # embeds ~30k windows, so lend it all but one core meanwhile.
+            try:
+                import torch  # noqa: WPS433
+                prev_threads = torch.get_num_threads()
+                torch.set_num_threads(max(1, (os.cpu_count() or 2) - 1))
+            except Exception:
+                torch, prev_threads = None, None
+            target = ACTIVITIES_INDEX_PATH + '.build'
+            count = activities_store.build(cls._mongo_collection(), model, target, log=logger.info)
 
-            docs = []
-            texts = []
-            count = 0
-
-            for mongo_doc in cursor:
-                source_id = str(mongo_doc.get('_id'))
-                parts = collect_strings(mongo_doc)
-                if not parts:
-                    continue
-
-                search_text = ' '.join(dict.fromkeys(parts))[:12000]
-                docs.append(source_id)
-                texts.append(search_text)
-
-                if len(docs) >= ACTIVITIES_BATCH_SIZE:
-                    embeddings = model.encode(texts, normalize_embeddings=True)
-                    payload = [
-                        zvec.Doc(id=doc_id, vectors={'embedding': emb.tolist()})
-                        for doc_id, emb in zip(docs, embeddings)
-                    ]
-                    vecs.insert(payload)
-                    count += len(payload)
-                    docs, texts = [], []
-
-            if docs:
-                embeddings = model.encode(texts, normalize_embeddings=True)
-                payload = [
-                    zvec.Doc(id=doc_id, vectors={'embedding': emb.tolist()})
-                    for doc_id, emb in zip(docs, embeddings)
-                ]
-                vecs.insert(payload)
-                count += len(payload)
-
-            cls._activities_collection = vecs
+            cls._activities_collection = None
+            if os.path.exists(ACTIVITIES_INDEX_PATH):
+                shutil.rmtree(ACTIVITIES_INDEX_PATH)
+            os.rename(target, ACTIVITIES_INDEX_PATH)
+            cls._activities_collection = activities_store.open_collection()
             cls._activities_count = count
             cls._activities_error = None
+            if torch is not None and prev_threads:
+                torch.set_num_threads(prev_threads)
             return count
 
     @classmethod
     def _get_activities_collection(cls):
+        """The live index. Never builds on a search request: a full build takes
+        tens of minutes on the box; it is started with POST /rebuild_activities."""
         with cls._activities_lock:
-            if cls._activities_collection is not None:
-                return cls._activities_collection
-
-            try:
-                model = cls._get_model()
-                dim = int(getattr(model, 'get_sentence_embedding_dimension', lambda: 384)())
-                cls._activities_collection = open_or_create_vector_collection(ACTIVITIES_INDEX_PATH, 'activities', dim)
+            if cls._activities_collection is None and os.path.exists(ACTIVITIES_INDEX_PATH):
                 try:
-                    cls._activities_count = int(getattr(cls._activities_collection.stats, 'doc_count', 0) or 0)
-                except Exception:
-                    cls._activities_count = 0
-                cls._activities_error = None
-            except Exception as exc:
-                cls._activities_collection = None
-                cls._activities_error = str(exc)
-
-            if cls._activities_collection is None or cls._activities_count == 0:
-                cls._rebuild_activities_index()
-
+                    cls._activities_collection = activities_store.open_collection()
+                    cls._activities_count = int(cls._activities_collection.stats.doc_count or 0)
+                    cls._activities_error = None
+                except Exception as exc:
+                    cls._activities_error = str(exc)
+            if cls._activities_collection is None:
+                raise RuntimeError('activities index not built (POST /rebuild_activities)')
             return cls._activities_collection
 
     def do_POST(self):
@@ -2467,11 +2344,26 @@ class Handler(BaseHTTPRequestHandler):
         if parsed.path == '/rebuild_activities':
             _otel_record('endpoint_calls', 1, route='/rebuild_activities', status='start')
             _otel_record('resource_actions', 1, action='rebuild_activities')
-            try:
-                count = self.__class__._rebuild_activities_index()
-                return self._json(200, {'ok': True, 'doc_count': count})
-            except Exception as exc:
-                return self._json(500, {'ok': False, 'error': str(exc)})
+            # Tens of minutes on the box, and this server handles one request
+            # at a time: build in a thread, keep answering. Progress shows in
+            # /health (activities_index) once the swap is done.
+            cls = self.__class__
+            if getattr(cls, '_activities_building', False):
+                return self._json(409, {'ok': False, 'error': 'rebuild already running'})
+
+            def _run():
+                cls._activities_building = True
+                try:
+                    n = cls._rebuild_activities_index()
+                    logger.info('activities index rebuilt: %s vectors', n)
+                except Exception as exc:
+                    cls._activities_error = str(exc)
+                    logger.warning('activities index rebuild failed: %s', exc)
+                finally:
+                    cls._activities_building = False
+
+            threading.Thread(target=_run, name='rebuild-activities', daemon=True).start()
+            return self._json(202, {'ok': True, 'started': True})
 
         if parsed.path not in {'/generate', '/publish_resources', '/generate_teacher_guide', '/generate_lesson', '/update_lesson_theory', '/save_summary', '/save_keywords', '/rag_query', '/rag_feedback', '/replace_pdf', '/delete_resource'}:
             return self._json(404, {'error': 'Not found'})
@@ -2640,281 +2532,128 @@ class Handler(BaseHTTPRequestHandler):
 
         if parsed.path == '/rag_query':
             _otel_record('endpoint_calls', 1, route='/rag_query', status='start')
-            _otel_record('chat_calls', 1, route='/rag_query')
             _rag_t0 = time.time()
             request_id = self._gen_request_id()
-            query_logger = QueryLogger(logger, "rag_query", request_id)
-            query_logger.__enter__()
-            
-            ql_exited = False
+            question = (payload.get('question') or payload.get('q') or '').strip()
+            if not question:
+                return self._json(400, {'ok': False, 'error': 'Missing question'})
+
+            topk = max(1, min(int(payload.get('topk') or payload.get('limit') or 8), 15))
+            subject = (str(payload.get('subject')).strip().lower() or None) if payload.get('subject') else None
             try:
-                question = (payload.get('question') or payload.get('q') or '').strip()
-                if not question:
-                    return self._json(400, {'ok': False, 'error': 'Missing question'})
-
-                # zvec is the only search engine; the legacy/Qdrant engine was removed.
-                engine = 'zvec'
-                mode = str(payload.get('mode') or 'hybrid').strip().lower()
-
-                topk = int(payload.get('topk') or payload.get('limit') or 6)
-                if topk < 1:
-                    topk = 1
-                if topk > 15:
-                    topk = 15
-
-                subject = payload.get('subject')
-                subject = str(subject).strip() if subject else None
-                grade = payload.get('grade')
-                try:
-                    grade = int(grade) if grade not in (None, '', False) else None
-                except Exception:
-                    grade = None
-                chapter_id = payload.get('chapter_id')
-                chapter_id = str(chapter_id).strip() if chapter_id else None
-                language = payload.get('language')
-                language = str(language).strip() if language else None
-
-                include_contexts = bool(payload.get('include_contexts', True))
-                max_context_chars = int(payload.get('max_context_chars') or 3200)
-                if max_context_chars < 400:
-                    max_context_chars = 400
-                if max_context_chars > 20000:
-                    max_context_chars = 20000
-                answer_max_chars = int(payload.get('answer_max_chars') or 260)
-                if answer_max_chars < 80:
-                    answer_max_chars = 80
-                if answer_max_chars > 800:
-                    answer_max_chars = 800
-
-                # Conversation history for query expansion in answer generation
-                raw_history = payload.get('history')
-                history = raw_history if isinstance(raw_history, list) else []
-                history = history[-10:]
-
-                _otel_set_attrs({
-                    "looma.request_id": request_id,
-                    "looma.ai.engine": engine,
-                    "looma.ai.mode": mode,
-                    "looma.ai.topk": topk,
-                    "looma.ai.question_chars": len(question),
-                    "looma.ai.history_len": len(history),
-                    "looma.ai.subject": subject or "",
-                    "looma.ai.grade": grade if grade is not None else -1,
-                    "looma.ai.chapter_id": chapter_id or "",
-                    "looma.ai.language": language or "",
-                })
-
-                # Always include contexts when we have relevant hits (UI depends on it).
-                include_contexts = True
-
-                # Learning: boost contexts that previously got 👍 for similar questions.
-                try:
-                    _ensure_learning_tables(conn)
-                except Exception:
-                    pass
-                boost_ids = _rag_boost_context_ids(conn, question=question, chapter_id=chapter_id, limit=3)
-
-            except Exception as exc:
-                ql_exited = True
-                try:
-                    query_logger.__exit__(type(exc), exc, exc.__traceback__)
-                except Exception:
-                    pass
-                return self._json(500, {'ok': False, 'error': str(exc)})
-            finally:
-                if not ql_exited:
-                    try:
-                        query_logger.__exit__(*sys.exc_info())
-                    except Exception:
-                        pass
-
-            ingestion = {
-                'sqlite_documents': None,
-                'sqlite_chapters': None,
-                'sqlite_chunks': None,
-                'zvec_docs': None,
-                'zvec_path': COLLECTION_PATH,
-            }
-            try:
-                ingestion['sqlite_documents'] = int(conn.execute('SELECT COUNT(*) AS n FROM documents').fetchone()['n'])
+                grade = int(payload.get('grade')) if payload.get('grade') not in (None, '', False) else None
             except Exception:
-                ingestion['sqlite_documents'] = None
-            try:
-                ingestion['sqlite_chapters'] = int(conn.execute('SELECT COUNT(*) AS n FROM chapters').fetchone()['n'])
-            except Exception:
-                ingestion['sqlite_chapters'] = None
-            try:
-                ingestion['sqlite_chunks'] = int(conn.execute('SELECT COUNT(*) AS n FROM chunks').fetchone()['n'])
-            except Exception:
-                ingestion['sqlite_chunks'] = None
-            try:
-                coll = self._get_collection()
-                ingestion['zvec_docs'] = int(getattr(getattr(coll, 'stats', None), 'doc_count', 0) or 0)
-            except Exception:
-                ingestion['zvec_docs'] = None
+                grade = None
+            chapter_id = str(payload.get('chapter_id')).strip() if payload.get('chapter_id') else None
+            raw_history = payload.get('history')
+            history = raw_history[-6:] if isinstance(raw_history, list) else []
 
-            wh_kind = _classify_wh(question)
+            # Short follow-ups ("and when did he die?") retrieve with the previous
+            # user turn prepended; the LLM still answers the question as asked.
+            retrieval_q = question
+            if history and len(_tokenize_query(question)) < 6:
+                prev = [h.get('content', '') for h in history if isinstance(h, dict) and h.get('role') == 'user' and h.get('content')]
+                if prev:
+                    retrieval_q = prev[-1] + ' ' + question
 
-            def _build_answer(context_texts: list[str]) -> str:
-                return _compose_answer(question, context_texts, history=history, wh=wh_kind)
+            _otel_set_attrs({
+                'looma.request_id': request_id,
+                'looma.ai.topk': topk,
+                'looma.ai.question_chars': len(question),
+                'looma.ai.history_len': len(history),
+                'looma.ai.subject': subject or '',
+                'looma.ai.grade': grade if grade is not None else -1,
+            })
 
-            # zvec/fts/hybrid over curriculum chunks (sqlite + optional zvec embeddings).
-            if mode not in {'hybrid', 'fts', 'semantic'}:
-                mode = 'hybrid'
-
-            results = []
+            timings = {}
             degraded = None
-            warning = None
-            if mode == 'fts':
-                fts_results = lexical_search(conn, question, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=topk)
-                results = hydrate_results(conn, [{'id': r['id'], 'hybrid_score': r['score']} for r in fts_results])
-            else:
-                try:
-                    model = self._get_model()
-                    collection = self._get_collection()
-                except Exception as exc:
-                    degraded = 'fts'
-                    warning = f'Embeddings unavailable; fell back to FTS ({exc}).'
-                    # Try with the current filters first; if we get nothing, broaden the search
-                    # (still better than returning an empty answer).
-                    fts_results = lexical_search(conn, question, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=max(topk, 8))
-                    if not fts_results and (subject is not None or grade is not None or chapter_id is not None):
-                        fts_results = lexical_search(conn, question, subject=None, grade_level=None, chapter_id=None, limit=max(topk, 10))
-                        warning = (warning + ' | Broadened FTS scope (no hits with filters).') if warning else 'Broadened FTS scope (no hits with filters).'
-                    results = hydrate_results(conn, [{'id': r['id'], 'hybrid_score': r['score']} for r in fts_results])
-                else:
-                    if mode == 'semantic':
-                        sem_results = semantic_search(
-                            collection,
-                            model,
-                            conn,
-                            question,
-                            subject=subject,
-                            grade_level=grade,
-                            chapter_id=chapter_id,
-                            topk=max(25, topk),
-                            limit=topk,
-                        )
-                        results = hydrate_results(conn, [{'id': r['id'], 'hybrid_score': r['score']} for r in sem_results])
-                    else:
-                        fts_results = lexical_search(conn, question, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=topk)
-                        sem_results = semantic_search(
-                            collection,
-                            model,
-                            conn,
-                            question,
-                            subject=subject,
-                            grade_level=grade,
-                            chapter_id=chapter_id,
-                            topk=max(25, topk),
-                            limit=topk,
-                        )
-                        merged = merge_results(fts_results, sem_results, limit=topk)
-                        results = hydrate_results(conn, merged)
-
-            # Convert chunk results to "activity-like" contexts so UI can distinguish and reuse thumbnails/icons.
-            contexts = []
-            context_texts = []
-            for r in results:
-                if not isinstance(r, dict):
-                    continue
-                t = (r.get('text') or '').strip()
-                if not t:
-                    continue
-                context_texts.append(t[:max_context_chars])
-                contexts.append(_context_as_chapter_chunk(r, score=r.get('hybrid_score'), max_chars=max_context_chars))
-
-            if boost_ids and contexts:
-                try:
-                    contexts.sort(key=lambda c: (0 if str(c.get('_id') or '') in boost_ids else 1))
-                except Exception:
-                    pass
-            answer = _build_answer(context_texts)
-            answer_source = 'curriculum' if answer else None
-
-            # If the curriculum index didn't yield a usable answer, try general
-            # knowledge sources so the chat model can still respond to any
-            # who/what/when/where/why/how question, on any topic.
-            external_refs: list[dict] = []
-            if (not answer) or _wh_score_bonus(wh_kind, answer) <= 0:
-                # 1) Dictionary fallback — only useful for "define / what is X".
-                if wh_kind in ('define', 'what'):
-                    word_match = re.search(r'\b(?:define|meaning of|what is|what are)\s+(?:an?\s+|the\s+)?([A-Za-zÀ-ÿ\-]+)', question, re.I)
-                    if word_match:
-                        d = _dictionary_lookup_general(word_match.group(1))
-                        if d:
-                            definition = (d.get('def')
-                                          or (isinstance(d.get('meanings'), list)
-                                              and d['meanings']
-                                              and (d['meanings'][0].get('def') or d['meanings'][0].get('definition')))
-                                          or '')
-                            if definition:
-                                answer = f"{word_match.group(1).strip().capitalize()}: {definition}"
-                                answer_source = 'dictionary'
-                                external_refs.append({'type': 'dictionary', 'word': d.get('en'), 'np': d.get('np'), 'def': definition})
-
-                # There is no step 2. The Looma dictionary above is the last
-                # fallback there is -- everything the assistant can say comes
-                # off this box. See the note where _wikipedia_lookup() used to be.
-
-            if not answer:
-                if results:
-                    answer = _direct_answer(question, context_texts, max_chars=400) or ''
-                if not answer:
-                    answer = "I couldn't find a confident answer. Try rephrasing the question or adding more detail (subject, chapter, or a keyword)."
-                    answer_source = answer_source or 'none'
-
-            # Make the final wording match the WH type.
-            answer = _shape_answer_for_wh(wh_kind, answer, question)
-
-            # When the student has Nepali selected, answer in Nepali. Uses the
-            # Looma dictionary + glossary (set env LOOMA_NLLB=1 for model-quality
-            # translation) — the same path the AI pages use for summaries.
-            if answer and str(language or '').strip().lower() in ('np', 'ne', 'nep', 'nepali', 'native'):
-                try:
-                    answer = translate_text_en_to_np(answer)
-                except Exception:
-                    pass
-
-            # Navigation intent detection
-            navigation = _navigate_chapters(conn, question, grade=grade, subject=subject) if _is_navigation_query(question) else []
-
-            # Coverage check: if zvec has fewer docs than sqlite chunks, surface as warning.
+            t = time.time()
             try:
-                if ingestion.get('sqlite_chunks') and ingestion.get('zvec_docs') is not None:
-                    if int(ingestion['zvec_docs'] or 0) < int(ingestion['sqlite_chunks'] or 0):
-                        extra = f"ZVEC doc_count ({ingestion['zvec_docs']}) < sqlite chunks ({ingestion['sqlite_chunks']}); ingestion may be incomplete."
-                        warning = (warning + ' | ' + extra) if warning else extra
+                hits = rag_retrieve(self, conn, retrieval_q, grade=grade, subject=subject, chapter_id=chapter_id, limit=topk)
+            except Exception as exc:
+                degraded = 'fts'
+                logger.warning('rag_retrieve failed, FTS only: %s', exc)
+                fts = lexical_search(conn, retrieval_q, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=topk)
+                hits = hydrate_results(conn, [{'id': r['id'], 'hybrid_score': r['score']} for r in fts])
+            timings['retrieve_ms'] = int((time.time() - t) * 1000)
+
+            try:
+                _model = self._get_model()
+                _embed = lambda texts: _model.encode(texts, normalize_embeddings=True, batch_size=32).tolist()
+            except Exception:
+                _embed = None
+            result = rag_answer.answer(question, hits, embed=_embed)
+            timings['llm_ms'] = result['llm_ms']
+            answer = result['answer']
+            answer_source = result['answer_source']
+            external_refs = []
+
+            # Nothing in the curriculum: the Looma dictionary is the only other
+            # local source, and only for "what is X / define X".
+            if not answer and result['wh_kind'] in ('define', 'what'):
+                m = re.search(r'\b(?:define|meaning of|what is|what are)\s+(?:an?\s+|the\s+)?([A-Za-z\-]+)', question, re.I)
+                d = _dictionary_lookup_general(m.group(1)) if m else None
+                definition = (d or {}).get('def') or ''
+                if definition:
+                    answer = f"{m.group(1).strip().capitalize()}: {definition}"
+                    answer_source = 'dictionary'
+                    external_refs.append({'type': 'dictionary', 'word': d.get('en'), 'np': d.get('np'), 'def': definition})
+            # No verified answer and no dictionary entry: the LLM writes one from
+            # the best retrieved Looma passages (all content, not only the
+            # textbooks), completing it with what it knows. Unverified, so it is
+            # labelled 'llm_open'.
+            if not answer:
+                o = rag_answer.open_answer(question, result['sources'], hits)
+                timings['llm_open_ms'] = o['ms']
+                if o['answer']:
+                    answer = o['answer']
+                    answer_source = 'llm_open'
+                elif o['error']:
+                    logger.warning('open answer failed: %s', o['error'])
+            if not answer:
+                answer = ("यो प्रश्नको उत्तर Looma को सामग्रीमा भेटिएन।" if rag_answer.is_nepali(question)
+                          else "I could not find an answer in Looma's content. Try different words, or name the subject or chapter.")
+
+            # Cards shown under the answer: the evidence first (numbered as the
+            # answer cites it), then other retrieved items, each as its real
+            # Looma activity, at most once each.
+            contexts = _source_cards(
+                self.__class__,
+                [(s['hit'], s['text'], s['n'], s['n'] in result['cited']) for s in result['sources']]
+                + [(h, h.get('text'), None, False) for h in hits],
+            )
+
+            timings['total_ms'] = int((time.time() - _rag_t0) * 1000)
+            try:
+                _otel_record('chat_calls', 1, route='/rag_query', wh_kind=result['wh_kind'], answer_source=answer_source)
+                _otel_record('endpoint_latency_ms', timings['total_ms'], route='/rag_query', status='ok')
+                _otel_record('endpoint_calls', 1, route='/rag_query', status='ok')
+                if result['rejected']:
+                    _otel_record('llm_rejected', 1, reason=result['rejected'].get('reason', ''))
             except Exception:
                 pass
+            if result['rejected']:
+                logger.info('rag answer fallback: %s', json.dumps(result['rejected'], ensure_ascii=False)[:400])
 
-            out = {
+            return self._json(200, {
                 'ok': True,
-                'engine': 'zvec',
-                'mode': mode,
-                'degraded_to': degraded,
-                'warning': warning,
                 'question': question,
                 'answer': answer,
-                'wh_kind': wh_kind,
                 'answer_source': answer_source,
-                'external_refs': external_refs,
+                'wh_kind': result['wh_kind'],
+                'cited': result['cited'],
                 'contexts': contexts,
-                'ingestion': ingestion,
-                'navigation': navigation,
-            }
-            try:
-                _otel_record('chat_calls', 1, route='/rag_query',
-                             wh_kind=str(wh_kind or ''),
-                             answer_source=str(answer_source or ''))
-                _otel_record('chat_answer_chars', float(len(answer or '')))
-                _otel_record('endpoint_latency_ms',
-                             (time.time() - _rag_t0) * 1000.0,
-                             route='/rag_query', status='ok')
-                _otel_record('endpoint_calls', 1, route='/rag_query', status='ok')
-            except Exception:
-                pass
-            return self._json(200, out)
+                'external_refs': external_refs,
+                'degraded_to': degraded,
+                'warning': None,
+                'timings': timings,
+                # Diagnostics: the raw retrieved chunks and why an LLM answer
+                # was refused. Only when asked for, it is large.
+                **({'debug': {'hits': [{'id': h.get('id'), 'text': h.get('text'), 'source_path': h.get('source_path'),
+                                        'score': h.get('hybrid_score')} for h in hits],
+                              'rejected': result['rejected'],
+                              'scored': result.get('scored')}} if payload.get('debug') else {}),
+            })
 
         if parsed.path == '/rag_feedback':
             _otel_record('endpoint_calls', 1, route='/rag_feedback', status='start')
@@ -3252,7 +2991,7 @@ class Handler(BaseHTTPRequestHandler):
                             except Exception:
                                 zvec_hits = []
                             try:
-                                merged = merge_results(fts_hits, zvec_hits, limit=8) if (fts_hits or zvec_hits) else []
+                                merged = merge_results(zvec_hits, fts_hits, limit=8) if (fts_hits or zvec_hits) else []
                                 hits = hydrate_results(conn, merged) if merged else []
                                 texts = [(h.get('text') or '').strip() for h in hits if (h.get('text') or '').strip()]
                                 if texts:
@@ -6141,66 +5880,48 @@ class Handler(BaseHTTPRequestHandler):
 
             fts_results = lexical_search(conn, query, subject=subject, grade_level=grade, chapter_id=chapter_id, limit=limit)
             zvec_results = semantic_search(collection, model, conn, query, subject=subject, grade_level=grade, chapter_id=chapter_id, topk=max(25, limit), limit=limit)
-            merged = merge_results(fts_results, zvec_results, limit=limit)
+            merged = merge_results(zvec_results, fts_results, limit=limit)
             hydrated = hydrate_results(conn, merged)
             _otel_record('search_results', len(hydrated or []), mode=mode)
             _search_timer.__exit__(None, None, None)
             return self._json(200, {'mode': mode, 'results': hydrated})
 
         if parsed.path == '/search_activities':
+            # Search page (looma-database-utilities.php). Contract: a bare JSON
+            # array of {source_id, dn, ft, score}; Type (ft=) and Source (src=)
+            # checkboxes are applied inside zvec before the top-k cut.
             _otel_record('endpoint_calls', 1, route='/search_activities', status='start')
             _otel_record('search_calls', 1, mode='activities')
             query = q1('q', '').strip()
             if not query:
                 return self._json(400, {'error': 'Missing q'})
-
-            topk = qint('topk', ACTIVITIES_TOPK_DEFAULT) or ACTIVITIES_TOPK_DEFAULT
-
+            topk = max(1, min(qint('topk', 60) or 60, 300))
+            fts = [v for v in qs.get('ft', []) + qs.get('type', []) + qs.get('type[]', []) if v]
+            srcs = [v for v in qs.get('src', []) + qs.get('src[]', []) + qs.get('source', []) if v]
             try:
                 model = self._get_model()
                 collection = self.__class__._get_activities_collection()
                 qv = model.encode(query, normalize_embeddings=True).tolist()
-                results = collection.query(zvec.VectorQuery('embedding', vector=qv), topk=topk)
-
-                ids_in_order = [get_doc_id(r) for r in results]
-                score_by_id = {}
-                for rank, doc_id in enumerate(ids_in_order, start=1):
-                    score_by_id[doc_id] = 1.0 / rank
-
-                coll = self.__class__._mongo_collection()
+                hits = activities_store.search(collection, qv, topk=topk, fts=fts, srcs=srcs)
+                hits = [h for h in hits if h['score'] >= ACTIVITIES_MIN_SCORE]
                 obj_ids = []
-                for sid in ids_in_order:
+                for h in hits:
                     try:
-                        obj_ids.append(ObjectId(sid))
+                        obj_ids.append(ObjectId(h['source_id']))
                     except Exception:
                         continue
-
                 docs_by_id = {}
                 if obj_ids:
-                    for d in coll.find(
-                        {'_id': {'$in': obj_ids}},
-                        projection={'dn': 1, 'ft': 1, 'fp': 1, 'fn': 1, 'nfp': 1, 'nfn': 1},
-                    ):
-                        docs_by_id[str(d.get('_id'))] = d
-
+                    for d in self.__class__._mongo_collection().find(
+                        {'_id': {'$in': obj_ids}}, projection={'dn': 1, 'ft': 1, 'fp': 1, 'fn': 1}):
+                        docs_by_id[str(d['_id'])] = d
                 out = []
-                for sid in ids_in_order:
-                    d = docs_by_id.get(sid) or {}
-                    fp = d.get('fp')
-                    fn = d.get('fn')
-                    source_path = (fp + fn) if (fp and fn) else None
-                    out.append(
-                        {
-                            'source_id': sid,
-                            'dn': d.get('dn'),
-                            'ft': d.get('ft'),
-                            'looma_fp': fp,
-                            'looma_fn': fn,
-                            'source_path': source_path,
-                            'score': float(score_by_id.get(sid, 0.0)),
-                        }
-                    )
-
+                for h in hits:
+                    d = docs_by_id.get(h['source_id']) or {}
+                    fp, fn = d.get('fp'), d.get('fn')
+                    out.append({'source_id': h['source_id'], 'dn': d.get('dn'), 'ft': d.get('ft') or h['ft'],
+                                'src': h['src'], 'looma_fp': fp, 'looma_fn': fn,
+                                'source_path': (fp + fn) if (fp and fn) else None, 'score': h['score']})
                 return self._json(200, out)
             except Exception as exc:
                 return self._json(500, {'error': str(exc)})
@@ -6463,6 +6184,20 @@ def build_arg_parser():
     return p
 
 
+def _warm_up():
+    """Load the embedding model, map the zvec index and prime the LLM at
+    start-up, so the first student question does not pay ~50 s for it."""
+    t0 = time.time()
+    try:
+        model = Handler._get_model()
+        coll = Handler._get_collection()
+        rag_store.search(coll, model.encode('warm up', normalize_embeddings=True).tolist(), topk=5)
+        rag_answer.generate('What is water?', [{'n': 1, 'text': 'Water is a liquid.'}], 'what')
+        logger.info('warm-up done in %.1fs', time.time() - t0)
+    except Exception as exc:
+        logger.warning('warm-up failed (first question will be slow): %s', exc)
+
+
 def main():
     args = build_arg_parser().parse_args()
     try:
@@ -6476,6 +6211,7 @@ def main():
         instrument_http_handler(Handler)
     server = HTTPServer((args.host, args.port), Handler)
     print(f'LOOMA server listening on http://{args.host}:{args.port}')
+    threading.Thread(target=_warm_up, name='warm-up', daemon=True).start()
     server.serve_forever()
 
 

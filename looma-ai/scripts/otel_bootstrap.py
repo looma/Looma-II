@@ -37,7 +37,6 @@ INSTRUMENTS: dict = {}
 # Tiny time-bounded cache so the ZVEC observable gauges sample the store at
 # most once per ~10s no matter how many gauge callbacks fire.
 _ZVEC_CACHE = {"t": 0.0, "data": {}}
-_ZVEC_COLL = {"handle": None}
 
 
 def _zvec_sample() -> dict:
@@ -51,20 +50,21 @@ def _zvec_sample() -> dict:
     from app import paths as _paths
 
     db_path = _os.environ.get("LOOMA_INDEX_DB") or str(_paths.SQLITE_DB_PATH)
-    coll_path = _os.environ.get("LOOMA_ZVEC_PATH") or str(_paths.zvec_collection_path("curriculum_chunks"))
+    from app.index import rag_store as _rag_store
+    coll_path = _os.environ.get("LOOMA_ZVEC_PATH") or _rag_store.path()
     s: dict = {}
     try:
         s["zvec_ready"] = 1.0 if _os.path.exists(coll_path) else 0.0
     except Exception:
         s["zvec_ready"] = 0.0
     try:
-        if _ZVEC_COLL["handle"] is None:
-            import zvec  # noqa: WPS433
-            _ZVEC_COLL["handle"] = zvec.open(path=coll_path)
-        coll = _ZVEC_COLL["handle"]
-        s["zvec_docs"] = float(int(getattr(getattr(coll, "stats", None), "doc_count", 0) or 0))
+        # Reuse the server's handle: opening a second one would fight it for
+        # the collection's LOCK. Until the server has opened it, report nothing.
+        coll = _rag_store.LIVE.get("collection")
+        if coll is not None:
+            s["zvec_docs"] = float(int(getattr(getattr(coll, "stats", None), "doc_count", 0) or 0))
     except Exception:
-        _ZVEC_COLL["handle"] = None
+        pass
     try:
         conn = _sql.connect(db_path, timeout=0.5)
         for key, table in (("sqlite_chunks", "chunks"),

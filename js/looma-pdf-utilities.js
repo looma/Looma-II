@@ -152,6 +152,127 @@ function disablePdfImageText(container, rects, viewport) {
     }
 }
 
+/* ---- legacy 8-bit Nepali fonts -> Unicode in the text layer ----
+ * Many government PDFs (curricula, older textbooks) are typeset in Preeti,
+ * Kantipur, Sagarmatha, Fontasy Himali or PCS Nepali. Those fonts draw
+ * Devanagari glyphs on ASCII codes, so pdf.js extracts Latin junk
+ * ("/fli6«o kf7\oj|md") and select / copy / find / dictionary / speak were all
+ * useless on them. Convert those text items to Unicode before the text layer
+ * is built, using the PreetiToUnicode tables in js/looma.js (the same tables
+ * "looma shell scripts/preeti.py" uses for the HTML chapters). Text in
+ * Unicode fonts (Arial, Calibri, Kalimati, ...) is left alone.
+ */
+var LEGACY_NEPALI_FONT = /preeti|kantipur|himali|sagarmatha|pcs.?nepali|fontasy/i;
+var legacyNepaliTables = null;
+
+function legacyNepaliTable(fontName) {
+    var name = (fontName || '').split('+').pop();
+    var key, cand;
+    if (!LEGACY_NEPALI_FONT.test(name)) return null;
+    if (!legacyNepaliTables) {
+        if (typeof PreetiToUnicode === 'undefined') return null;
+        legacyNepaliTables = {};
+        Object.keys(PreetiToUnicode).forEach(function (k) {
+            var rules = PreetiToUnicode[k].rules;
+            legacyNepaliTables[k.toLowerCase().replace(/[^a-z]/g, '')] = {
+                cmap: rules['character-map'],
+                // the JSON writes groups as \1, JS replace() wants $1
+                // "j|m" is how Preeti spells क्र (क्रम, पाठ्यक्रम, क्रिया); the
+                // generic m-rule would drag that m back to the nearest प and
+                // give "फाठ्यव्रम", so it is handled first.
+                post: [[/व्रm/g, 'क्र']].concat(rules['post-rules'].map(function (r) {
+                    return [new RegExp(r[0], 'g'), r[1].replace(/\\(\d)/g, '$$$1')];
+                }))
+            };
+        });
+    }
+    key = name.toLowerCase().replace(/[^a-z]/g, '')
+              .replace(/(bold|italic|regular|black|light|mt|ps)+$/, '');
+    if (/himali|fontasy/.test(key)) key = 'fontasyhimalitt';
+    if (/^pcs/.test(key)) key = 'pcsnepali';
+    if (legacyNepaliTables[key]) return legacyNepaliTables[key];
+    for (cand in legacyNepaliTables) {
+        if (key.indexOf(cand) === 0 || cand.indexOf(key) === 0) return legacyNepaliTables[cand];
+    }
+    return legacyNepaliTables.preeti || null;
+}
+
+function legacyNepaliToUnicode(text, table) {
+    return text.replace(/\S+/g, function (word) {
+        var out = '', chars = Array.from(word), i, c;
+        for (i = 0; i < chars.length; i++) {
+            c = chars[i];
+            out += table.cmap.hasOwnProperty(c) ? table.cmap[c] : c;
+        }
+        for (i = 0; i < table.post.length; i++) out = out.replace(table.post[i][0], table.post[i][1]);
+        return out;
+    });
+}
+
+function fixLegacyNepaliText(page, textContent) {
+    var tables = {};   // pdf.js font id ("g_d0_f3") -> table or null
+    var items = textContent.items || [];
+    var run = [], runTable = null;
+
+    function tableFor(id) {
+        var font;
+        if (!(id in tables)) {
+            tables[id] = null;
+            try {   // the page has been rendered, so its fonts are loaded
+                font = page.commonObjs.get(id);
+                tables[id] = legacyNepaliTable(font && (font.name || font.loadedName));
+            } catch (e) { /* font not available: leave the text as it is */ }
+        }
+        return tables[id];
+    }
+
+    // The PDF often splits one word over several text items ("sf" + "]" for
+    // को, "u" + "'0f" for गुण). Vowel signs and the i-matra reordering only
+    // come out right when the whole word is converted at once, so join the
+    // consecutive pieces of one line, convert them together, give the result
+    // to the first piece (stretched over the whole run) and empty the rest.
+    function flush() {
+        var first = run[0], last = run[run.length - 1], text = '', i, it, prev, gap, fs;
+        if (!first) return;
+        for (i = 0; i < run.length; i++) {
+            it = run[i];
+            if (i > 0) {
+                prev = run[i - 1];
+                fs = Math.abs(it.transform[0]) || it.height || 1;
+                gap = it.transform[4] - (prev.transform[4] + prev.width);
+                if (gap > 0.2 * fs && !/\s$/.test(text) && !/^\s/.test(it.str)) text += ' ';
+                it.str = '';
+            }
+            text += i > 0 ? run[i].__str : first.str;
+        }
+        first.str = legacyNepaliToUnicode(text, runTable);
+        first.width = last.transform[4] + last.width - first.transform[4];
+        run = []; runTable = null;
+    }
+
+    items.forEach(function (item) {
+        var t = item.str && item.fontName ? tableFor(item.fontName) : null;
+        var prev = run[run.length - 1], fs, gap;
+        if (!t) { flush(); return; }
+        if (Math.abs(item.transform[1]) > 0.3 * Math.abs(item.transform[0])) {
+            flush();   // rotated text: convert it on its own
+            item.str = legacyNepaliToUnicode(item.str, t);
+            return;
+        }
+        if (prev) {
+            fs = Math.abs(item.transform[0]) || item.height || 1;
+            gap = item.transform[4] - (prev.transform[4] + prev.width);
+            if (t !== runTable || item.transform[2] !== prev.transform[2] ||   // same slant
+                Math.abs(item.transform[5] - prev.transform[5]) > 0.3 * fs ||
+                gap < -0.5 * fs || gap > 0.8 * fs) flush();
+        }
+        item.__str = item.str;
+        run.push(item); runTable = t;
+    });
+    flush();
+    return textContent;
+}
+
 async function drawPage (doc, pagenum)  {
     doc.getPage(pagenum).then (page => {
 
@@ -178,6 +299,7 @@ async function drawPage (doc, pagenum)  {
                 // Returns a promise, on resolving it will return text contents of the page
                 return page.getTextContent();})
                 .then(function(textContent) {
+                    fixLegacyNepaliText(page, textContent);
 
                     var canvas_height = pdf_canvas.height;  // Canvas height
                     var canvas_width = pdf_canvas.width;  // Canvas width

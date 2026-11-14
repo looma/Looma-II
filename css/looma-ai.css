@@ -502,37 +502,9 @@ button.black-border.ai-pending::after {
   font-family: monospace;
 }
 
-/* Navigation cards block inside bot replies */
-.ai-nav-cards {
-  margin-top: 10px;
-}
-
-.ai-nav-label {
-  font-size: 12px;
-  font-weight: 700;
-  opacity: 0.65;
-  margin-bottom: 6px;
-}
-
-.ai-nav-card {
-  display: inline-block;
-  border-radius: 10px;
-  border: 1px solid rgba(0,0,0,0.15);
-  padding: 6px 10px;
-  margin: 4px 4px 0 0;
-  background: rgba(0,110,220,0.06);
-  cursor: default;
-}
-
-.ai-nav-card-title {
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.ai-nav-card-meta {
-  font-size: 11px;
-  opacity: 0.65;
-  margin-top: 2px;
+/* Source the answer cites */
+.ai-rag-cited {
+  border-left: 3px solid rgba(0,110,220,0.6);
 }
 
 /* Keep panel h2 tight */

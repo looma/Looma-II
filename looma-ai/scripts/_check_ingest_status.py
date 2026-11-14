@@ -26,9 +26,8 @@ for ext in new:
 # ZVEC collection size
 try:
     import zvec
-    from app.index.zvec_store import open_curriculum_chunks
-    col = open_curriculum_chunks()
-    cnt = col.count() if hasattr(col, 'count') else None
-    print(f"\nZVEC curriculum_chunks count: {cnt}")
+    from app.index import rag_store
+    col = rag_store.open_collection(read_only=True)
+    print(f"\nZVEC rag_chunks: {col.stats}")
 except Exception as e:
     print(f"\nZVEC unavailable: {e}")

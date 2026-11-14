@@ -64,66 +64,60 @@ var chartColors = {
     grey:   'rgb(231,233,237)'
 };
 
-var linedata, lineconfig, linechart, linecanvas, linectx;
-var bardata,  barconfig,  barchart, barcanvas, barctx;
-var mapdata,  mapconfig,  mapchart, mapcanvas, mapctx;
+var linedata, lineconfig, linechart, linectx;
+var bardata,  barconfig,  barchart,  barctx;
+var axisNames = {'hours':'Hour', 'days':'Day', 'weeks':'Week', 'months':'Month'};
+
+// NOTE: js/chartjs/chart.min.js is Chart.js v3 - options below use v3 syntax
+//       (scales.x / scales.y, plugins.legend, plugins.title, interaction)
+//       responsive + maintainAspectRatio:false makes each chart fill its .chart-box
+Chart.defaults.font.size = (window.innerWidth < 600) ? 10 : 13;
 
 linedata = {
     labels: [],
     datasets: [{
-        label: "Looma user activity",
+        label: 'Looma user activity',
         backgroundColor: chartColors.red,
         borderColor: chartColors.red,
         data: [],
         fill: false,
+        tension: 0.2
     },
         {
-            label: "Unique visitors",
+            label: 'Unique visitors',
             backgroundColor: chartColors.blue,
             borderColor: chartColors.blue,
             data: [],
             fill: false,
+            tension: 0.2
         }
     ]
-}
+};
 
 lineconfig = {
     type: 'line',
     data: linedata,
     options: {
         responsive: true,
-        title: {
-            display: true,
-            text: ''
-        },
-        tooltips: {mode: 'label',},
-        hover: {
-            mode: 'nearest',
-            intersect: true
+        maintainAspectRatio: false,
+        interaction: {mode: 'index', intersect: false},
+        plugins: {
+            legend: {position: 'top'},
+            title:  {display: false}
         },
         scales: {
-            xAxes: [{
-                display: true,
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Hour'
-                }
-            }],
-            yAxes: [{
-                display: true,
-                ticks: {
-                    beginAtZero:true,
-                    stepSize:1
-                },
-                scaleLabel: {
-                    display: true,
-                    labelString: 'Unique Users'
-                }
-            }]
+            x: {
+                title: {display: true, text: 'Day'},
+                ticks: {autoSkip: true, maxRotation: 0}
+            },
+            y: {
+                beginAtZero: true,
+                ticks: {precision: 0},
+                title: {display: true, text: 'Visits'}
+            }
         }
     }
 };
-
 
 bardata = {
     labels: [],
@@ -131,7 +125,7 @@ bardata = {
         {
             label: '',
             data: [],
-            backgroundColor: ['red','orange','yellow','green','blue','violet','magenta'],
+            backgroundColor: ['red','orange','gold','green','blue','violet','magenta']
         }
     ]
 };
@@ -140,18 +134,18 @@ barconfig = {
     type: 'bar',
     data: bardata,
     options: {
+        indexAxis: 'y',             // horizontal bars: long page names stay readable on narrow screens
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
-            legend: {
-                position: 'top',
-                text: ''
-            },
-            title: {
-                display: true,
-                text: ''
-            }
+            legend: {display: false},
+            title:  {display: false}
+        },
+        scales: {
+            x: {beginAtZero: true, ticks: {precision: 0}, title: {display: true, text: 'Hits'}},
+            y: {ticks: {autoSkip: false}}
         }
-    },
+    }
 };
 
 function labelFormat(utc, dbTime, timeframe) {
@@ -168,33 +162,38 @@ function labelFormat(utc, dbTime, timeframe) {
 };  // end labelFormat()
 
 function drawLineChart(timeframe, prev) {
-    $('#barchart, #mapchart, #barcontrols, #mapcontrols').hide(); $('#linechart, #linecontrols').show();
-    
-    $.post("looma-database-utilities.php",
-        {cmd: "getLogData", type:timeframe, chunk: chunksize[timeframe], prev: prev},
+    $('#barbox, #barcontrols').hide(); $('#linebox, #linecontrols').show();
+
+    $.post('looma-database-utilities.php',
+        {cmd: 'getLogData', type:timeframe, chunk: chunksize[timeframe], prev: prev},
         function(results) {
             //returns an array of 'chunk' or fewer visit-count values in results.data
             //returns 'first' T/F and 'last' T/F to indicate if we are at the beginning or end of the available data
-    
+
             $('#prev').prop('disabled', results.first);
             $('#next').prop('disabled', results.last);
 
             linedata.datasets[0].data = [];
             linedata.datasets[1].data = [];
             linedata.labels = [];
-            
+
             for (var i=0; i < results.data.length; i++) {
                 linedata.datasets[0].data[i] = results.data[i]['visits'];
                 linedata.datasets[1].data[i] = results.data[i]['uniques'];
                 linedata.labels[i] = labelFormat(results.data[i]['utc'],results.data[i]['time'],timeframe);
             }
-            
-            var titleDate = new Date(results.data[results.data.length-1]['utc']*1000);
-            var title =   'Activity for ';
+
+            var title = 'Activity';
+            if (results.data.length > 0) {
+                var titleDate = new Date(results.data[results.data.length-1]['utc']*1000);
+                title += ' for ';
                 if (timeframe !== 'months' && timeframe !== 'weeks') title += months[titleDate.getMonth()] + '  ';
-                if (timeframe === 'hours') title += titleDate.getDate() + ',';
+                if (timeframe === 'hours') title += titleDate.getDate() + ', ';
                 title += titleDate.getFullYear();
+            }
             $('h2#title').text( title);
+
+            lineconfig.options.scales.x.title.text = axisNames[timeframe];
             if (linechart) linechart.destroy();
             linechart = new Chart(linectx, lineconfig);
         },
@@ -203,54 +202,48 @@ function drawLineChart(timeframe, prev) {
 };  // end drawLineChart()
 
 function drawbarChart(bartype) {
-    $('#linechart, #linecontrols, #mapchart, #mapcontrols').hide(); $('#barchart, #barcontrols').show();
-    if(linechart) linechart.destroy();
-    if (barchart) barchart.destroy();
-    
-    $.post("looma-database-utilities.php",
-        {cmd: "getLogData", type:bartype},
+    $('#linebox, #linecontrols').hide(); $('#barbox, #barcontrols').show();
+
+    $.post('looma-database-utilities.php',
+        {cmd: 'getLogData', type:bartype},
         function(results) {
-            
+            // most-used first (top of the horizontal bar chart)
+            var rows = results.data.slice().sort(function (a, b) { return b['hits'] - a['hits']; });
+
             bardata.datasets[0].data = [];
             bardata.labels = [];
-    
-            for (var i=0; i < results.data.length; i++) {
-                bardata.datasets[0].data[results.data.length - i] = results.data[i]['hits'];
-                if (bartype === 'pages') bardata.labels[results.data.length - i] = results.data[i]['page'];
-                else                     bardata.labels[results.data.length - i] = results.data[i]['ft'];
+            for (var i=0; i < rows.length; i++) {
+                bardata.datasets[0].data[i] = rows[i]['hits'];
+                bardata.labels[i] = (bartype === 'pages') ? rows[i]['page'] : rows[i]['ft'];
             }
-    
+
             bardata.datasets[0]['label'] = LOOMA.capitalize(bartype);
-            var title =   LOOMA.capitalize(bartype) + ' used since October 1, 2021 ';
-            $('h2#title').text( title);
-            
+            $('h2#title').text( LOOMA.capitalize(bartype) + ' used since October 1, 2021 ');
+
             if (barchart) barchart.destroy();
             barchart = new Chart(barctx, barconfig);
         },
         'json'
     );
-}  //  end barchart()
-
-function drawMapChart() {
-    $('#linechart, #barchart').hide(); $('#mapchart').show();
-    if(linechart) linechart.destroy();
-    
-}  //  end mapchart()
+}  //  end drawbarChart()
 
 $(document).ready( function () {
-    
-    toolbar_button_activate("info");
-    
+
+    var tf = 'days'; var prev = 0;
+
+    toolbar_button_activate('info');
+
     $("input[type=radio][name='timeframe']").change(function(e) {
         tf = $("input[name='timeframe']:checked").val();
+        prev = 0;
         drawLineChart(tf,0);
     });
-    
+
     $("input[type=radio][name='bartype']").change(function(e) {
         var bartype = $("input[name='bartype']:checked").val();
         drawbarChart(bartype);
     });
-    
+
     $('#next').click(function() {
         if (prev > 0) prev--; drawLineChart(tf,prev);
     });
@@ -258,19 +251,12 @@ $(document).ready( function () {
         prev++; drawLineChart(tf,prev);
     });
     $('#line').click(function() {drawLineChart(tf,prev);});
-    $('#bar').click(function() {drawbarChart('pages');});
-  //  $('#map').click(function() {parent.location.href = 'map?id=61a7e5b3ca614294ff2dee53';});
+    $('#bar').click(function() {drawbarChart($("input[name='bartype']:checked").val());});
     $('#map').click(function() {parent.location.href = 'map?id=61b918f7cea055bc07f6620b';});
-    
-    linecanvas = document.getElementById('linechart');
-    linectx = linecanvas.getContext('2d');
-    linechart = new Chart(linectx, lineconfig);
- 
-    barcanvas = document.getElementById('barchart');
-    barctx = barcanvas.getContext('2d');
-    barchart = new Chart(barctx, barconfig);
-    
-    var tf = 'days'; var prev = 0;
+
+    linectx = document.getElementById('linechart').getContext('2d');
+    barctx  = document.getElementById('barchart').getContext('2d');
+
     drawLineChart(tf,prev);
-    
+
 });

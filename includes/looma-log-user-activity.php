@@ -25,7 +25,8 @@ function logPageHit($page) {
     global $pages_collection;
     mongoUpdate($pages_collection,
         array('page'=>$page),
-        array('$inc'        => array('hits' => 1)));
+        array('$inc'        => array('hits' => 1)),
+        true);   // upsert: first hit creates the counter
 } // end logPageHit()
 
 //////////   log filetype hit   //////////
@@ -33,7 +34,8 @@ function logFiletypeHit($ft) {
     global $filetypes_collection;
     mongoUpdate($filetypes_collection,
         array('ft'=>$ft),
-        array('$inc'        => array('hits' => 1)));
+        array('$inc'        => array('hits' => 1)),
+        true);   // upsert: first hit creates the counter
 } // end logFiletypeHit()
 
 //////////   log user access   //////////

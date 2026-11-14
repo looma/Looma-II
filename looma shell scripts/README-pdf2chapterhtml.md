@@ -91,11 +91,25 @@ import fitz
 def pdf_kind(path):
     with fitz.open(path) as doc:
         fonts = {font[3].lower() for page in doc for font in page.get_fonts()}
-    return "scan" if any("glyphless" in font for font in fonts) else "vector"
+        if any("glyphless" in font for font in fonts):
+            return "scan"
+        # OCR from other tools (e.g. a "HiddenHorzOCR" font with Times/Helvetica
+        # runs) is drawn in invisible text mode over a page image: also a scan.
+        chars = invisible = 0
+        for page in doc:
+            for span in page.get_texttrace():
+                n = len(span["chars"])
+                chars += n
+                if span["type"] == 3 or span.get("opacity", 1) == 0:
+                    invisible += n
+    return "scan" if chars and invisible / chars > 0.5 else "vector"
 ```
 
-This rule gave the same `kind` as the existing HTML for the three chapters tested (`1M08`, `10M01` and
-`10M11`). It has not been checked against the whole library, so review its results before a large run.
+The font test alone is not enough. `Class8/Science/en/8S01.pdf` is a page image with invisible OCR text in a
+`HiddenHorzOCR` font and no `GlyphLessFont`; taken as `vector`, its invisible text was redacted (the visible
+text is part of the image, so it stayed), and the OCR words were laid over it in black: every line appeared
+twice, and OCR misreadings of the safety signs showed up as stray "@", "®" and "x". Check `kind` before a large
+run.
 
 ### 3. Run it
 
@@ -144,6 +158,30 @@ For PDFs with real fonts, each page goes through these steps:
 
 Redaction happens in the PDF, not in the exported SVG, because MuPDF draws glyphs in different ways from
 file to file. Pattern-matching the SVG could miss some, leaving the old text visible under the new text.
+
+Some text cannot be redrawn as HTML text without looking wrong. Since November 2026 it keeps its original ink
+in the SVG and gets only a transparent, selectable span on top:
+
+| Text | Why it is not redrawn |
+|---|---|
+| Private Use Area characters (`U+E000`-`U+F8FF`) | Symbol-font pieces with no Unicode: big-bracket parts, Wingdings bullets. No browser font has them |
+| Fonts whose name contains `math` | Word equations (Cambria Math) extract each letter twice: one drawn `x` reads `𝑥𝑥` |
+| Rotated lines | HTML text is laid out horizontally; a chart's vertical axis title came out scrambled |
+| Garbled text (control characters, `\`, a capital inside a lowercase word) | A CID font with an incomplete ToUnicode: "'iscuss in \our grouS" for "Discuss in your group" |
+
+A false positive in that list costs nothing visible, because the ink stays.
+
+Redaction is first tried on a copy of the page. If any other text survives it (text inside some form XObjects:
+tables of contents, equation objects), nothing is redacted on that page: the SVG keeps all the original text and
+every span is transparent. Without this, those words showed twice, and redaction could also remove only part of
+a run.
+
+A run is split where its characters jump forward by more than half the font size, or at a space wider than 0.8
+of it. The gap is room for something drawn as line art, such as the radical in "Does √64". One span stretched
+across it distorted the words on both sides.
+
+In November 2026 all 507 vector chapters on the box were reconverted with these rules, together with every Grade 8
+Science chapter as a scan. Before that, 23 had duplicated text and 15 had symbol characters as text.
 
 ### Scanned PDFs
 

@@ -88,7 +88,8 @@ $(document).ready (function() {
         displayMoreResults();
     });
     
-    if ($('#file-list-table')) {
+    // a folder with only sub-folders has no #file-list (a jQuery object is always truthy, so test .length)
+    if ($('#file-list').length) {
         $files = $.parseJSON($('#file-list').html());
         numFiles = $files.count;
         pagesz = 24;    //NOTE (5/2025) pagesz is ignored by looma-databae-utilities.php cmd=search

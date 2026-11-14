@@ -12,6 +12,95 @@ measured; where the official documentation is quoted the source is listed at the
 bottom.
 
 --------------------------------------------------------------------------------
+UPDATE 2026-11-09: ONE ZVEC STACK, AND A GROUNDED LLM
+--------------------------------------------------------------------------------
+
+Sections 0-3 below describe the system BEFORE this date. What changed:
+
+  * looma-ai's RAG index is now `rag_chunks` (app/index/rag_store.py), built
+    from the old `curriculum_chunks` vectors by scripts/build_rag_index.py:
+      HNSW, metric COSINE (declared, no longer implicit), INT8-quantised,
+      scalar fields tier / grade / subject / lang with inverted indexes.
+    Filters run inside zvec before the top-k cut (fixes 2.4 and 2.5).
+    COSINE scores come back as DISTANCE; rag_store.search() returns
+    similarity = 1 - distance.
+    Excluded from the index: quiz/keywords/geojson/objectives/outline sidecars,
+    the dictionaries/ glossary PDF, chunks under 80 characters.
+    On the ODROID-C4 a question went from ~18 s (flat scan of 1.8 GB FP32) to
+    the figures in llm-service/README.md.
+
+  * The Search page's semantic half moved from looma-search (NumPy, English-only
+    model) to looma-ai's `activities` zvec collection
+    (app/index/activities_store.py), same multilingual model as the assistant,
+    ft/src checkboxes as native zvec filters. Endpoint:
+    GET http://127.0.0.1:8089/search_activities  (same JSON contract the PHP
+    already parsed). looma-search is no longer deployed.
+
+  * The assistant answers with a local LLM (llm-service/, llama.cpp,
+    Qwen2.5-0.5B-Instruct Q4_0) from at most three short source excerpts, and
+    looma-ai rejects any answer whose numbers, names or wording are not in
+    those excerpts, whose facts are not stated together in one passage with
+    the question's topic, or that does not have the shape the question asks
+    for (app/rag/answer.py). Rejected or unavailable -> a verbatim source
+    sentence, or "not found". Nepali questions are answered by quoting.
+
+  * 2026-11-10, better evidence (app/rag/context.py, app/rag/answer.py):
+      - each retrieved chunk is stitched to its neighbours (chunk ids are
+        <doc>_p<page>_c<n>), so the sentence holding the answer is whole;
+      - the opening paragraph of the encyclopedia article named by the
+        question ("Where is Mount Everest?" -> W4S2013 "Mount Everest") is
+        added to the candidates;
+      - "What is X?" also searches FTS for "X is" / "Xs are" / "called X"
+        (Nepali: "X भनेको" / "X भनिन्छ"), and is answered by quoting the
+        book's own definition of X, without the LLM;
+      - sentences are ranked for being ABOUT the subject (X is the subject of
+        the sentence), not merely mentioning it, and for the answer shape;
+      - files looma-ai generated itself (.summary, .plan,
+        .teacher_guide.txt), _reports/ and W4S index pages are never used as
+        evidence (rag_store.is_evidence);
+      - stricter checks: a short answer's sentence must contain every word of
+        the question ("climber" is not "climb"), numbers must stand next to
+        the question's words, names of the question must be present,
+        circular answers ("X is X ...") are rejected; Nepali has its own
+        definition and shape rules.
+    Measured with scripts/eval_answers.py: see llm-service/README.md.
+
+  * 2026-11-10, second round (precision):
+      - definitions: the "X is" FTS search takes 200 candidates and ranks
+        them itself (a sentence that starts with X and says what it is; school
+        books, then teacher guides, the encyclopedia, vocational books), since
+        bm25 favoured short chunks repeating the word ("Which pollution is
+        shown ...?"). LOOMA_RAG_DEF_POOL sets the pool;
+      - topic article: the lead sentence is found strictly (title, an aside,
+        the verb), also from a person's full name ("Mohandas Karamchand
+        Gandhi ... was"), after the "Sponsor a child" banner;
+      - quotes lose page furniture: running heads, section numbers, labels,
+        headings repeated before the subject ("Sample story Muna Madan Muna
+        Madan is ...");
+      - wrong answers removed: superlatives keep their scope and rank ("the
+        largest country in the world" is not Brazil, "the largest in South
+        America"; not "the second highest"), "when" needs a date (not "40
+        million refugees"), "why" needs a cause (not any "than"), a quote
+        cannot start with It/They/He, "the first king of the Moon" needs
+        "king" and "Moon" together (not "King James Bible", not "king of Saba
+        ... moon god"), a pronoun sentence may supply the fact but not the
+        subject.
+    LOOMA_RAG_QUOTE_AFTER_NOT_FOUND=1 (default 0) quotes a checked sentence
+    even when the LLM said NOT_FOUND; for a fine-tuned model (see
+    llm-service/README.md, "Fine-tuning").
+    Sentence re-ranking by embedding is in the code but OFF on the ODROID
+    (LOOMA_RAG_SENTENCE_POOL=0): ~0.5 s per sentence there, and the rules
+    above scored the same without it.
+
+  * Build the `activities` index on a PC when you can: 4 minutes on x86
+    against hours on the ODROID, and the zvec directory copies across
+    (scripts/build_activities_index.py; tested x86 -> arm64 on 2026-11-10).
+
+  * Pruning: scripts/prune_documents.py removes deleted content from SQLite,
+    FTS and rag_chunks. W4S (2007) articles duplicated in W4S2013 were removed
+    on 2026-11-09 (looma shell scripts/w4s_*.py).
+
+--------------------------------------------------------------------------------
 0. READ THIS FIRST: "ZVEC" MEANS TWO DIFFERENT THINGS IN LOOMA
 --------------------------------------------------------------------------------
 
